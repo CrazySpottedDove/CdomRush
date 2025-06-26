@@ -1,0 +1,8 @@
+{
+  "name": "cdomrush",
+  "version": "1.0.0",
+  "description": "Kingdom Rush implementation in Cpp",
+  "dependencies": [
+    "sfml"
+  ]
+}

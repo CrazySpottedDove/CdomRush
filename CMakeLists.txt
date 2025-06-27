@@ -7,11 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 查找SFML包 - 需要指定组件
 find_package(SFML COMPONENTS System Network Graphics Audio Window CONFIG REQUIRED)
+# find_package(sol2 CONFIG REQUIRED)
+find_package(lua REQUIRED)
 
 # 添加可执行文件
 add_executable(CdomRush
     src/main.cpp
     src/store/store.cpp
+    src/gui/spriteManager.cpp
     # 添加其他源文件...
 )
 
@@ -22,10 +25,11 @@ target_link_libraries(CdomRush PRIVATE
     SFML::Graphics
     SFML::Audio
     SFML::Network
+    ${LUA_LIBRARIES}
 )
 
 # 设置包含目录
-target_include_directories(CdomRush PRIVATE src)
+target_include_directories(CdomRush PRIVATE src ${LUA_INCLUDE_DIR})
 
 # Linux特定设置
 if(UNIX AND NOT APPLE)

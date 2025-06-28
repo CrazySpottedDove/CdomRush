@@ -101,7 +101,7 @@ bool AnimationPlayer::NextFrame(Animation& animation)
 void AnimationPlayer::Update(Animation& animation)
 {
     // 基础版本：每次调用Update都自动前进一帧
-    // 你可以根据需要修改这个逻辑，比如：
+    // 根据需要修改这个逻辑，比如：
     // - 每隔几次调用才前进一帧
     // - 根据某些游戏条件决定是否前进
     // - 等等...
@@ -225,8 +225,6 @@ bool AnimationPlayer::JumpToFrame(Animation& animation, std::size_t frame_id)
 std::size_t AnimationPlayer::CalculateActualFrameIndex(const Animation& animation, State state) const
 {
     try {
-        // 需要AnimationManager提供GetAnimationGroup接口
-        // 假设你的队友会添加这个方法到AnimationManager中
         const auto& animation_group = animation_manager_.GetAnimationGroup(animation.prefix, state);
         
         // 计算实际的帧索引：动画组起始位置 + 当前帧偏移

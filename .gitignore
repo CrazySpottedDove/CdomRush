@@ -5,3 +5,5 @@ assets/sounds/*.ogg
 build/
 .cache/
 tmp/
+.vs
+.idea

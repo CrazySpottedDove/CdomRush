@@ -41,6 +41,7 @@ struct AnimationGroup
 {
     std::size_t from;   // 起始帧索引
     std::size_t to;     // 结束帧索引
+    AnimationGroup(const std::size_t from, const std::size_t to): from(from), to(to) {}
 };
 
 // prefix->(状态->动画组)
@@ -64,7 +65,7 @@ public:
      * @param path
      * @param level
      */
-    void LoadResources(const std::string& path, const TextureLevel level = TextureLevel::Common);
+    void LoadSpriteFrameResources(const std::string& path, const TextureLevel level = TextureLevel::Common);
 
     /**
      * @brief 释放 specific_sprite_frame_data_map 中的资源与 texture_manager 中对应的纹理资源
@@ -82,6 +83,13 @@ public:
     std::pair<const SpriteFrameData&, const sf::Texture&>
     RequireFrameData(const std::string& prefix, const std::size_t frame_index) const;
 
+    /**
+     * @brief 根据 prefix 和状态，返回对应的 AnimationGroup
+     *
+     * @param prefix
+     * @param state
+     * @return const AnimationGroup&
+     */
     const AnimationGroup& RequireAnimationGroup(const std::string& prefix, const State state) const;
 
 private:
@@ -99,4 +107,11 @@ private:
     void           LoadSpriteFrameDatasFromLua(const sol::table&  sprite_frames_table,
                                            const TextureLevel level = TextureLevel::Common);
     void           ParseSpriteFrameData(const sol::table& frame_table, SpriteFrameData& frame_data);
+
+    /**
+     * @brief 从 lua 文件中加载所有的动画组数据
+     * @note 动画组数据较少，直接存储在内存中
+     * @note lua 文件目录因此默认确定
+     */
+    void LoadAnimationGroupsFromLua();
 };

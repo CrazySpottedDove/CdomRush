@@ -1,4 +1,5 @@
 #include "animationManager.h"
+#include "Model/components/state.h"
 #include "textureManager.h"
 #include "utils/macros.h"
 #include <SFML/Graphics.hpp>
@@ -8,6 +9,8 @@
 #include <sol/state.hpp>
 #include <sol/types.hpp>
 #include <string>
+#include <unordered_map>
+
 /**
  * @brief 解析 lua 表成帧纹理
  *
@@ -63,12 +66,7 @@ void AnimationManager::LoadSpriteFrameDatasFromLua(const sol::table&  sprite_fra
     }
 }
 
-/**
- * @brief 加载 lua 文件资源
- *
- * @param path
- */
-void AnimationManager::LoadResources(const std::string& path, const TextureLevel level)
+void AnimationManager::LoadSpriteFrameResources(const std::string& path, const TextureLevel level)
 {
     try {
         sol::state lua;
@@ -106,7 +104,7 @@ AnimationManager::AnimationManager()
                     std::cout << "  Loading: " << path.filename() << std::endl;
 
                     try {
-                        LoadResources(path.string());
+                        LoadSpriteFrameResources(path.string());
                         ++loaded_count;
                     }
                     catch (const std::exception& e) {
@@ -120,7 +118,7 @@ AnimationManager::AnimationManager()
         std::cout << "Successfully loaded " << loaded_count << std::endl;
 
         // 初始化 AnimationGroupMap
-        
+
     }
     catch (const fs::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << std::endl;
@@ -132,4 +130,45 @@ void AnimationManager::UnloadSpecificResources()
     specific_sprite_frame_data_map.clear();
     texture_manager.UnloadSpecificTextures();
     std::cout << "Specific resources unloaded." << std::endl;
+}
+
+void LoadAnimationGroupsFromLua(){
+    static std::unordered_map<std::string, State> state_map = {
+        {"attack", State::Attack},
+        {"idle",State::Idle},
+        {"walk",State::Walk},
+        {"shoot",State::Shoot},
+        {"death",State::Death},
+        {"walkingLeftRight",State::WalkingLeftRight}
+    };
+    try {
+        sol::state lua;
+        lua.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
+        const sol::object result              = lua.script_file("assets/images/animation_groups.lua");
+        const sol::table  animation_groups_table = result.as<sol::table>();
+        for(const auto& pair : animation_groups_table) {
+            const std::string prefix = pair.first.as<std::string>();
+            const sol::table state_group = pair.second.as<sol::table>();
+
+            // 解析状态
+            for (const auto& state_pair : state_group) {
+                const std::string state_name = state_pair.first.as<std::string>();
+                const sol::table  frames_table = state_pair.second.as<sol::table>();
+
+                for (const auto& frame : frames_table) {
+
+                }
+            }
+
+            // 存储到 animation_group_map 中
+
+        }
+    }
+    catch (const sol::error& e) {
+        std::cerr << "Error loading Lua file '" << "assets/images/animation_groups.lua"
+                  << "': " << e.what() << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
 }

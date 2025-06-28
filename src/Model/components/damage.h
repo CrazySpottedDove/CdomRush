@@ -41,10 +41,10 @@ struct DamageData
 struct DamageEvent
 {
     DamageData data;
-    Entity*      target      = nullptr;
+    Unit*        target      = nullptr;
     Entity*      source      = nullptr;
 
-    DamageEvent(const DamageData& data, Entity* target, Entity* source)
+    DamageEvent(const DamageData& data, Unit* target, Entity* source)
         : data(data)
         , source(source)
         , target(target)

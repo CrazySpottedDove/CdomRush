@@ -12,7 +12,7 @@ public:
 
 class Melee{
 public:
-    std::vector<MeleeAttack> attacks;
+    std::vector<MeleeAttack*> attacks;
     MeleeAttack& operator[](const std::size_t id){
         return attacks[id];
     }

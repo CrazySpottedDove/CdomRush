@@ -3,6 +3,8 @@ struct Health
     double hp_max;
     double hp;
     // 尸体保持的时间
+    Health(double hp_max = 100.0, double hp = 100.0)
+        : hp_max(hp_max), hp(hp) {};
     double dead_lifetime = 3.0;
     double death_time = 0.0;
     // 是否免疫伤害

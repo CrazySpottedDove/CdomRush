@@ -1,7 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <string>
-#include "Model/Components/state.h"
+#include "Model/components/state.h"
 struct Animation{
     State state;
     double rotation;

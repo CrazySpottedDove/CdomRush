@@ -43,7 +43,7 @@ struct DamageEvent
     DamageData data;
     Unit*        target      = nullptr;
     Entity*      source      = nullptr;
-
+    DamageEvent():data(DamageData(0.0, DamageType::Physical, 0.0, 0)){};
     DamageEvent(const DamageData& data, Unit* target, Entity* source)
         : data(data)
         , source(source)

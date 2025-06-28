@@ -4,7 +4,7 @@
 #include "Model/components/path.h"
 #include "Model/templates/unit.h"
 #include "Function/calc/motion.h"
-#include ""
+#include "Model/Components/melee.h"
 class Enemy : public Unit//一种无害的敌人
 {
 public:
@@ -27,26 +27,26 @@ public:
 
 class PassiveEnemy : public Enemy{
 public:
-    void update(Store& store) override {
+    void Update(Store& store) override {
         if(this->health.hp <= 0) {
             this->state = State::Death; // 如果生命值为0，进入死亡状态
             store.gold += gold; // 增加金币
         }
         if (this->state == State::Walk || this->state == State::Idle || this->state == State::WalkingLeftRight || this->state == State::WalkingUp || this->state == State::WalkingDown) {
-            move_tick(store, *this); // 调用运动函数更新位置
+            calc::move_tick(store, *this); // 调用运动函数更新位置
         }
         if(heading==Heading::Right) state = State::WalkingLeftRight; // 如果方向是向右，设置状态为左右行走
         else if(heading==Heading::Up) state = State::WalkingUp; // 如果方向是向上，设置状态为向上行走
         else if(heading==Heading::Down) state = State::WalkingDown; // 如果方向是向下，设置状态为向下行走
         else state = State::WalkingLeftRight; // 如果方向是向左，设置状态为左右行走
     }
-}
+};
 
 class activeEnemy : public Enemy{
 public:
     Unit* blocker = nullptr; // 用于阻挡敌人前进的单位
     Melee melee; // 近战攻击组件
-    void update(Store& store) override {
+    void Update(Store& store) override {
         if(this->health.hp <= 0) {
             this->state = State::Death; // 如果生命值为0，进入死亡状态
             store.gold += gold; // 增加金币
@@ -75,7 +75,7 @@ public:
             }
         }
         else if (this->state == State::Walk) {
-            move_tick(store, *this); // 调用运动函数更新位置
+            calc::move_tick(store, *this); // 调用运动函数更新位置
         }
         // 其他状态处理...
     }

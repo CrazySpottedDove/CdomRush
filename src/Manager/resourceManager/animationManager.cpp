@@ -1,4 +1,5 @@
 #include "animationManager.h"
+#include "Model/components/state.h"
 #include "textureManager.h"
 #include "utils/macros.h"
 #include <SFML/Graphics.hpp>
@@ -8,6 +9,7 @@
 #include <sol/state.hpp>
 #include <sol/types.hpp>
 #include <string>
+#include <unordered_map>
 
 /**
  * @brief 解析 lua 表成帧纹理
@@ -131,6 +133,14 @@ void AnimationManager::UnloadSpecificResources()
 }
 
 void LoadAnimationGroupsFromLua(){
+    static std::unordered_map<std::string, State> state_map = {
+        {"attack", State::Attack},
+        {"idle",State::Idle},
+        {"walk",State::Walk},
+        {"shoot",State::Shoot},
+        {"death",State::Death},
+        {"walkingLeftRight",State::WalkingLeftRight}
+    };
     try {
         sol::state lua;
         lua.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
@@ -146,12 +156,12 @@ void LoadAnimationGroupsFromLua(){
                 const sol::table  frames_table = state_pair.second.as<sol::table>();
 
                 for (const auto& frame : frames_table) {
-                    group.frames[state_name].push_back(frame.as<std::string>());
+
                 }
             }
-            
+
             // 存储到 animation_group_map 中
-            animation_group_map[prefix] = group;
+
         }
     }
     catch (const sol::error& e) {

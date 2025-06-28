@@ -2,6 +2,7 @@
 #pragma once
 #include "Model/components/damage.h"
 #include "utils/macros.h"
+#include <vector>
 class Unit;
 class Store;
 namespace calc{
@@ -42,4 +43,25 @@ namespace calc{
      * @return Unit*
      */
     Unit* find_nearest_soldier(const Store& store, const Position& position, const double range);
+
+    /**
+     * @brief 找到范围里的敌人
+     *
+     * @param store
+     * @param position
+     * @param range
+     * @return std::vector<Unit*>
+     */
+    std::vector<Unit*> find_enemies_in_range(const Store& store, const Position& position, const double range);
+
+    /**
+     * @brief 找到范围里的士兵
+     *
+     * @param store
+     * @param position
+     * @param range
+     * @return std::vector<Unit*>
+     */
+    std::vector<Unit*> find_soldiers_in_range(const Store& store, const Position& position,
+                                             const double range);
 }

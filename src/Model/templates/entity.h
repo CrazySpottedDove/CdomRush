@@ -3,6 +3,7 @@
 class Store;
 
 // 参与主时钟更新的实体
+
 class Entity{
 public:
     Position position;

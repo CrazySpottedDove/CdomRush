@@ -1,6 +1,8 @@
 #pragma once
 struct Armor
 {
+    Armor(double physical = 0.0, double magical = 0.0)
+        : physical(physical), magical(magical) {};
     double physical   = 0;
     double magical    = 0;
     double poison     = 0;

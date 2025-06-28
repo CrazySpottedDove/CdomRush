@@ -4,19 +4,33 @@
 #include "Model/templates/entity.h"
 #include "utils/macros.h"
 #include "Manager/store/store.h"
+#include "Model/fx/fx.h"
 
-
+enum class BulletType
+{
+    Arrow, // 箭矢
+    Bolt,  // 法球
+    Bomb   // 炸弹
+};
 class Bullet: public Entity
 {
 public:
     double initial_time = 0.0; // 初始时间
     double totalDuration_ = 0.0; // 总持续时间
+    FxType hit_fx = FxType::None; // 击中效果
     DamageEvent damage_event;
-    virtual std::shared_ptr<Bullet> Clone() const noexcept        = 0;
+    bool target_alive = true; // 目标是否存活
+    Position source_position;
+    Position target_position;
+
+    virtual Bullet(const Bullet& other) = 0; // 拷贝构造函数
 
     virtual Bullet() = 0;
 
     bool Insert(Store& store) override{
+        target_alive = true; // 初始化目标存活状态
+        target_position = damage_event.target->position; // 设置目标位置
+        source_position = damage_event.source->position; // 设置源位置
         inital_time = store.time;
         return true;
     }
@@ -29,11 +43,11 @@ public:
 // 采用抛物线轨迹
 class Arrow : public Bullet
 {
-    Arrow(Entity* source, Entity* target, double value, double ignore_armor, int apply_delay) : position(source->position),
-    damage_event(DamageData(5.5,DamageType::Physical,0,0),target,source),totalDuration_(1.0) {
-        animation.state = State::Flying;
-    }
-
+    Arrow(){
+        damage_event = DamageEvent(DamageData(5.5, DamageType::Physical, 0, 0), nullptr, nullptr);
+        totalDuration_ = 1.0; // 设置总持续时间
+    }; // 默认构造函数
+    Arrow(const Arrow & other) = default; // 拷贝构造函数
 
     sf::Vector2f Arrow::bezier(float t,
                            const sf::Vector2f& p0,
@@ -43,8 +57,8 @@ class Arrow : public Bullet
     return u * u * p0 + 2.f * u * t * p1 + t * t * p2;
     }
 
-    sf::Vector2f Arrow::getControlPoint() const {
-        sf::Vector2f mid = (damage_event.source->position + damage_event.target->position) * 0.5f;
+    sf::Vector2f Arrow::getControlPoint(const Position& p0,const Position& p2) const {
+        sf::Vector2f mid = (p0 + p2) * 0.5f;
         mid.y -= 100.f; // 控制点向上偏移，形成抛物线
         return mid;
     }
@@ -55,30 +69,111 @@ class Arrow : public Bullet
             return; // 如果不是飞行状态，则不更新
         }
 
+        if(damage_event.target.State == Death){
+            target_alive = false; // 如果目标死亡，则不再更新
+        }
+
         float t = (store.time - initial_time_) / totalDuration_;
         if (t >= 1.0f) {
             animation.state = State::Hit; // 击中了
+            store.QueueDamageEvent(damage_event); // 结算伤害
             return ;
         }
         
         // 计算控制点
-        sf::Vector2f p1 = getControlPoint();
-        this->position = bezier(t, damage_data.source->position, p1, damage_event.target->position);
+        if(target_alive) target_position = damage_event.target->position; // 更新目标位置
+        sf::Vector2f p1 = getControlPoint(source_position, target_position);
+        this->position = bezier(t, source_position, p1, target_position);
+
         return ;
     }
+
+
 };
 
 // TODO: 法球
 // 采用直线追踪轨迹
 class Bolt : public Bullet
 {
+public:
+    Bolt(){
+        damage_event = DamageEvent(DamageData(15.0, DamageType::Magical, 0, 0), nullptr, nullptr);
+        totalDuration_ = 0.5; // 设置总持续时间
+    }
+    Bolt(const Bolt & other) = default; // 拷贝构造函数
 
+    void update(Store& store) override {
+        // 更新法球位置和动画
+        if(animation.state != State::Flying) {
+            return; // 如果不是飞行状态，则不更新
+        }
+
+        float t = (store.time - initial_time_) / totalDuration_;
+        if (t >= 1.0f) {
+            const double damage = calc::calc_damage(damage_event);
+            calc::receive_damage(*damage_event.target, damage); // 结算伤害
+            animation.state = State::Hit; // 击中了
+            return ;
+        }
+
+        // 计算法球位置
+        if(target_alive) target_position = damage_event.target->position;
+        this->position = source_position + t * (target_position - source_position);
+        return ;
+    }
 };
 
 // TODO: 炸弹
-// OnHit() 需要添加爆炸效果
+//需要添加爆炸效果
 // 采用抛物线轨迹
 class Bomb : public Bullet
 {
+public:
+    double radius; // 爆炸半径
+    Bomb(){
+        damage_event = DamageEvent(DamageData(9.5, DamageType::Explosion, 0, 0), nullptr, nullptr);
+        totalDuration_ = 1.5; // 设置总持续时间
+        hit_fx = FxType::Explosion; // 爆炸效果
+        radius = 60.0; // 设置爆炸半径
+    }
+    Bomb(const Bomb & other) = default; // 拷贝构造函数
     
+    sf::Vector2f Bomb::bezier(float t,
+                           const sf::Vector2f& p0,
+                           const sf::Vector2f& p1,
+                           const sf::Vector2f& p2) const {
+        float u = 1.0f - t;
+        return u * u * p0 + 2.f * u * t * p1 + t * t * p2;
+    }
+
+    sf::Vector2f Arrow::getControlPoint(const Position& p0,const Position& p2) const {
+        sf::Vector2f mid = (p0 + p2) * 0.5f;
+        mid.y -= 75.f; // 控制点向上偏移，形成抛物线
+        return mid;
+    }
+
+    void update(Store& store) override {
+        // 更新炸弹位置和动画
+        if(animation.state != State::Flying) {
+            return; // 如果不是飞行状态，则不更新
+        }
+
+        float t = (store.time - initial_time_) / totalDuration_;
+        if (t >= 1.0f) {
+            // 结算伤害
+            const double damage = calc::calc_damage(damage_event);
+            std::vector<Unit*> enermy = find_enemies_in_range(const Store& store, const Position& damage_event.target->position, const double radius);
+            for(auto& unit : enermy) {
+                calc::receive_damage(*unit, damage); // 结算伤害
+            }
+            animation.state = State::Hit; // 击中了
+            return ;
+        }
+        
+        // 计算控制点
+        if(target_alive) damage_event.target->position = damage_event.target->position; // 更新目标位置
+        sf::Vector2f p1 = getControlPoint(source_position,target_position);
+        this->position = bezier(t, source_position, p1, target_position);
+        return ;
+    }
 };

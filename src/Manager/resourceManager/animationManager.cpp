@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <cstddef>
 #include <ostream>
 #include <sol/state.hpp>
 #include <sol/types.hpp>
@@ -53,7 +54,7 @@ void AnimationManager::LoadSpriteFrameDatasFromLua(const sol::table&  sprite_fra
             switch (level) {
             case TextureLevel::Common:
             {
-                specific_sprite_frame_data_map[prefix].push_back(frame_data);
+                common_sprite_frame_data_map[prefix].push_back(frame_data);
                 break;
             }
             case TextureLevel::Specific:
@@ -118,7 +119,8 @@ AnimationManager::AnimationManager()
         std::cout << "Successfully loaded " << loaded_count << std::endl;
 
         // 初始化 AnimationGroupMap
-
+        LoadAnimationGroupsFromLua();
+        std::cout << "Animation groups loaded." << std::endl;
     }
     catch (const fs::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << std::endl;
@@ -132,36 +134,43 @@ void AnimationManager::UnloadSpecificResources()
     std::cout << "Specific resources unloaded." << std::endl;
 }
 
-void LoadAnimationGroupsFromLua(){
+void AnimationManager::LoadAnimationGroupsFromLua()
+{
     static std::unordered_map<std::string, State> state_map = {
         {"attack", State::Attack},
-        {"idle",State::Idle},
-        {"walk",State::Walk},
-        {"shoot",State::Shoot},
-        {"death",State::Death},
-        {"walkingLeftRight",State::WalkingLeftRight}
-    };
+        {"idle", State::Idle},
+        {"walk", State::Walk},
+        {"shoot", State::Shoot},
+        {"death", State::Death},
+        {"walkingLeftRight", State::WalkingLeftRight},
+        {"walkingUp", State::WalkingUp},
+        {"walkingDown", State::WalkingDown},
+        {"running", State::Running},
+        {"idleUp", State::IdleUp},
+        {"idleDown", State::IdleDown},
+        {"flying", State::Flying},
+        {"hit", State::Hit},
+        {"shootingUp", State::ShootingUp},
+        {"shootingDown", State::ShootingDown}};
     try {
         sol::state lua;
         lua.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
-        const sol::object result              = lua.script_file("assets/images/animation_groups.lua");
+        const sol::object result = lua.script_file("assets/images/animation_groups.lua");
         const sol::table  animation_groups_table = result.as<sol::table>();
-        for(const auto& pair : animation_groups_table) {
-            const std::string prefix = pair.first.as<std::string>();
-            const sol::table state_group = pair.second.as<sol::table>();
+        for (const auto& pair : animation_groups_table) {
+            const std::string prefix      = pair.first.as<std::string>();
+            const sol::table  state_group = pair.second.as<sol::table>();
 
             // 解析状态
             for (const auto& state_pair : state_group) {
-                const std::string state_name = state_pair.first.as<std::string>();
-                const sol::table  frames_table = state_pair.second.as<sol::table>();
-
-                for (const auto& frame : frames_table) {
-
-                }
+                const State          state        = state_map[state_pair.first.as<std::string>()];
+                const sol::table     frames_table = state_pair.second.as<sol::table>();
+                const AnimationGroup animation_group(frames_table["from"].get<std::size_t>(),
+                                                     frames_table["to"].get<std::size_t>());
+                animation_group_map[prefix][state] = animation_group;
             }
 
             // 存储到 animation_group_map 中
-
         }
     }
     catch (const sol::error& e) {
@@ -171,4 +180,49 @@ void LoadAnimationGroupsFromLua(){
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
+}
+
+/**
+ * @brief 根据 prefix 和帧序数，返回对应的 SpriteFrameData 和纹理
+ *
+ * @param prefix
+ * @param frame_index
+ * @return const SpriteFrameData&
+ */
+std::pair<const SpriteFrameData&, const sf::Texture&> AnimationManager::RequireFrameData(
+    const std::string& prefix, const std::size_t frame_index) const
+{
+    auto it = common_sprite_frame_data_map.find(prefix);
+    if (it !=
+        common_sprite_frame_data_map.end()) {
+        const auto& frame_data = it->second[frame_index];
+        return {frame_data, texture_manager.getTexture(frame_data.textureName)};
+    }
+    else if (specific_sprite_frame_data_map.find(prefix) !=
+             specific_sprite_frame_data_map.end()) {
+        const auto& frame_data = specific_sprite_frame_data_map.at(prefix)[frame_index];
+        return {frame_data, texture_manager.getTexture(frame_data.textureName)};
+    }
+    else {
+        throw std::runtime_error("SpriteFrameData not found for prefix: " + prefix);
+    }
+}
+
+/**
+ * @brief 根据 prefix 和状态，返回对应的 AnimationGroup
+ *
+ * @param prefix
+ * @param state
+ * @return const AnimationGroup&
+ */
+const AnimationGroup& AnimationManager::RequireAnimationGroup(const std::string& prefix, const State state) const{
+    auto it = animation_group_map.find(prefix);
+    if(it == animation_group_map.end()) {
+        throw std::runtime_error("AnimationGroup not found for prefix: " + prefix);
+    }
+    auto state_it = it->second.find(state);
+    if(state_it == it->second.end()) {
+        throw std::runtime_error("AnimationGroup not found for state: " + std::to_string(static_cast<int>(state)) + " for prefix: " + prefix);
+    }
+    return state_it->second;
 }

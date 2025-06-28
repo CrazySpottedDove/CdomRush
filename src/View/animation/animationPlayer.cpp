@@ -11,213 +11,458 @@ AnimationPlayer::AnimationPlayer(const AnimationManager& animation_manager)
     , loop_enabled_(true)
     , is_paused_(false)
 {
-    std::cout << "AnimationPlayer initialized (frame-based)" << std::endl;
+    std::cout << "AnimationPlayer initialized (supports Entity + Unit with flip)" << std::endl;
 }
 
+// ===============================
+// Entity接口实现 - 基础动画功能
+// ===============================
+
 /**
- * @brief 开始播放指定状态的动画
+ * @brief 播放指定状态的动画（Entity版本 - 基础功能）
  */
-void AnimationPlayer::PlayAnimation(Animation& animation, State state, bool loop)
+void AnimationPlayer::PlayAnimation(Entity& entity, State state, bool loop)
 {
-    // 检查是否需要重置动画状态
+    // Entity版本：直接使用指定的state，不做映射
     bool should_reset = false;
     
-    if (!animation.pending) {
-        // 如果动画没有在播放，需要重置
+    if (!entity.animation.pending) {
         should_reset = true;
-        std::cout << "Starting new animation for prefix: " << animation.prefix << std::endl;
+        std::cout << "Starting new animation for Entity prefix: " << entity.animation.prefix 
+                  << " (state: " << static_cast<int>(state) << ")" << std::endl;
     } else if (current_state_ != state) {
-        // 如果切换到不同的状态，需要重置
         should_reset = true;
-        std::cout << "Switching animation state from " << static_cast<int>(current_state_) 
+        std::cout << "Switching Entity animation from " << static_cast<int>(current_state_) 
                   << " to " << static_cast<int>(state) << std::endl;
     }
     
     if (should_reset) {
-        animation.pending = true;
-        animation.frame_id = 0;  // 重置到第一帧
+        entity.animation.pending = true;
+        entity.animation.frame_id = 0;
+        entity.animation.state = state;  // 直接设置状态，不做映射
         current_state_ = state;
         is_paused_ = false;
     }
     
-    // 更新播放设置
     loop_enabled_ = loop;
-    
-    std::cout << "Animation settings: loop=" << loop << ", current_frame=" << animation.frame_id << std::endl;
+    std::cout << "Entity animation settings: loop=" << loop 
+              << ", current_frame=" << entity.animation.frame_id << std::endl;
 }
 
 /**
- * @brief 手动前进到下一帧
+ * @brief 手动前进到下一帧（Entity版本）
  */
-bool AnimationPlayer::NextFrame(Animation& animation)
+bool AnimationPlayer::NextFrame(Entity& entity)
 {
-    // 如果动画没有在播放或者已暂停，不能前进
-    if (!animation.pending || is_paused_) {
+    if (!entity.animation.pending || is_paused_) {
         return false;
     }
     
     try {
-        // 获取动画总帧数
-        std::size_t total_frames = GetAnimationFrameCount(animation.prefix, current_state_);
+        std::size_t total_frames = GetAnimationFrameCount(entity.animation.prefix, current_state_);
         
         if (total_frames == 0) {
-            std::cerr << "Warning: Animation has 0 frames for prefix: " << animation.prefix << std::endl;
-            animation.pending = false;
+            std::cerr << "Warning: Entity animation has 0 frames for prefix: " << entity.animation.prefix << std::endl;
+            entity.animation.pending = false;
             return false;
         }
         
-        // 前进到下一帧
-        animation.frame_id++;
+        entity.animation.frame_id++;
         
-        // 处理动画结束逻辑
-        if (animation.frame_id >= total_frames) {
+        if (entity.animation.frame_id >= total_frames) {
             if (loop_enabled_) {
-                // 循环播放：回到第一帧
-                animation.frame_id = 0;
-                std::cout << "Animation looped for prefix: " << animation.prefix << std::endl;
+                entity.animation.frame_id = 0;
+                std::cout << "Entity animation looped for prefix: " << entity.animation.prefix << std::endl;
                 return true;
             } else {
-                // 非循环播放：停在最后一帧并停止
-                animation.frame_id = total_frames - 1;
-                animation.pending = false;
-                std::cout << "Animation finished for prefix: " << animation.prefix << std::endl;
+                entity.animation.frame_id = total_frames - 1;
+                entity.animation.pending = false;
+                std::cout << "Entity animation finished for prefix: " << entity.animation.prefix << std::endl;
                 return false;
             }
         }
         
-        std::cout << "Advanced to frame " << animation.frame_id << " for prefix: " << animation.prefix << std::endl;
+        std::cout << "Entity advanced to frame " << entity.animation.frame_id 
+                  << " for prefix: " << entity.animation.prefix << std::endl;
         return true;
         
     } catch (const std::exception& e) {
-        std::cerr << "Error advancing animation frame: " << e.what() << std::endl;
-        animation.pending = false;
+        std::cerr << "Error advancing Entity animation frame: " << e.what() << std::endl;
+        entity.animation.pending = false;
         return false;
     }
 }
 
 /**
- * @brief 自动更新动画（这里可以添加自动前进的条件）
+ * @brief 自动更新动画（Entity版本）
  */
-void AnimationPlayer::Update(Animation& animation)
+void AnimationPlayer::Update(Entity& entity)
 {
-    // 基础版本：每次调用Update都自动前进一帧
-    // 根据需要修改这个逻辑，比如：
-    // - 每隔几次调用才前进一帧
-    // - 根据某些游戏条件决定是否前进
-    // - 等等...
-    
-    NextFrame(animation);
+    // Entity版本：简单的帧前进，不检测状态变化
+    NextFrame(entity);
 }
 
 /**
- * @brief 渲染当前帧到指定位置
+ * @brief 渲染当前帧（Entity版本 - 不支持翻转）
  */
-void AnimationPlayer::Render(sf::RenderWindow& window, const Animation& animation, 
-                            const sf::Vector2f& position, const sf::Vector2f& scale)
+void AnimationPlayer::Render(sf::RenderWindow& window, const Entity& entity, 
+                            const sf::Vector2f& scale)
 {
-    // 如果动画没有在播放，不渲染
-    if (!animation.pending) {
+    if (!entity.animation.pending) {
         return;
     }
     
     try {
-        // 计算实际的帧索引（需要加上动画组的起始偏移）
-        std::size_t actual_frame_index = CalculateActualFrameIndex(animation, current_state_);
+        std::size_t actual_frame_index = CalculateActualFrameIndex(entity.animation, current_state_);
         
-        // 从AnimationManager获取帧数据和纹理
-        const auto& [frame_data, texture] = animation_manager_.RequireFrameData(animation.prefix, actual_frame_index);
+        const auto& [frame_data, texture] = animation_manager_.RequireFrameData(entity.animation.prefix, actual_frame_index);
         
-        // 创建精灵并设置属性
         sf::Sprite sprite(texture);
         sprite.setTextureRect(frame_data.frameRect);
-        sprite.setScale(scale);
+        sprite.setScale(scale);  // Entity版本不翻转，直接使用scale
         
-        // 计算最终位置（考虑裁剪偏移）
-        sf::Vector2f final_position = position;
+        // 使用Entity的position
+        sf::Vector2f final_position = entity.position;
         final_position.x += static_cast<float>(frame_data.trim_left) * scale.x;
         final_position.y += static_cast<float>(frame_data.trim_top) * scale.y;
         sprite.setPosition(final_position);
         
-        // 渲染到窗口
         window.draw(sprite);
         
     } catch (const std::exception& e) {
-        std::cerr << "Error rendering animation frame: " << e.what() << std::endl;
-        // 渲染失败不需要停止动画，下一帧可能正常
+        std::cerr << "Error rendering Entity animation frame: " << e.what() << std::endl;
     }
 }
 
 /**
- * @brief 停止当前动画
+ * @brief 停止当前动画（Entity版本）
  */
-void AnimationPlayer::StopAnimation(Animation& animation)
+void AnimationPlayer::StopAnimation(Entity& entity)
 {
-    animation.pending = false;
-    animation.frame_id = 0;
+    entity.animation.pending = false;
+    entity.animation.frame_id = 0;
     is_paused_ = false;
     
-    std::cout << "Animation stopped for prefix: " << animation.prefix << std::endl;
+    std::cout << "Entity animation stopped for prefix: " << entity.animation.prefix << std::endl;
 }
 
 /**
- * @brief 重置动画到第一帧
+ * @brief 重置动画到第一帧（Entity版本）
  */
-void AnimationPlayer::ResetAnimation(Animation& animation)
+void AnimationPlayer::ResetAnimation(Entity& entity)
 {
-    animation.frame_id = 0;
+    entity.animation.frame_id = 0;
     is_paused_ = false;
     
-    std::cout << "Animation reset to frame 0 for prefix: " << animation.prefix << std::endl;
+    std::cout << "Entity animation reset to frame 0 for prefix: " << entity.animation.prefix << std::endl;
 }
 
 /**
- * @brief 检查动画是否播放完成
+ * @brief 检查动画是否播放完成（Entity版本）
  */
-bool AnimationPlayer::IsAnimationFinished(const Animation& animation) const
+bool AnimationPlayer::IsAnimationFinished(const Entity& entity) const
 {
-    // 如果是循环动画或者还在播放，就没有完成
-    if (loop_enabled_ || animation.pending) {
+    if (loop_enabled_ || entity.animation.pending) {
         return false;
     }
     
     try {
-        std::size_t total_frames = GetAnimationFrameCount(animation.prefix, current_state_);
-        return animation.frame_id >= total_frames - 1;
+        std::size_t total_frames = GetAnimationFrameCount(entity.animation.prefix, current_state_);
+        return entity.animation.frame_id >= total_frames - 1;
     } catch (const std::exception& e) {
-        std::cerr << "Error checking animation finish status: " << e.what() << std::endl;
-        return true; // 出错时认为动画已完成
+        std::cerr << "Error checking Entity animation finish status: " << e.what() << std::endl;
+        return true;
     }
 }
 
 /**
- * @brief 暂停/恢复动画
+ * @brief 暂停/恢复动画（Entity版本）
  */
-void AnimationPlayer::SetPaused(Animation& animation, bool paused)
+void AnimationPlayer::SetPaused(Entity& entity, bool paused)
 {
     is_paused_ = paused;
-    std::cout << "Animation " << (paused ? "paused" : "resumed") 
-              << " for prefix: " << animation.prefix << std::endl;
+    std::cout << "Entity animation " << (paused ? "paused" : "resumed") 
+              << " for prefix: " << entity.animation.prefix << std::endl;
 }
 
 /**
- * @brief 跳转到指定帧
+ * @brief 跳转到指定帧（Entity版本）
  */
-bool AnimationPlayer::JumpToFrame(Animation& animation, std::size_t frame_id)
+bool AnimationPlayer::JumpToFrame(Entity& entity, std::size_t frame_id)
 {
     try {
-        if (IsValidFrameId(animation.prefix, current_state_, frame_id)) {
-            animation.frame_id = frame_id;
-            std::cout << "Jumped to frame " << frame_id << " for prefix: " << animation.prefix << std::endl;
+        if (IsValidFrameId(entity.animation.prefix, current_state_, frame_id)) {
+            entity.animation.frame_id = frame_id;
+            std::cout << "Entity jumped to frame " << frame_id 
+                      << " for prefix: " << entity.animation.prefix << std::endl;
             return true;
         } else {
-            std::cerr << "Invalid frame ID " << frame_id << " for prefix: " << animation.prefix << std::endl;
+            std::cerr << "Invalid frame ID " << frame_id 
+                      << " for Entity prefix: " << entity.animation.prefix << std::endl;
             return false;
         }
     } catch (const std::exception& e) {
-        std::cerr << "Error jumping to frame: " << e.what() << std::endl;
+        std::cerr << "Error jumping Entity to frame: " << e.what() << std::endl;
         return false;
     }
 }
+
+// ===============================
+// Unit接口实现 - 完整功能（状态驱动+翻转）
+// ===============================
+
+/**
+ * @brief 开始播放动画（Unit版本 - 状态驱动+翻转）
+ */
+void AnimationPlayer::PlayAnimation(Unit& unit, bool loop)
+{
+    // Unit版本：支持状态映射和翻转
+    State target_animation_state = MapUnitStateToAnimationState(unit.state, unit.heading);
+    
+    bool should_reset = false;
+    
+    if (!unit.animation.pending) {
+        should_reset = true;
+        std::cout << "Starting new animation for Unit prefix: " << unit.animation.prefix 
+                  << " (Unit state: " << static_cast<int>(unit.state) 
+                  << ", Heading: " << static_cast<int>(unit.heading) << ")" << std::endl;
+    } else if (current_state_ != target_animation_state) {
+        should_reset = true;
+        std::cout << "Switching Unit animation from " << static_cast<int>(current_state_) 
+                  << " to " << static_cast<int>(target_animation_state) 
+                  << " (Unit state: " << static_cast<int>(unit.state) << ")" << std::endl;
+    }
+    
+    if (should_reset) {
+        unit.animation.pending = true;
+        unit.animation.frame_id = 0;
+        unit.animation.state = target_animation_state;  // 使用映射后的状态
+        current_state_ = target_animation_state;
+        is_paused_ = false;
+    }
+    
+    loop_enabled_ = loop;
+    
+    bool needs_flip = ShouldFlipHorizontally(unit.state, unit.heading);
+    std::cout << "Unit animation settings: loop=" << loop 
+              << ", current_frame=" << unit.animation.frame_id 
+              << ", needs_flip=" << needs_flip << std::endl;
+}
+
+/**
+ * @brief 手动前进到下一帧（Unit版本）
+ */
+bool AnimationPlayer::NextFrame(Unit& unit)
+{
+    if (!unit.animation.pending || is_paused_) {
+        return false;
+    }
+    
+    try {
+        std::size_t total_frames = GetAnimationFrameCount(unit.animation.prefix, current_state_);
+        
+        if (total_frames == 0) {
+            std::cerr << "Warning: Unit animation has 0 frames for prefix: " << unit.animation.prefix << std::endl;
+            unit.animation.pending = false;
+            return false;
+        }
+        
+        unit.animation.frame_id++;
+        
+        if (unit.animation.frame_id >= total_frames) {
+            if (loop_enabled_) {
+                unit.animation.frame_id = 0;
+                std::cout << "Unit animation looped for prefix: " << unit.animation.prefix << std::endl;
+                return true;
+            } else {
+                unit.animation.frame_id = total_frames - 1;
+                unit.animation.pending = false;
+                std::cout << "Unit animation finished for prefix: " << unit.animation.prefix << std::endl;
+                return false;
+            }
+        }
+        
+        std::cout << "Unit advanced to frame " << unit.animation.frame_id 
+                  << " for prefix: " << unit.animation.prefix << std::endl;
+        return true;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error advancing Unit animation frame: " << e.what() << std::endl;
+        unit.animation.pending = false;
+        return false;
+    }
+}
+
+/**
+ * @brief 自动更新动画（Unit版本 - 支持状态变化检测）
+ */
+void AnimationPlayer::Update(Unit& unit)
+{
+    // Unit版本：检查状态变化并自动切换动画
+    State target_animation_state = MapUnitStateToAnimationState(unit.state, unit.heading);
+    if (current_state_ != target_animation_state) {
+        PlayAnimation(unit, loop_enabled_);  // 自动切换到新动画
+        return;
+    }
+    
+    NextFrame(unit);
+}
+
+/**
+ * @brief 渲染当前帧（Unit版本 - 支持翻转）
+ */
+void AnimationPlayer::Render(sf::RenderWindow& window, const Unit& unit, 
+                            const sf::Vector2f& scale)
+{
+    if (!unit.animation.pending) {
+        return;
+    }
+    
+    try {
+        std::size_t actual_frame_index = CalculateActualFrameIndex(unit.animation, current_state_);
+        
+        const auto& [frame_data, texture] = animation_manager_.RequireFrameData(unit.animation.prefix, actual_frame_index);
+        
+        sf::Sprite sprite(texture);
+        sprite.setTextureRect(frame_data.frameRect);
+        
+        // Unit版本：支持翻转
+        bool needs_flip = ShouldFlipHorizontally(unit.state, unit.heading);
+        sf::Vector2f final_scale = scale;
+        if (needs_flip) {
+            final_scale.x = -scale.x;  // 水平翻转
+            std::cout << "Applying horizontal flip for Unit state: " 
+                      << static_cast<int>(unit.state) 
+                      << ", heading: " << static_cast<int>(unit.heading) << std::endl;
+        }
+        sprite.setScale(final_scale);
+        
+        // 使用Unit的position
+        sf::Vector2f final_position = unit.position;
+        final_position.x += static_cast<float>(frame_data.trim_left) * scale.x;
+        final_position.y += static_cast<float>(frame_data.trim_top) * scale.y;
+        
+        // 如果翻转了，需要调整X位置（因为翻转会改变锚点）
+        if (needs_flip) {
+            final_position.x += static_cast<float>(frame_data.frameRect.width) * scale.x;
+        }
+        
+        sprite.setPosition(final_position);
+        window.draw(sprite);
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error rendering Unit animation frame: " << e.what() << std::endl;
+    }
+}
+
+/**
+ * @brief 停止当前动画（Unit版本）
+ */
+void AnimationPlayer::StopAnimation(Unit& unit)
+{
+    unit.animation.pending = false;
+    unit.animation.frame_id = 0;
+    is_paused_ = false;
+    
+    std::cout << "Unit animation stopped for prefix: " << unit.animation.prefix << std::endl;
+}
+
+/**
+ * @brief 重置动画到第一帧（Unit版本）
+ */
+void AnimationPlayer::ResetAnimation(Unit& unit)
+{
+    unit.animation.frame_id = 0;
+    is_paused_ = false;
+    
+    std::cout << "Unit animation reset to frame 0 for prefix: " << unit.animation.prefix << std::endl;
+}
+
+/**
+ * @brief 检查动画是否播放完成（Unit版本）
+ */
+bool AnimationPlayer::IsAnimationFinished(const Unit& unit) const
+{
+    if (loop_enabled_ || unit.animation.pending) {
+        return false;
+    }
+    
+    try {
+        std::size_t total_frames = GetAnimationFrameCount(unit.animation.prefix, current_state_);
+        return unit.animation.frame_id >= total_frames - 1;
+    } catch (const std::exception& e) {
+        std::cerr << "Error checking Unit animation finish status: " << e.what() << std::endl;
+        return true;
+    }
+}
+
+/**
+ * @brief 暂停/恢复动画（Unit版本）
+ */
+void AnimationPlayer::SetPaused(Unit& unit, bool paused)
+{
+    is_paused_ = paused;
+    std::cout << "Unit animation " << (paused ? "paused" : "resumed") 
+              << " for prefix: " << unit.animation.prefix << std::endl;
+}
+
+/**
+ * @brief 跳转到指定帧（Unit版本）
+ */
+bool AnimationPlayer::JumpToFrame(Unit& unit, std::size_t frame_id)
+{
+    try {
+        if (IsValidFrameId(unit.animation.prefix, current_state_, frame_id)) {
+            unit.animation.frame_id = frame_id;
+            std::cout << "Unit jumped to frame " << frame_id 
+                      << " for prefix: " << unit.animation.prefix << std::endl;
+            return true;
+        } else {
+            std::cerr << "Invalid frame ID " << frame_id 
+                      << " for Unit prefix: " << unit.animation.prefix << std::endl;
+            return false;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error jumping Unit to frame: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+// ===============================
+// Unit专用的私有方法实现
+// ===============================
+
+/**
+ * @brief 根据Unit的状态映射到实际的动画状态
+ */
+State AnimationPlayer::MapUnitStateToAnimationState(State unit_state, Heading heading) const
+{
+    switch (unit_state) {
+        case State::WalkingLeftRight:
+            return State::Walk;  // WalkingLeftRight统一使用Walk动画
+        default:
+            return unit_state;   // 其他状态直接映射
+    }
+}
+
+/**
+ * @brief 检查是否需要水平翻转（仅Unit使用）
+ */
+bool AnimationPlayer::ShouldFlipHorizontally(State unit_state, Heading heading) const
+{
+    if (unit_state == State::WalkingLeftRight) {
+        return heading == Heading::Left;  // 向左走时需要翻转
+    }
+    
+    // 可以在这里添加更多翻转逻辑
+    // if (unit_state == State::Attack && heading == Heading::Left) return true;
+    
+    return false;
+}
+
+// ===============================
+// 通用的私有方法实现
+// ===============================
 
 /**
  * @brief 计算动画的实际帧索引（加上动画组的起始偏移）
@@ -227,22 +472,20 @@ std::size_t AnimationPlayer::CalculateActualFrameIndex(const Animation& animatio
     try {
         const auto& animation_group = animation_manager_.GetAnimationGroup(animation.prefix, state);
         
-        // 计算实际的帧索引：动画组起始位置 + 当前帧偏移
         std::size_t actual_index = animation_group.from + animation.frame_id;
         
-        // 确保索引在有效范围内
         if (actual_index > animation_group.to) {
             std::cerr << "Warning: Frame index " << actual_index 
                       << " exceeds animation group range [" << animation_group.from 
                       << ", " << animation_group.to << "]" << std::endl;
-            return animation_group.to; // 返回最后一帧
+            return animation_group.to;
         }
         
         return actual_index;
     }
     catch (const std::exception& e) {
         std::cerr << "Error calculating frame index: " << e.what() << std::endl;
-        return 0; // 出错时返回第一帧
+        return 0;
     }
 }
 
@@ -252,7 +495,6 @@ std::size_t AnimationPlayer::CalculateActualFrameIndex(const Animation& animatio
 std::size_t AnimationPlayer::GetAnimationFrameCount(const std::string& prefix, State state) const
 {
     try {
-        // 需要AnimationManager提供GetAnimationGroup接口
         const auto& animation_group = animation_manager_.GetAnimationGroup(prefix, state);
         return animation_group.to - animation_group.from + 1;
     }

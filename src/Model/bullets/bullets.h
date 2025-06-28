@@ -110,8 +110,7 @@ public:
 
         float t = (store.time - initial_time_) / totalDuration_;
         if (t >= 1.0f) {
-            const double damage = calc::calc_damage(damage_event);
-            calc::receive_damage(*damage_event.target, damage); // 结算伤害
+            store.QueueDamageEvent(damage_event); // 结算伤害
             animation.state = State::Hit; // 击中了
             return ;
         }
@@ -160,11 +159,13 @@ public:
 
         float t = (store.time - initial_time_) / totalDuration_;
         if (t >= 1.0f) {
-            // 结算伤害
-            const double damage = calc::calc_damage(damage_event);
             std::vector<Unit*> enermy = find_enemies_in_range(const Store& store, const Position& damage_event.target->position, const double radius);
-            for(auto& unit : enermy) {
-                calc::receive_damage(*unit, damage); // 结算伤害
+            for(auto& target : enermy) {
+                if(target->health.hp > 0) { // 如果目标存活
+                    DamageEvent event = damage_event; // 创建新的伤害事件
+                    event.target = target; // 设置目标
+                    store.QueueDamageEvent(event); // 结算伤害
+                }
             }
             animation.state = State::Hit; // 击中了
             return ;

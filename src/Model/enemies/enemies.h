@@ -1,7 +1,6 @@
 #pragma once
 
 
-
 #include "Model/components/path.h"
 #include "Model/templates/unit.h"
 #include "Function/calc/motion.h"
@@ -9,7 +8,6 @@
 class Enemy : public Unit//一种无害的敌人
 {
 public:
-    Heading heading = Heading::Right; // 方向
     int gold;
     int life_cost;
     PathInfo path_info;

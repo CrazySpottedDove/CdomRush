@@ -25,6 +25,7 @@ enum class Heading
 class Unit : public Entity
 {
 public:
+    Heading heading = Heading::Right; // 方向
     UnitType     type; // 单位类型
     Health       health;
     Armor        armor;

@@ -41,34 +41,14 @@ struct AnimationGroup
 {
     std::size_t from;   // 起始帧索引
     std::size_t to;     // 结束帧索引
+    AnimationGroup(const std::size_t from, const std::size_t to): from(from), to(to) {}
 };
 
-// AnimationDB 结构：
-// prefix->纹理文件名
 // prefix->(状态->动画组)
+typedef std::unordered_map<std::string, std::unordered_map<State, AnimationGroup>> AnimationGroupMap;
 
-/**
- * @brief 用于处理单位的动画的数据库
- *
- */
-class AnimationDB
-{
-public:
-    std::unordered_map<std::string, std::vector<SpriteFrameData>> SpriteFrameMap;
-    std::unordered_map<std::string, std::unordered_map<State, AnimationGroup>>
-        AnimationGroupMap;
-    /**
-     * @brief Get the Animation Group object
-     *
-     * @param prefix [in]
-     * @param state [in]
-     * @return const AnimationGroup&
-     */
-    const AnimationGroup& GetAnimationGroup(const std::string& prefix, const State state) const
-    {
-        return AnimationGroupMap.at(prefix).at(state);
-    }
-};
+// prefix->纹理文件名
+typedef std::unordered_map<std::string, std::vector<SpriteFrameData>> SpriteFrameDataMap;
 
 
 class AnimationManager
@@ -76,13 +56,21 @@ class AnimationManager
 public:
     AnimationManager();
     ~AnimationManager() = default;
+
     /**
      * @brief 加载某一个图集映射文件中定义的资源
+     * @note 在进入游戏战斗前调用，加载 Specific 级别的资源
+     * @note 在初始化时调用，加载 Common 级别的资源
      *
      * @param path
      * @param level
      */
-    void LoadResources(const std::string& path, const TextureLevel level = TextureLevel::Common);
+    void LoadSpriteFrameResources(const std::string& path, const TextureLevel level = TextureLevel::Common);
+
+    /**
+     * @brief 释放 specific_sprite_frame_data_map 中的资源与 texture_manager 中对应的纹理资源
+     *
+     */
     void UnloadSpecificResources();
 
     /**
@@ -95,11 +83,35 @@ public:
     std::pair<const SpriteFrameData&, const sf::Texture&>
     RequireFrameData(const std::string& prefix, const std::size_t frame_index) const;
 
+    /**
+     * @brief 根据 prefix 和状态，返回对应的 AnimationGroup
+     *
+     * @param prefix
+     * @param state
+     * @return const AnimationGroup&
+     */
+    const AnimationGroup& RequireAnimationGroup(const std::string& prefix, const State state) const;
+
 private:
     TextureManager texture_manager;
-    AnimationDB    common_animation_db;
-    AnimationDB    specific_animation_db;
-    void           LoadSpriteFramesFromLua(const sol::table&  sprite_frames_table,
+    SpriteFrameDataMap    common_sprite_frame_data_map;
+    SpriteFrameDataMap    specific_sprite_frame_data_map;
+    AnimationGroupMap animation_group_map;
+
+    /**
+     * @brief 从 lua 文件中加载精灵帧数据
+     *
+     * @param sprite_frames_table
+     * @param level
+     */
+    void           LoadSpriteFrameDatasFromLua(const sol::table&  sprite_frames_table,
                                            const TextureLevel level = TextureLevel::Common);
     void           ParseSpriteFrameData(const sol::table& frame_table, SpriteFrameData& frame_data);
+
+    /**
+     * @brief 从 lua 文件中加载所有的动画组数据
+     * @note 动画组数据较少，直接存储在内存中
+     * @note lua 文件目录因此默认确定
+     */
+    void LoadAnimationGroupsFromLua();
 };

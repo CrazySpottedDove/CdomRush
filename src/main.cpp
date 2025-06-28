@@ -28,7 +28,7 @@ int main()
     //     }
     // }
     AnimationManager sprite_manager;
-    sprite_manager.LoadResources("assets/images/enemies/go_enemies_acaroth.lua");
+    sprite_manager.LoadSpriteFrameResources("assets/images/enemies/go_enemies_acaroth.lua");
     sprite_manager.UnloadSpecificResources();
     return 0;
 }

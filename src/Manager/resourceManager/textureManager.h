@@ -20,7 +20,13 @@ public:
      * @param filename
      * @return const sf::Texture&
      */
-    const sf::Texture& getTexture(const std::string& filename) { return textures[filename]; }
+    const sf::Texture& getTexture(const std::string& filename) const {
+        auto it = textures.find(filename);
+        if (it != textures.end()) {
+            return it->second;
+        }
+        throw std::runtime_error("Texture not found: " + filename);
+     }
 
     /**
      * @brief 通过文件名加载纹理

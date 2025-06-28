@@ -1,4 +1,6 @@
 #pragma once
+#include "Manager/resourceManager/animationManager.h"
+#include "Model/components/damage.h"
 #include <memory>
 #include <vector>
 class Bullet;
@@ -10,6 +12,7 @@ class Store
 {
 public:
     double                              time = 0.0;
+    double                              gold = 0.0;
     std::vector<std::shared_ptr<Enemy>> GetEnemies() { return enemies; }
 
     std::vector<std::shared_ptr<Tower>> GetTowers() { return towers; }
@@ -28,9 +31,13 @@ public:
 
     void Update();
 
+    void QueueDamageEvent(const DamageEvent& event) { damage_events.push_back(event); }
+    AnimationManager animation_manager;
+
 private:
     std::vector<std::shared_ptr<Enemy>>   enemies;
     std::vector<std::shared_ptr<Tower>>   towers;
     std::vector<std::shared_ptr<Bullet>>  bullets;
     std::vector<std::shared_ptr<Soldier>> soldiers;
+    std::vector<DamageEvent>              damage_events;
 };

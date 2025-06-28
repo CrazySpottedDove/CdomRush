@@ -8,7 +8,7 @@ class RangedAttack : public Attack
 {
 public:
     double  range;   // 射程
-    Bullet* bullet;
+    BulletType bullet_type; // 弹道类型
     RangedAttack(double cooldown, double range, Bullet* bullet, double chance = 1.0)
         : Attack(cooldown, chance)
         , range(range)

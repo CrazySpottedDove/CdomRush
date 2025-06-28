@@ -5,9 +5,10 @@ class Store;
 // 参与主时钟更新的实体
 class Entity{
 public:
+    Position position;
     Animation animation;
     virtual ~Entity() = default;
-    virtual void Insert(Store& store) = 0;
+    virtual bool Insert(Store& store) = 0;
     virtual void Update(Store& store) = 0;
-    virtual void Remove(Store& store) = 0;
+    virtual bool Remove(Store& store) = 0;
 };

@@ -49,4 +49,5 @@ struct DamageEvent
         , source(source)
         , target(target)
         {};
+    
 };

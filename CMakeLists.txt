@@ -13,8 +13,6 @@ find_package(lua REQUIRED)
 # 添加可执行文件
 add_executable(CdomRush
     src/main.cpp
-    src/store/store.cpp
-    src/gui/spriteManager.cpp
     # 添加其他源文件...
 )
 

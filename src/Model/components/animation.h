@@ -1,0 +1,8 @@
+#pragma once
+#include <cstddef>
+#include <string>
+struct Animation{
+    bool pending; // 动画正在进行
+    std::size_t frame_id; // 动画进行到第几帧
+    std::string prefix; // 动画的前缀名
+};

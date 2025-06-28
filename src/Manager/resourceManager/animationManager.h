@@ -2,9 +2,12 @@
 #include "sol/state.hpp"
 #include "textureManager.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <cstddef>
 #include <unordered_map>
+#include <utility>
 #include <vector>
+#include "Model/components/state.h"
 
 // 一个 map 将 prefix 和 它对应的各帧纹理(string->SpriteFrameData) 对应起来
 
@@ -40,24 +43,9 @@ struct AnimationGroup
     std::size_t to;     // 结束帧索引
 };
 
-enum class AnimationType
-{
-    Idle,
-    Walk,
-    Attack,
-    Shoot,
-    Death,
-    WalkingLeftRight,
-    WalkingUp,
-    WalkingDown,
-    Running,
-    IdleUp,
-    IdleDown,
-    Flying,
-    Hit,
-    ShootingUp,
-    ShootingDown
-};
+// AnimationDB 结构：
+// prefix->纹理文件名
+// prefix->(状态->动画组)
 
 /**
  * @brief 用于处理单位的动画的数据库
@@ -67,30 +55,45 @@ class AnimationDB
 {
 public:
     std::unordered_map<std::string, std::vector<SpriteFrameData>> SpriteFrameMap;
-    std::unordered_map<std::string, std::unordered_map<AnimationType, AnimationGroup>>
+    std::unordered_map<std::string, std::unordered_map<State, AnimationGroup>>
         AnimationGroupMap;
     /**
      * @brief Get the Animation Group object
      *
-     * @param prefix
-     * @param type
-     * @param animation_group
+     * @param prefix [in]
+     * @param state [in]
      * @return const AnimationGroup&
      */
-    const AnimationGroup& GetAnimationGroup(const std::string& prefix, const AnimationType type,
-                                            AnimationGroup& animation_group) const
+    const AnimationGroup& GetAnimationGroup(const std::string& prefix, const State state) const
     {
-        return AnimationGroupMap.at(prefix).at(type);
+        return AnimationGroupMap.at(prefix).at(state);
     }
 };
 
-class SpriteManager
+
+class AnimationManager
 {
 public:
-    SpriteManager();
-    ~SpriteManager() = default;
+    AnimationManager();
+    ~AnimationManager() = default;
+    /**
+     * @brief 加载某一个图集映射文件中定义的资源
+     *
+     * @param path
+     * @param level
+     */
     void LoadResources(const std::string& path, const TextureLevel level = TextureLevel::Common);
     void UnloadSpecificResources();
+
+    /**
+     * @brief 根据 prefix 和帧序数，返回对应的 SpriteFrameData 和纹理
+     *
+     * @param prefix
+     * @param frame_index
+     * @return const SpriteFrameData&
+     */
+    std::pair<const SpriteFrameData&, const sf::Texture&>
+    RequireFrameData(const std::string& prefix, const std::size_t frame_index) const;
 
 private:
     TextureManager texture_manager;

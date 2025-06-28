@@ -4,7 +4,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
-#include "gui/spriteManager.h"
+#include "Manager/resourceManager/animationManager.h"
 int main()
 {
     // sf::RenderWindow window(sf::VideoMode(sf::Vector2u(1600, 1200)), "SFML Window");
@@ -27,7 +27,7 @@ int main()
     //         window.display();
     //     }
     // }
-    SpriteManager sprite_manager;
+    AnimationManager sprite_manager;
     sprite_manager.LoadResources("assets/images/enemies/go_enemies_acaroth.lua");
     sprite_manager.UnloadSpecificResources();
     return 0;

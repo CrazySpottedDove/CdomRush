@@ -3,6 +3,9 @@
 #include <string>
 #include <unordered_map>
 
+// TextureManager 结构：
+// 文件名->纹理资源
+
 enum class TextureLevel
 {
     Common,
@@ -11,29 +14,27 @@ enum class TextureLevel
 class TextureManager
 {
 public:
-    sf::Texture& getTexture(const std::string& filename) { return textures[filename]; }
-    void LoadTexture(const std::string& filename, const TextureLevel level = TextureLevel::Common)
-    {
-        if (textures.count(filename) == 0) {
-            if (!textures[filename].loadFromFile(filename)) {
-                throw std::runtime_error("Failed to load texture: " + filename);
-            };
-            texture_levels[filename] = level;
-        }
-    }
+    /**
+     * @brief 通过文件名获取纹理
+     *
+     * @param filename
+     * @return const sf::Texture&
+     */
+    const sf::Texture& getTexture(const std::string& filename) { return textures[filename]; }
 
-    void UnloadSpecificTextures()
-    {
-        for (auto it = texture_levels.begin(); it != texture_levels.end();) {
-            if (it->second == TextureLevel::Specific) {
-                textures.erase(it->first);
-                it = texture_levels.erase(it);
-            }
-            else {
-                ++it;
-            }
-        }
-    }
+    /**
+     * @brief 通过文件名加载纹理
+     *
+     * @param filename
+     * @param level 纹理资源级别
+     */
+    void LoadTexture(const std::string& filename, const TextureLevel level = TextureLevel::Common);
+
+    /**
+     * @brief 卸载临时纹理
+     *
+     */
+    void UnloadSpecificTextures();
 
 private:
     std::unordered_map<std::string, sf::Texture>  textures;

@@ -14,7 +14,7 @@
  * @param frame_data_unparsed [in]
  * @param frame_data [out]
  */
-void SpriteManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed,
+void AnimationManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed,
                                          SpriteFrameData&  frame_data)
 {
     frame_data.textureName        = frame_data_unparsed["a_name"].get<std::string>();
@@ -36,7 +36,7 @@ void SpriteManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed,
  *
  * @param sprite_frames_table
  */
-void SpriteManager::LoadSpriteFramesFromLua(const sol::table&  sprite_frames_table,
+void AnimationManager::LoadSpriteFramesFromLua(const sol::table&  sprite_frames_table,
                                             const TextureLevel level)
 {
     for (const auto& pair : sprite_frames_table) {
@@ -57,7 +57,7 @@ void SpriteManager::LoadSpriteFramesFromLua(const sol::table&  sprite_frames_tab
  *
  * @param path
  */
-void SpriteManager::LoadResources(const std::string& path, const TextureLevel level)
+void AnimationManager::LoadResources(const std::string& path, const TextureLevel level)
 {
     try {
         sol::state lua;
@@ -79,7 +79,7 @@ void SpriteManager::LoadResources(const std::string& path, const TextureLevel le
  * @note 创建 SpriteManager 时会自动加载 assets/images/common 目录下的所有 .lua
  * 文件。这些文件定义了通用的精灵帧数据。
  */
-SpriteManager::SpriteManager()
+AnimationManager::AnimationManager()
 {
     namespace fs = std::filesystem;
 
@@ -115,9 +115,10 @@ SpriteManager::SpriteManager()
 /**
  * @brief 卸载非常态资源
  */
-void SpriteManager::UnloadSpecificResources()
+void AnimationManager::UnloadSpecificResources()
 {
     specific_animation_db.SpriteFrameMap.clear();
     texture_manager.UnloadSpecificTextures();
     std::cout << "Specific resources unloaded." << std::endl;
 }
+

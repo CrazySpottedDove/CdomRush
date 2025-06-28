@@ -1,5 +1,5 @@
-#include "textureManager.h"
 #include "animationManager.h"
+#include "textureManager.h"
 #include "utils/macros.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp>
@@ -15,7 +15,7 @@
  * @param frame_data [out]
  */
 void AnimationManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed,
-                                         SpriteFrameData&  frame_data)
+                                            SpriteFrameData&  frame_data)
 {
     frame_data.textureName        = frame_data_unparsed["a_name"].get<std::string>();
     const sol::table   f_quad     = frame_data_unparsed["f_quad"];
@@ -36,8 +36,8 @@ void AnimationManager::ParseSpriteFrameData(const sol::table& frame_data_unparse
  *
  * @param sprite_frames_table
  */
-void AnimationManager::LoadSpriteFramesFromLua(const sol::table&  sprite_frames_table,
-                                            const TextureLevel level)
+void AnimationManager::LoadSpriteFrameDatasFromLua(const sol::table&  sprite_frames_table,
+                                                   const TextureLevel level)
 {
     for (const auto& pair : sprite_frames_table) {
         const std::string prefix       = pair.first.as<std::string>();
@@ -47,7 +47,18 @@ void AnimationManager::LoadSpriteFramesFromLua(const sol::table&  sprite_frames_
             SpriteFrameData  frame_data;
             ParseSpriteFrameData(frame_data_unparsed, frame_data);
             texture_manager.LoadTexture(IMAGES_PATH + frame_data.textureName, level);
-            common_animation_db.SpriteFrameMap[prefix].push_back(frame_data);
+            switch (level) {
+            case TextureLevel::Common:
+            {
+                specific_sprite_frame_data_map[prefix].push_back(frame_data);
+                break;
+            }
+            case TextureLevel::Specific:
+            {
+                specific_sprite_frame_data_map[prefix].push_back(frame_data);
+                break;
+            }
+            }
         }
     }
 }
@@ -64,7 +75,7 @@ void AnimationManager::LoadResources(const std::string& path, const TextureLevel
         lua.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
         const sol::object result              = lua.script_file(path);
         const sol::table  sprite_frames_table = result.as<sol::table>();
-        LoadSpriteFramesFromLua(sprite_frames_table, level);
+        LoadSpriteFrameDatasFromLua(sprite_frames_table, level);
     }
     catch (const sol::error& e) {
         std::cerr << "Error loading Lua file '" << path << "': " << e.what() << std::endl;
@@ -85,6 +96,7 @@ AnimationManager::AnimationManager()
 
     try {
         size_t loaded_count = 0;
+        // 获得所有 common 级别的 sprite_frame_data
         for (const auto& entry : fs::directory_iterator("assets/images/common")) {
             if (entry.is_regular_file()) {
                 const auto& path = entry.path();
@@ -95,7 +107,7 @@ AnimationManager::AnimationManager()
 
                     try {
                         LoadResources(path.string());
-                        loaded_count++;
+                        ++loaded_count;
                     }
                     catch (const std::exception& e) {
                         std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
@@ -106,19 +118,18 @@ AnimationManager::AnimationManager()
         }
 
         std::cout << "Successfully loaded " << loaded_count << std::endl;
+
+        // 初始化 AnimationGroupMap
+        
     }
     catch (const fs::filesystem_error& e) {
         std::cerr << "Filesystem error: " << e.what() << std::endl;
     }
 }
 
-/**
- * @brief 卸载非常态资源
- */
 void AnimationManager::UnloadSpecificResources()
 {
-    specific_animation_db.SpriteFrameMap.clear();
+    specific_sprite_frame_data_map.clear();
     texture_manager.UnloadSpecificTextures();
     std::cout << "Specific resources unloaded." << std::endl;
 }
-

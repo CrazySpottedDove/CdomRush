@@ -1,11 +1,13 @@
 #pragma once
-#include "Model/templates/entity.h"
+#include "Model/templates/activeEntity.h"
 #include "utils/macros.h"
+#include "Model/components/ranged.h"
 
 class Store;
 
 class Tower;
 enum class TowerType{
+    None,
     Archer1,
     Archer2,
     Archer3,
@@ -23,13 +25,23 @@ enum class TowerType{
 enum class TowerAction{
     Upgrade,
     Sell,
-    ChangeRally,
-    PowerUpgrade
+    ChangeRally
 };
 
 // TODO: 每个 Tower 应该维护一个 Action 列表，这个列表可以被 View 层访问到，从而让 View 层得知需要怎样的 UI 更新
-class Tower : public Entity
+class Tower : public ActiveEntity
 {
+public:
     Position            position;
     int                total_price;
+    std::vector <std::pair<TowerAction, std::pair<TowerType, int>>> tower_actions;
+    // 每个 Tower 的操作列表，每个操作会对应一个新的tower类型和一个价格
 };
+
+class None : public Tower {
+public:
+    None(Position position);
+    None() = default;
+};
+
+class ArcherTower : public Tower {};

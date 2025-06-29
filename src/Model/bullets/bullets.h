@@ -86,8 +86,6 @@ class Arrow : public Bullet
 
         return ;
     }
-
-
 };
 
 // TODO: 法球

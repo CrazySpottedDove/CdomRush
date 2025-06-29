@@ -30,7 +30,7 @@ namespace calc {
      * @brief 目标伤害增益除法
      *
      * @param target
-     * @param factor
+     * @param factor (请保证不为 0)
      */
     void damage_div(Unit& target, const double factor);
 

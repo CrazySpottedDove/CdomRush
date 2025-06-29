@@ -41,7 +41,7 @@ public:
         return true;
     }
 
-    virtual Bullet* clone() const = 0; // 纯虚函数，用于克隆子弹对象
+    virtual Bullet* Clone() const = 0; // 纯虚函数，用于克隆子弹对象
 };
 
 // TODO: 箭矢
@@ -55,11 +55,11 @@ public:
         totalDuration_ = 1.0; // 设置总持续时间
     }; // 默认构造函数
     Arrow(const Arrow & other) = default; // 拷贝构造函数
-    Bullet* clone() const override {
+    Bullet* Clone() const override {
         return new Arrow(*this); // 返回一个新的Arrow对象
     }
 
-    sf::Vector2f Arrow::bezier(float t,
+    sf::Vector2f Bezier(float t,
                            const sf::Vector2f& p0,
                            const sf::Vector2f& p1,
                            const sf::Vector2f& p2) const {
@@ -67,7 +67,7 @@ public:
     return u * u * p0 + 2.f * u * t * p1 + t * t * p2;
     }
 
-    sf::Vector2f Arrow::getControlPoint(const Position& p0,const Position& p2) const {
+    sf::Vector2f GetControlPoint(const Position& p0,const Position& p2) const {
         sf::Vector2f mid = (p0 + p2) * 0.5f;
         mid.y -= 100.f; // 控制点向上偏移，形成抛物线
         return mid;
@@ -92,8 +92,8 @@ public:
 
         // 计算控制点
         if(target_alive) target_position = damage_event.target->position; // 更新目标位置
-        sf::Vector2f p1 = getControlPoint(source_position, target_position);
-        this->position = bezier(t, source_position, p1, target_position);
+        sf::Vector2f p1 = GetControlPoint(source_position, target_position);
+        this->position = Bezier(t, source_position, p1, target_position);
 
         return ;
     }
@@ -146,7 +146,7 @@ public:
     }
     Bomb(const Bomb & other) = default; // 拷贝构造函数
 
-    sf::Vector2f Bomb::bezier(float t,
+    sf::Vector2f Bezier(float t,
                            const sf::Vector2f& p0,
                            const sf::Vector2f& p1,
                            const sf::Vector2f& p2) const {
@@ -183,7 +183,7 @@ public:
         // 计算控制点
         if(target_alive) damage_event.target->position = damage_event.target->position; // 更新目标位置
         sf::Vector2f p1 = getControlPoint(source_position,target_position);
-        this->position = bezier(t, source_position, p1, target_position);
+        this->position = Bezier(t, source_position, p1, target_position);
         return ;
     }
 };

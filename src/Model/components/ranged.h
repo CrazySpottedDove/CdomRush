@@ -13,6 +13,9 @@ public:
         : Attack(cooldown, chance)
         , range(range)
         , bullet_type(bullet_type_) {};
+    void Apply(Store& store, Unit* target) noexcept override {
+        
+    }
 };
 
 class Ranged

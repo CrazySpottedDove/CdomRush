@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include "Model/enemies/enemies.h"
 #include "Model/components/damage.h"
 #include "Model/templates/entity.h"
 #include "utils/macros.h"
@@ -24,6 +25,7 @@ public:
     bool target_alive = true; // 目标是否存活
     Position source_position;
     Position target_position;
+    BulletType bullet_type; // 弹道类型
 
     Bullet() = default; // 默认构造函数
     bool Insert(Store& store) override{
@@ -42,7 +44,9 @@ public:
 // 采用抛物线轨迹
 class Arrow : public Bullet
 {
+public:
     Arrow(){
+        bullet_type = BulletType::Arrow; // 设置弹道类型为箭矢
         damage_event = DamageEvent(DamageData(5.5, DamageType::Physical, 0, 0), nullptr, nullptr);
         totalDuration_ = 1.0; // 设置总持续时间
     }; // 默认构造函数
@@ -94,6 +98,7 @@ class Bolt : public Bullet
 {
 public:
     Bolt(){
+        bullet_type = BulletType::Bolt; // 设置弹道类型为法球
         damage_event = DamageEvent(DamageData(15.0, DamageType::Magical, 0, 0), nullptr, nullptr);
         totalDuration_ = 0.5; // 设置总持续时间
     }
@@ -127,6 +132,7 @@ class Bomb : public Bullet
 public:
     double radius; // 爆炸半径
     Bomb(){
+        bullet_type = BulletType::Bomb; // 设置弹道类型为炸弹
         damage_event = DamageEvent(DamageData(9.5, DamageType::Explosion, 0, 0), nullptr, nullptr);
         totalDuration_ = 1.5; // 设置总持续时间
         hit_fx = FxType::Explosion; // 爆炸效果
@@ -156,7 +162,7 @@ public:
 
         float t = (store.time - initial_time) / totalDuration_;
         if (t >= 1.0f) {
-            std::vector<Unit*> enermy = calc::find_enemies_in_range(store,target_position,radius);
+            std::vector<Enemy*> enermy = calc::find_enemies_in_range(store,target_position,radius);
             for(auto& target : enermy) {
                 if(target->health.hp > 0) { // 如果目标存活
                     DamageEvent event = damage_event; // 创建新的伤害事件

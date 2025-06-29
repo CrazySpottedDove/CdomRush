@@ -6,4 +6,4 @@ class fx : public Entity {};
 enum class FxType{
     Explosion,
     None
-}
+};

@@ -22,6 +22,7 @@ enum class GameState
 class Store
 {
 public:
+    Store();
     double                     time       = 0.0;
     double                     gold       = 0.0;
     int                        life       = 20;

@@ -72,7 +72,7 @@ public:
         mid.y -= 100.f; // 控制点向上偏移，形成抛物线
         return mid;
     }
-    
+
     void Update(Store& store) override {
         // 更新箭矢位置和动画
         if(animation.state != State::Flying) {
@@ -89,7 +89,7 @@ public:
             store.QueueDamageEvent(damage_event); // 结算伤害
             return ;
         }
-        
+
         // 计算控制点
         if(target_alive) target_position = damage_event.target->position; // 更新目标位置
         sf::Vector2f p1 = getControlPoint(source_position, target_position);
@@ -145,7 +145,7 @@ public:
         radius = 60.0; // 设置爆炸半径
     }
     Bomb(const Bomb & other) = default; // 拷贝构造函数
-    
+
     sf::Vector2f Bomb::bezier(float t,
                            const sf::Vector2f& p0,
                            const sf::Vector2f& p1,
@@ -179,7 +179,7 @@ public:
             animation.state = State::Hit; // 击中了
             return ;
         }
-        
+
         // 计算控制点
         if(target_alive) damage_event.target->position = damage_event.target->position; // 更新目标位置
         sf::Vector2f p1 = getControlPoint(source_position,target_position);

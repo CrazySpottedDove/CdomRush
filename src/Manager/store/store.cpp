@@ -68,19 +68,34 @@ void Store::Game(){
         switch (game_state) {
             case GameState::Begin:
                 // AnimationPlayer::DrawTotalMap();
-                
+
                 // AnimationPlayer::
                 break;
             case GameState::GameStart:
                 time = 0.0;
                 while(true){
                     Update();
-
                     std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
+                    time += FRAME_LENGTH;
                 }
                 break;
             case GameState::GamePlaying:
-
+                while (true) {
+                    Update();
+                    std::this_thread::sleep_for(
+                        std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
+                    time += FRAME_LENGTH;
+                }
+            case GameState::GameOver:
+                // AnimationPlayer::DrawGameOver();
+                break;
+            case GameState::Loading:
+                // AnimationPlayer::DrawLoading();
+                break;
         }
     }
+}
+
+Store::Store(){
+
 }

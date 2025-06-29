@@ -24,5 +24,11 @@ return{
             to = 49,
             from = 26
         }
+    },
+    map_background = {
+        idle = {
+            to = 1,
+            from = 1
+        }
     }
 }

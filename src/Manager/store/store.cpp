@@ -5,6 +5,9 @@
 #include "Model/components/damage.h"
 #include "Model/enemies/enemies.h"
 #include "Model/soldiers/soldiers.h"
+#include "utils/macros.h"
+#include <chrono>
+#include <thread>
 void Store::Update()
 {
     const auto new_damage_event_end = std::remove_if(
@@ -57,4 +60,27 @@ void Store::Update()
         });
 
     soldiers.erase(new_soldier_end, soldiers.end());
+}
+
+void Store::Game(){
+    static constexpr int FRAME_LENGTH_IN_MILLISECONDS = FRAME_LENGTH * 1000;
+    while(true){
+        switch (game_state) {
+            case GameState::Begin:
+                // AnimationPlayer::DrawTotalMap();
+                
+                // AnimationPlayer::
+                break;
+            case GameState::GameStart:
+                time = 0.0;
+                while(true){
+                    Update();
+
+                    std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
+                }
+                break;
+            case GameState::GamePlaying:
+
+        }
+    }
 }

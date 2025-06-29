@@ -21,8 +21,7 @@ void Store::Update()
             }
 
             // 延迟为0，执行伤害
-            const double damage = calc::calc_damage(damage_event);
-            calc::receive_damage(*damage_event.target, damage);
+            calc::enforce_damage(damage_event);
             return true;   // 移除已执行的事件
         });
 

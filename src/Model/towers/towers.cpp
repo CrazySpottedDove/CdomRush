@@ -13,3 +13,19 @@ public:
         };
     }
 };
+
+class ArcherTower : public Tower {
+public:
+};
+
+class Archer1 : public ArcherTower {
+public:
+    Archer1(Position position_) {
+        position = position_;
+        total_price = 70;
+        tower_actions = {
+            {TowerAction::Upgrade, {TowerType::Archer2, 70}},
+            {TowerAction::Sell, {TowerType::None, 0 }},
+        };
+    }
+};

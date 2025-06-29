@@ -12,14 +12,7 @@ public:
     }
     double radius; // 伤害半径
     DamageEvent damage_event;
-    void Apply(Store& store, Unit* target) noexcept {
-        // 设置伤害事件
-        DamageEvent new_event(damage_event);
-        new_event.target = target; // 设置目标
-
-        // 结算伤害
-        store.QueueDamageEvent(new_event);
-    }
+    void Apply(Store& store, Unit* target) noexcept;
 };
 
 class Melee{

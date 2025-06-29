@@ -1,13 +1,12 @@
 #pragma once
-#include <memory>
-#include "Model/enemies/enemies.h"
 #include "Model/components/damage.h"
 #include "Model/templates/entity.h"
 #include "utils/macros.h"
-#include "Manager/store/store.h"
 #include "Model/fx/fx.h"
 #include "Function/calc/damage.h"
-#include "Model/templates/unit.h" // 添加以获得Unit的完整类型定义
+
+
+class Store;
 
 enum class BulletType
 {
@@ -30,13 +29,7 @@ public:
 
     Bullet(const Bullet & other) = default; // 拷贝构造函数
     Bullet() = default; // 默认构造函数
-    bool Insert(Store& store) override{
-        target_alive = true; // 初始化目标存活状态
-        target_position = damage_event.target->position; // 设置目标位置
-        source_position = damage_event.source->position; // 设置源位置
-        initial_time = store.time;
-        return true;
-    }
+    bool Insert(Store& store) override;
     bool Remove(Store& store) override{
         return true;
     }
@@ -73,30 +66,7 @@ public:
         return mid;
     }
 
-    void Update(Store& store) override {
-        // 更新箭矢位置和动画
-        if(animation.state != State::Flying) {
-            return; // 如果不是飞行状态，则不更新
-        }
-
-        if(damage_event.target->animation.state == State::Death){
-            target_alive = false; // 如果目标死亡，则不再更新
-        }
-
-        float t = (store.time - initial_time) / totalDuration_;
-        if (t >= 1.0f) {
-            animation.state = State::Hit; // 击中了
-            store.QueueDamageEvent(damage_event); // 结算伤害
-            return ;
-        }
-
-        // 计算控制点
-        if(target_alive) target_position = damage_event.target->position; // 更新目标位置
-        sf::Vector2f p1 = GetControlPoint(source_position, target_position);
-        this->position = Bezier(t, source_position, p1, target_position);
-
-        return ;
-    }
+    void Update(Store& store) override;
 };
 
 // TODO: 法球
@@ -111,24 +81,7 @@ public:
     }
     Bolt(const Bolt & other) = default; // 拷贝构造函数
 
-    void Update(Store& store) override {
-        // 更新法球位置和动画
-        if(animation.state != State::Flying) {
-            return; // 如果不是飞行状态，则不更新
-        }
-
-        float t = (store.time - initial_time) / totalDuration_;
-        if (t >= 1.0f) {
-            store.QueueDamageEvent(damage_event); // 结算伤害
-            animation.state = State::Hit; // 击中了
-            return ;
-        }
-
-        // 计算法球位置
-        if(target_alive) target_position = damage_event.target->position;
-        this->position = source_position + t * (target_position - source_position);
-        return ;
-    }
+    void Update(Store& store) override;
 };
 
 // TODO: 炸弹
@@ -160,30 +113,5 @@ public:
         return mid;
     }
 
-    void Update(Store& store) override {
-        // 更新炸弹位置和动画
-        if(animation.state != State::Flying) {
-            return; // 如果不是飞行状态，则不更新
-        }
-
-        float t = (store.time - initial_time) / totalDuration_;
-        if (t >= 1.0f) {
-            std::vector<Enemy*> enermy = calc::find_enemies_in_range(store,target_position,radius);
-            for(auto& target : enermy) {
-                if(target->health.hp > 0) { // 如果目标存活
-                    DamageEvent event = damage_event; // 创建新的伤害事件
-                    event.target = target; // 设置目标
-                    store.QueueDamageEvent(event); // 结算伤害
-                }
-            }
-            animation.state = State::Hit; // 击中了
-            return ;
-        }
-
-        // 计算控制点
-        if(target_alive) damage_event.target->position = damage_event.target->position; // 更新目标位置
-        sf::Vector2f p1 = getControlPoint(source_position,target_position);
-        this->position = Bezier(t, source_position, p1, target_position);
-        return ;
-    }
+    void Update(Store& store) override ;
 };

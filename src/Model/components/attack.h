@@ -1,16 +1,14 @@
 #pragma once
 class Unit;
-#include "Manager/store/store.h"
-#include "damage.h"
+class Store;
+
 class Attack
 {
 public:
     // virtual void Apply(Store& store, Unit* target) noexcept = 0;
-    virtual bool IsReady(const Store& store) const noexcept
-    {
-        return (store.time - last_time) >= cooldown;
-    }
-    void SetLastTime(const double time) noexcept { last_time = time; }
+    virtual bool IsReady(const Store& store) const noexcept;
+
+    void SetLastTime(const double time) noexcept ;
     Attack() = default;
     Attack(double cooldown, double chance = 1.0)
         : cooldown(cooldown)

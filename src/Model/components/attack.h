@@ -5,7 +5,7 @@ class Unit;
 class Attack
 {
 public:
-    virtual void Apply(Store& store, Unit* target) noexcept = 0;
+    // virtual void Apply(Store& store, Unit* target) noexcept = 0;
     virtual bool IsReady(const Store& store) const noexcept
     {
         return (store.time - last_time) >= cooldown;

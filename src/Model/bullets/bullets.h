@@ -18,6 +18,7 @@ enum class BulletType
 class Bullet: public Entity
 {
 public:
+    double radius; // 爆炸半径
     double initial_time = 0.0; // 初始时间
     double totalDuration_ = 0.0; // 总持续时间
     FxType hit_fx = FxType::None; // 击中效果
@@ -27,6 +28,7 @@ public:
     Position target_position;
     BulletType bullet_type; // 弹道类型
 
+    Bullet(const Bullet & other) = default; // 拷贝构造函数
     Bullet() = default; // 默认构造函数
     bool Insert(Store& store) override{
         target_alive = true; // 初始化目标存活状态
@@ -38,6 +40,8 @@ public:
     bool Remove(Store& store) override{
         return true;
     }
+
+    virtual Bullet* clone() const = 0; // 纯虚函数，用于克隆子弹对象
 };
 
 // TODO: 箭矢
@@ -51,6 +55,9 @@ public:
         totalDuration_ = 1.0; // 设置总持续时间
     }; // 默认构造函数
     Arrow(const Arrow & other) = default; // 拷贝构造函数
+    Bullet* clone() const override {
+        return new Arrow(*this); // 返回一个新的Arrow对象
+    }
 
     sf::Vector2f Arrow::bezier(float t,
                            const sf::Vector2f& p0,
@@ -130,7 +137,6 @@ public:
 class Bomb : public Bullet
 {
 public:
-    double radius; // 爆炸半径
     Bomb(){
         bullet_type = BulletType::Bomb; // 设置弹道类型为炸弹
         damage_event = DamageEvent(DamageData(9.5, DamageType::Explosion, 0, 0), nullptr, nullptr);

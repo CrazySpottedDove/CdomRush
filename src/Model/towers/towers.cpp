@@ -31,8 +31,17 @@ public:
             {TowerAction::Upgrade, {TowerType::Archer2, 70}},
             {TowerAction::Sell, {TowerType::None, 0 }},
         };
-        ranged.attacks.push_back(RangedAttack(0.5, 150.0, BulletType::Arrow, 1.0));
+        ranged.attacks.push_back(RangedAttack(0.5, 150.0, BulletType::Arrow,0.0,5.5, 1.0)); // 添加攻击
     }
 
+    void layer_update() override {
+        // 更新图层逻辑
+        for (auto& layer : Layers) {
+            // layer.animation.Update(); // 更新每个图层的动画
+        }
+    }
 
+    void shoot_bullet(RangedAttack& attack,Store& store,Enemy* & target_enemy) override {
+        attack.Apply(store, target_enemy, this); // 应用攻击效果
+    }
 };

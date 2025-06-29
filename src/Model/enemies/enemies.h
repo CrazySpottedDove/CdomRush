@@ -110,6 +110,7 @@ public:
         }
         else if (this->animation.state == State::Attack){
             if(animation.pending == false) animation.state = State::Idle;
+            animation.pending = true; // 设置动画为进行中
             return ;
         }
         return ;
@@ -118,5 +119,5 @@ public:
 
 class ForestTroll : public ActiveEnemy_Melee{
     public:
-    ForestTroll();
+    ForestTroll(Position position_);
 };

@@ -50,6 +50,9 @@ public:
         return true;
     }
     virtual void layer_update() = 0; // 每个 Tower 都需要实现自己的图层更新逻辑
+    
+    virtual void shoot_bullet(RangedAttack& attack,Store& store,Enemy* & target_enemy) = 0; // 每个 Tower 都需要实现自己的射击逻辑
+    
     void Update(Store& store) override {
         if(animation.state == State::Idle){
             for(auto& attack : ranged.attacks){
@@ -57,8 +60,8 @@ public:
                     Enemy* target_enemy = calc::find_foremost_enemy(store, position, attack.range);
                     if(target_enemy == nullptr) continue; // 如果没有找到目标敌人，跳过
                     animation.state = State::Shoot; // 设置状态为射击
-
-                    attack.Apply(store, target_enemy); // 执行攻击
+                    
+                    shoot_bullet(attack,store,target_enemy); // 执行射击逻辑
                 }
             }
         }
@@ -75,6 +78,14 @@ class None : public Tower {
 public:
     None(Position position);
     None() = default;
+    void layer_update() override{};
+    void shoot_bullet(RangedAttack& attack,Store& store,Enemy* & target_enemy) override{};
 };
 
-class ArcherTower : public Tower {};
+class ArcherTower : public Tower {
+public:
+    ArcherTower(Position position, int total_price);
+    ArcherTower() = default;
+    void layer_update() override;
+    void shoot_bullet(RangedAttack& attack,Store& store,Enemy* & target_enemy) override;
+};

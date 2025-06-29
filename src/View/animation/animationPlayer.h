@@ -176,6 +176,20 @@ public:
      * @return true 如果跳转成功
      */
     bool JumpToFrame(Unit& unit, std::size_t frame_id);
+    
+    /**
+     * @brief 渲染地图背景
+     * @param window 渲染窗口
+     * @param map_prefix 地图资源前缀（"screen_map"）
+     * @param position 地图渲染位置（默认0,0）
+     * @param scale 地图缩放比例（默认1.0）
+     * 
+     * Note：地图相当于静态动画，状态固定为Idle，from 1 to 1
+     */
+    void RenderMap(sf::RenderWindow& window, 
+                   const std::string& map_prefix,
+                   const sf::Vector2f& position = {0.0f, 0.0f},
+                   const sf::Vector2f& scale = {1.0f, 1.0f}) const;
 
 private:
     const AnimationManager& animation_manager_;  

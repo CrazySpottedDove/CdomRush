@@ -522,6 +522,51 @@ std::size_t AnimationPlayer::GetAnimationFrameCount(const std::string& prefix, S
  */
 bool AnimationPlayer::IsValidFrameId(const std::string& prefix, State state, std::size_t frame_id) const
 {
-    std::size_t total_frames = GetAnimationFrameCount(prefix, state);
+        std::size_t total_frames = GetAnimationFrameCount(prefix, state);
     return frame_id < total_frames;
+}
+
+/**
+ * @brief 渲染地图背景
+ */
+void AnimationPlayer::RenderMap(sf::RenderWindow& window, 
+                               const std::string& map_prefix,
+                               const sf::Vector2f& position,
+                               const sf::Vector2f& scale) const
+{
+    try {
+        // 地图被当作静态动画：状态=Idle，获取动画组信息
+        const auto& animation_group = animation_manager_.RequireAnimationGroup(map_prefix, State::Idle);
+        
+        // 使用动画组的起始帧（对于地图来说，from和to都是1）
+        std::size_t actual_frame_index = animation_group.from;
+        
+        const auto& [frame_data, texture] = animation_manager_.RequireFrameData(map_prefix, actual_frame_index);
+        
+        sf::Sprite map_sprite(texture);
+        // 设置纹理裁剪区域
+        map_sprite.setTextureRect(frame_data.frameRect);
+        
+        // 设置位置和缩放
+        map_sprite.setPosition(position);
+        map_sprite.setScale(scale);
+        
+        // 渲染地图
+        window.draw(map_sprite);
+        
+        // 调试信息（每60帧输出一次）
+        static int debug_counter = 0;
+        debug_counter++;
+        if (debug_counter % 60 == 0) {
+            std::cout << "Map rendered: " << map_prefix
+                      << " at (" << position.x << "," << position.y << ")"
+                      << " scale (" << scale.x << "," << scale.y << ")"
+                      << " frame_index (" << actual_frame_index << ")"
+                      << " size (" << frame_data.frameRect.width << "x" << frame_data.frameRect.height << ")" << std::endl;
+        }
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error rendering map '" << map_prefix << "': " << e.what() << std::endl;
+        std::cerr << "请确保地图资源已通过AnimationManager加载,并且存在idle动画组" << std::endl;
+    }
 }

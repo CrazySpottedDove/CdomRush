@@ -19,11 +19,11 @@ AnimationPlayer::AnimationPlayer(const AnimationManager& animation_manager)
 // ===============================
 
 /**
- * @brief 播放指定状态的动画（Entity版本 - 基础功能）
+ * @brief 播放指定状态的动画（Entity版本 - 基础）
  */
 void AnimationPlayer::PlayAnimation(Entity& entity, State state, bool loop)
 {
-    // Entity版本：直接使用指定的state，不做映射
+    // 使用指定的state
     bool should_reset = false;
     
     if (!entity.animation.pending) {
@@ -39,7 +39,7 @@ void AnimationPlayer::PlayAnimation(Entity& entity, State state, bool loop)
     if (should_reset) {
         entity.animation.pending = true;
         entity.animation.frame_id = 0;
-        entity.animation.state = state;  // 直接设置状态，不做映射
+        entity.animation.state = state; 
         current_state_ = state;
         is_paused_ = false;
     }
@@ -118,16 +118,33 @@ void AnimationPlayer::Render(sf::RenderWindow& window, const Entity& entity,
         const auto& [frame_data, texture] = animation_manager_.RequireFrameData(entity.animation.prefix, actual_frame_index);
         
         sf::Sprite sprite(texture);
+        // 设置纹理裁剪区域（实际图像内容）
         sprite.setTextureRect(frame_data.frameRect);
-        sprite.setScale(scale);  // Entity版本不翻转，直接使用scale
         
-        // 使用Entity的position
+        // 设置原点到图像中心
+        sprite.setOrigin(
+            static_cast<float>(frame_data.frameRect.width) / 2.0f,
+            static_cast<float>(frame_data.frameRect.height) / 2.0f
+        );
+        
+        sprite.setScale(scale);  
+        
+        // 计算最终渲染位置：entity位置 + trim偏移 + 图像中心偏移
         sf::Vector2f final_position = entity.position;
         final_position.x += static_cast<float>(frame_data.trim_left) * scale.x;
         final_position.y += static_cast<float>(frame_data.trim_top) * scale.y;
+        
+        // 加上图像中心的偏移
+        final_position.x += static_cast<float>(frame_data.frameRect.width) / 2.0f * scale.x;
+        final_position.y += static_cast<float>(frame_data.frameRect.height) / 2.0f * scale.y;
         sprite.setPosition(final_position);
         
         window.draw(sprite);
+        
+        // displaySize信息
+        std::cout << "Entity render - displaySize: " << frame_data.displaySize.x << "x" << frame_data.displaySize.y
+                  << ", frameRect: " << frame_data.frameRect.width << "x" << frame_data.frameRect.height
+                  << ", trim: (" << frame_data.trim_left << "," << frame_data.trim_top << ")" << std::endl;
         
     } catch (const std::exception& e) {
         std::cerr << "Error rendering Entity animation frame: " << e.what() << std::endl;
@@ -208,16 +225,15 @@ bool AnimationPlayer::JumpToFrame(Entity& entity, std::size_t frame_id)
 }
 
 // ===============================
-// Unit接口实现 - 完整功能（状态驱动+翻转）
+// Unit接口实现 - 完整功能（翻转）
 // ===============================
 
 /**
- * @brief 开始播放动画（Unit版本 - 状态驱动+翻转）
+ * @brief 开始播放动画（Unit版本）
  */
 void AnimationPlayer::PlayAnimation(Unit& unit, bool loop)
 {
-    // Unit版本：支持状态映射和翻转
-    State target_animation_state = MapUnitStateToAnimationState(unit.state, unit.heading);
+    State target_animation_state = unit.state;
     
     bool should_reset = false;
     
@@ -242,11 +258,6 @@ void AnimationPlayer::PlayAnimation(Unit& unit, bool loop)
     }
     
     loop_enabled_ = loop;
-    
-    bool needs_flip = ShouldFlipHorizontally(unit.state, unit.heading);
-    std::cout << "Unit animation settings: loop=" << loop 
-              << ", current_frame=" << unit.animation.frame_id 
-              << ", needs_flip=" << needs_flip << std::endl;
 }
 
 /**
@@ -294,14 +305,14 @@ bool AnimationPlayer::NextFrame(Unit& unit)
 }
 
 /**
- * @brief 自动更新动画（Unit版本 - 支持状态变化检测）
+ * @brief 自动更新动画（Unit版本
  */
 void AnimationPlayer::Update(Unit& unit)
 {
     // Unit版本：检查状态变化并自动切换动画
-    State target_animation_state = MapUnitStateToAnimationState(unit.state, unit.heading);
+    State target_animation_state = unit.state;
     if (current_state_ != target_animation_state) {
-        PlayAnimation(unit, loop_enabled_);  // 自动切换到新动画
+        PlayAnimation(unit, loop_enabled_);  
         return;
     }
     
@@ -309,7 +320,7 @@ void AnimationPlayer::Update(Unit& unit)
 }
 
 /**
- * @brief 渲染当前帧（Unit版本 - 支持翻转）
+ * @brief 渲染当前帧（Unit版本）
  */
 void AnimationPlayer::Render(sf::RenderWindow& window, const Unit& unit, 
                             const sf::Vector2f& scale)
@@ -324,31 +335,45 @@ void AnimationPlayer::Render(sf::RenderWindow& window, const Unit& unit,
         const auto& [frame_data, texture] = animation_manager_.RequireFrameData(unit.animation.prefix, actual_frame_index);
         
         sf::Sprite sprite(texture);
+        // 设置纹理裁剪区域（实际图像内容）
         sprite.setTextureRect(frame_data.frameRect);
         
-        // Unit版本：支持翻转
+        // 设置原点到图像中心
+        sprite.setOrigin(
+            static_cast<float>(frame_data.frameRect.width) / 2.0f,
+            static_cast<float>(frame_data.frameRect.height) / 2.0f
+        );
+        
         bool needs_flip = ShouldFlipHorizontally(unit.state, unit.heading);
         sf::Vector2f final_scale = scale;
         if (needs_flip) {
-            final_scale.x = -scale.x;  // 水平翻转
+            final_scale.x = -scale.x;  // 水平翻转以中心为支点
             std::cout << "Applying horizontal flip for Unit state: " 
                       << static_cast<int>(unit.state) 
                       << ", heading: " << static_cast<int>(unit.heading) << std::endl;
         }
         sprite.setScale(final_scale);
         
-        // 使用Unit的position
+        // 计算最终渲染位置
         sf::Vector2f final_position = unit.position;
+        
+        // 期望位置 = unit.position + trim偏移 + 图像中心偏移
         final_position.x += static_cast<float>(frame_data.trim_left) * scale.x;
         final_position.y += static_cast<float>(frame_data.trim_top) * scale.y;
         
-        // 如果翻转了，需要调整X位置（因为翻转会改变锚点）
-        if (needs_flip) {
-            final_position.x += static_cast<float>(frame_data.frameRect.width) * scale.x;
-        }
+        // 加上图像中心的偏移
+        final_position.x += static_cast<float>(frame_data.frameRect.width) / 2.0f * scale.x;
+        final_position.y += static_cast<float>(frame_data.frameRect.height) / 2.0f * scale.y;
         
         sprite.setPosition(final_position);
         window.draw(sprite);
+        
+        // displaySize和翻转
+        std::cout << "Unit render - displaySize: " << frame_data.displaySize.x << "x" << frame_data.displaySize.y
+                  << ", frameRect: " << frame_data.frameRect.width << "x" << frame_data.frameRect.height
+                  << ", trim: (" << frame_data.trim_left << "," << frame_data.trim_top 
+                  << "," << frame_data.trim_right << "," << frame_data.trim_bottom << ")"
+                  << ", flipped: " << needs_flip << std::endl;
         
     } catch (const std::exception& e) {
         std::cerr << "Error rendering Unit animation frame: " << e.what() << std::endl;
@@ -429,24 +454,11 @@ bool AnimationPlayer::JumpToFrame(Unit& unit, std::size_t frame_id)
 }
 
 // ===============================
-// Unit专用的私有方法实现
+// Unit private方法
 // ===============================
 
 /**
- * @brief 根据Unit的状态映射到实际的动画状态
- */
-State AnimationPlayer::MapUnitStateToAnimationState(State unit_state, Heading heading) const
-{
-    switch (unit_state) {
-        case State::WalkingLeftRight:
-            return State::Walk;  // WalkingLeftRight统一使用Walk动画
-        default:
-            return unit_state;   // 其他状态直接映射
-    }
-}
-
-/**
- * @brief 检查是否需要水平翻转（仅Unit使用）
+ * @brief 检查是否需要水平翻转（仅Unit）
  */
 bool AnimationPlayer::ShouldFlipHorizontally(State unit_state, Heading heading) const
 {
@@ -454,14 +466,15 @@ bool AnimationPlayer::ShouldFlipHorizontally(State unit_state, Heading heading) 
         return heading == Heading::Left;  // 向左走时需要翻转
     }
     
-    // 可以在这里添加更多翻转逻辑
-    // if (unit_state == State::Attack && heading == Heading::Left) return true;
+    // 此处待添加更多翻转逻辑
+    if (unit_state == State::Running && heading == Heading::Left) 
+        return true;
     
     return false;
 }
 
 // ===============================
-// 通用的私有方法实现
+// 通用方法
 // ===============================
 
 /**
@@ -470,7 +483,7 @@ bool AnimationPlayer::ShouldFlipHorizontally(State unit_state, Heading heading) 
 std::size_t AnimationPlayer::CalculateActualFrameIndex(const Animation& animation, State state) const
 {
     try {
-        const auto& animation_group = animation_manager_.GetAnimationGroup(animation.prefix, state);
+        const auto& animation_group = animation_manager_.RequireAnimationGroup(animation.prefix, state);
         
         std::size_t actual_index = animation_group.from + animation.frame_id;
         
@@ -495,7 +508,7 @@ std::size_t AnimationPlayer::CalculateActualFrameIndex(const Animation& animatio
 std::size_t AnimationPlayer::GetAnimationFrameCount(const std::string& prefix, State state) const
 {
     try {
-        const auto& animation_group = animation_manager_.GetAnimationGroup(prefix, state);
+        const auto& animation_group = animation_manager_.RequireAnimationGroup(prefix, state);
         return animation_group.to - animation_group.from + 1;
     }
     catch (const std::exception& e) {

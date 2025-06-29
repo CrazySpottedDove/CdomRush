@@ -7,7 +7,7 @@
 #include "Model/templates/unit.h"
 
 /**
- * @brief 动画播放器类 - 基于帧驱动的动画控制，支持所有实体类型
+ * @brief 动画播放器类 - 帧驱动的动画控制，支持Entity和Unit
  * 
  * 这个类负责：
  * 1. 为所有Entity提供基础动画播放功能
@@ -40,19 +40,15 @@ public:
     // ===============================
     
     /**
-     * @brief 播放指定状态的动画（Entity版本 - 基础功能）
+     * @brief 播放指定状态的动画（Entity无生命实体 - 基础）
      * @param entity Entity对象引用
      * @param state 要播放的动画状态
      * @param loop 是否循环播放（默认true）
-     * 
-     * 适用于：建筑、道具、特效等无生命实体
-     * 例子：
-     * animation_player.PlayAnimation(building_entity, State::Idle, true);
      */
     void PlayAnimation(Entity& entity, State state, bool loop = true);
     
     /**
-     * @brief 手动前进到下一帧（Entity版本）
+     * @brief 手动前进到下一帧（Entity版）
      * @param entity Entity对象引用
      * @return true 如果成功前进到下一帧，false 如果动画已结束
      */
@@ -70,7 +66,7 @@ public:
      * @param entity Entity对象
      * @param scale 缩放比例（默认1.0，不缩放）
      * 
-     * 注意：Entity版本使用entity.position作为渲染位置
+     * Note：Entity版本使用entity.position作为渲染位置
      */
     void Render(sf::RenderWindow& window, const Entity& entity, 
                const sf::Vector2f& scale = {1.0f, 1.0f});
@@ -110,7 +106,7 @@ public:
     bool JumpToFrame(Entity& entity, std::size_t frame_id);
     
     // ===============================
-    // Unit接口 - 完整功能（状态驱动+翻转）
+    // Unit接口 - 状态驱动+翻转
     // ===============================
     
     /**
@@ -118,12 +114,8 @@ public:
      * @param unit Unit对象引用（包含state、heading、animation等信息）
      * @param loop 是否循环播放（默认true）
      * 
-     * 适用于：士兵、敌人等有生命实体
-     * 会根据unit.state自动选择合适的动画
-     * 会根据unit.heading决定是否翻转
-     * 
-     * 例子：
-     * animation_player.PlayAnimation(soldier_unit, true);
+     * 根据unit.state自动选择合适的动画
+     * 根据unit.heading决定是否翻转
      */
     void PlayAnimation(Unit& unit, bool loop = true);
     
@@ -135,7 +127,7 @@ public:
     bool NextFrame(Unit& unit);
     
     /**
-     * @brief 自动更新动画（Unit版本 - 支持状态变化检测）
+     * @brief 自动更新动画（Unit版本）
      * @param unit Unit对象引用
      * 
      * 会自动检测Unit状态变化并切换动画
@@ -144,7 +136,7 @@ public:
     
     /**
      * @brief 渲染当前帧到指定位置（Unit版本 - 支持翻转）
-     * @param window 渲染窗口
+     * @param window 窗口
      * @param unit Unit对象（包含动画信息和方向信息）
      * @param scale 缩放比例（默认1.0，不缩放）
      * 
@@ -155,13 +147,11 @@ public:
     
     /**
      * @brief 停止当前动画（Unit版本）
-     * @param unit Unit对象引用
      */
     void StopAnimation(Unit& unit);
     
     /**
      * @brief 重置动画到第一帧（Unit版本）
-     * @param unit Unit对象引用
      */
     void ResetAnimation(Unit& unit);
     
@@ -188,7 +178,7 @@ public:
     bool JumpToFrame(Unit& unit, std::size_t frame_id);
 
 private:
-    const AnimationManager& animation_manager_;  // AnimationManager引用
+    const AnimationManager& animation_manager_;  
     
     // 当前播放状态
     State current_state_;           // 当前播放的状态
@@ -196,16 +186,9 @@ private:
     bool is_paused_;                // 是否暂停
     
     // ===============================
-    // Unit专用的私有方法
+    // Unit专用
     // ===============================
     
-    /**
-     * @brief 根据Unit的状态映射到实际的动画状态
-     * @param unit_state Unit的状态
-     * @param heading Unit的方向
-     * @return 实际要播放的动画状态
-     */
-    State MapUnitStateToAnimationState(State unit_state, Heading heading) const;
     
     /**
      * @brief 检查是否需要水平翻转（仅Unit使用）
@@ -216,7 +199,7 @@ private:
     bool ShouldFlipHorizontally(State unit_state, Heading heading) const;
     
     // ===============================
-    // 通用的私有方法
+    // 通用
     // ===============================
     
     /**

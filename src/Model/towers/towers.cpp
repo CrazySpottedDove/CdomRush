@@ -16,22 +16,12 @@ public:
     }
 };
 
-class ArcherTower : public Tower {
-public:
-Ranged ranged; // 弓箭塔的远程攻击组件
-    ArcherTower() = default; // 默认构造函数
-    
-    void Update (Store& store) override {
-        
-    }
-};
 
-class Archer1 : public ArcherTower {
+class Archer1 : public Tower {
 public:
     Archer1(){
         type = TowerType::Archer1; // 设置塔类型为弓箭手1
     }
-
 
     Archer1(Position position_, int total_price_) {
         type = TowerType::Archer1; // 设置塔类型为弓箭手1

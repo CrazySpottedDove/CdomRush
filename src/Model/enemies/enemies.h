@@ -8,6 +8,7 @@
 #include "Function/calc/hp.h"
 #include "Function/calc/damage.h"
 #include "Model/components/melee.h"
+#include "Model/soldiers/soldiers.h"
 enum class EnemyType
 {
     PassiveEnemy, // 无害敌人
@@ -18,6 +19,7 @@ enum class EnemyType
 class Enemy : public Unit//默认的敌人有这些东西
 {
 public:
+    sf::Vector2f slot;//近战偏移
     EnemyType type; // 敌人类型
     int gold;
     int life_cost;
@@ -39,6 +41,7 @@ class PassiveEnemy : public Enemy{//无害敌人
 public:
     PassiveEnemy(){
         type = EnemyType::PassiveEnemy; // 设置敌人类型为无害敌人
+        slot = sf::Vector2f(0.0f, 0.0f); // 初始化近战偏移
     }
     void Update(Store& store) override {
         if(state==State::Death) return; // 如果敌人处于死亡状态，跳过更新
@@ -59,8 +62,9 @@ class ActiveEnemy_Melee : public Enemy{
 public:
     ActiveEnemy_Melee() {
         type = EnemyType::ActiveEnemy_Melee; // 设置敌人类型为近战敌人
+        slot = sf::Vector2f(0.0f, 0.0f); // 初始化近战偏移
     }
-    Unit* blocker = nullptr; // 用于阻挡敌人前进的单位
+    Soldier* blocker = nullptr; // 用于阻挡敌人前进的单位
     Melee melee; // 近战攻击组件
 
     void Update(Store& store) override {
@@ -71,6 +75,7 @@ public:
             return ;
         }
         if (this->state == State::Idle) {
+            heading = Heading::Right; // 设置方向为向右
             if (this->blocker == nullptr) {
                 this->state = walkjudge();
                 return ;
@@ -79,9 +84,12 @@ public:
                 this->blocker = nullptr; // 如果阻挡单位死亡，清除阻挡单位
                 return ;
             }
+            
+            if(blocker->slot+slot+position != blocker->position) return ;
+
             for(int i = 0; i < this->melee.attacks.size(); ++i) {
                 if (this->melee.attacks[i]->IsReady(store)) {
-                    std::vector<Unit*> targets = calc::find_soldiers_in_range(store, this->position, this->melee.attacks[i]->radius);
+                    std::vector<Unit*> targets = calc::find_soldiers_in_range(store, blocker->position, this->melee.attacks[i]->radius);
                     if(std::find(targets.begin(),targets.end(),this->blocker) == targets.end()) continue;
                     for(auto& target : targets) {
                         if(target->health.hp <= 0) continue; // 如果目标已经死亡，跳过
@@ -101,9 +109,10 @@ public:
             return ;
         }
         else if (this->state == State::Attack){
-            if(animation.pending==0) state = State::Idle;
+            if(animation.pending == false) state = State::Idle;
             return ;
         }
+        return ;
     }
 };
 

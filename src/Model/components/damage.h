@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Model/templates/entity.h"
+#include "Model/templates/activeEntity.h"
 class Unit;
 /**
  * @brief 伤害类型
@@ -42,9 +42,9 @@ struct DamageEvent
 {
     DamageData data;
     Unit*        target      = nullptr;
-    Entity*      source      = nullptr;
+    ActiveEntity*      source      = nullptr;
     DamageEvent():data(DamageData(0.0, DamageType::Physical, 0.0, 0)){};
-    DamageEvent(const DamageData& data, Unit* target, Entity* source)
+    DamageEvent(const DamageData& data, Unit* target, ActiveEntity* source)
         : data(data)
         , source(source)
         , target(target)

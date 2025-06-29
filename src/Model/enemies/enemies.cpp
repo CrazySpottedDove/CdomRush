@@ -10,5 +10,6 @@ class ForestTroll : public ActiveEnemy_Melee{
         this->state = State::Idle; // 设置初始状态
         this->melee.attacks.push_back(new MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 0), 50.0, 1.0, 1.0));
         this->melee[0]->damage_event.source = static_cast<Entity*>(this); // 设置攻击来源为当前敌人
+        this->slot = sf::Vector2f(35.0f, 0.0f); // 初始化近战偏移
     }
 };

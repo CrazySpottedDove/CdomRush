@@ -3,7 +3,7 @@
 #include "../components/buff.h"
 #include "../components/health.h"
 #include "../components/state.h"
-#include "entity.h"
+#include "Model/templates/activeEntity.h"
 #include "utils/macros.h"
 
 // 拥有生命的实体
@@ -22,14 +22,13 @@ enum class Heading
     None
 };
 
-class Unit : public Entity
+class Unit : public ActiveEntity
 {
 public:
     Heading heading = Heading::Right; // 方向
     UnitType     type; // 单位类型
     Health       health;
     Armor        armor;
-    Buff         buff;
     double       speed;
     State        state;
     virtual bool OnDamage() { return true; };

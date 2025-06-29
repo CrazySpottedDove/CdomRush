@@ -1,5 +1,6 @@
 #pragma once
 #include "Model/components/animation.h"
+#include "utils/macros.h"
 class Store;
 
 // 参与主时钟更新的实体

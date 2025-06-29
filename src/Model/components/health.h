@@ -1,3 +1,4 @@
+#pragma once
 struct Health
 {
     double hp_max;

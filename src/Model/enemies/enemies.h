@@ -48,7 +48,7 @@ public:
             return ;
         }
         if (is_moving()) { // 如果敌人正在移动
-            calc::move_tick(store, *this); // 调用运动函数更新位置
+            calc::enemy_move_tick(store, *this); // 调用运动函数更新位置
         }
         state= walkjudge(); // 根据当前方向设置状态
         return ;
@@ -95,7 +95,7 @@ public:
             return ;
         }
         if (is_moving()) { // 如果敌人正在移动
-            calc::move_tick(store, *this); // 调用运动函数更新位置
+            calc::enemy_move_tick(store, *this); // 调用运动函数更新位置
             state = walkjudge(); // 根据当前方向设置状态
             if(this->blocker != nullptr) state = State::Idle; // 如果有阻挡单位，设置状态为闲置
             return ;
@@ -110,4 +110,4 @@ public:
 class ForestTroll : public ActiveEnemy_Melee{
     public:
     ForestTroll();
-}
+};

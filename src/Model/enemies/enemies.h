@@ -1,13 +1,24 @@
 #pragma once
 
-
+#include <vector>
+#include <algorithm>
 #include "Model/components/path.h"
 #include "Model/templates/unit.h"
 #include "Function/calc/motion.h"
-#include "Model/Components/melee.h"
-class Enemy : public Unit//一种无害的敌人
+#include "Function/calc/hp.h"
+#include "Function/calc/damage.h"
+#include "Model/components/melee.h"
+enum class EnemyType
+{
+    PassiveEnemy, // 无害敌人
+    ActiveEnemy_Melee, // 近战敌人
+    ActiveEnemy_Range,  // 远程敌人
+    None
+};
+class Enemy : public Unit//默认的敌人有这些东西
 {
 public:
+    EnemyType type; // 敌人类型
     int gold;
     int life_cost;
     PathInfo path_info;
@@ -22,72 +33,81 @@ public:
         // 从存储中移除敌人
         return true; // 返回 true 表示移除成功
     }
-
 };
 
-class PassiveEnemy : public Enemy{
+class PassiveEnemy : public Enemy{//无害敌人
 public:
-    void Update(Store& store) override {
-        if(this->health.hp <= 0) {
-            this->state = State::Death; // 如果生命值为0，进入死亡状态
-            store.gold += gold; // 增加金币
-        }
-        if (this->state == State::Walk || this->state == State::Idle || this->state == State::WalkingLeftRight || this->state == State::WalkingUp || this->state == State::WalkingDown) {
-            calc::move_tick(store, *this); // 调用运动函数更新位置
-        }
-        if(heading==Heading::Right) state = State::WalkingLeftRight; // 如果方向是向右，设置状态为左右行走
-        else if(heading==Heading::Up) state = State::WalkingUp; // 如果方向是向上，设置状态为向上行走
-        else if(heading==Heading::Down) state = State::WalkingDown; // 如果方向是向下，设置状态为向下行走
-        else state = State::WalkingLeftRight; // 如果方向是向左，设置状态为左右行走
+    PassiveEnemy(){
+        type = EnemyType::PassiveEnemy; // 设置敌人类型为无害敌人
     }
-};
-
-class activeEnemy : public Enemy{
-public:
-    Unit* blocker = nullptr; // 用于阻挡敌人前进的单位
-    Melee melee; // 近战攻击组件
     void Update(Store& store) override {
+        if(state==State::Death) return; // 如果敌人处于死亡状态，跳过更新
         if(this->health.hp <= 0) {
             this->state = State::Death; // 如果生命值为0，进入死亡状态
             store.gold += gold; // 增加金币
             return ;
         }
-        // 根据当前状态进行不同的处理
-        if (this->state == State::Idle) {
-            if (this->blocker == nullptr) {
-                this->state = State::Walk; // 如果没有人阻挡，那就继续走
-                return ;
-            }
-            else{
-                if(this->blocker->state == State::Death) {
-                    this->blocker = nullptr; // 如果阻挡单位死亡，清除阻挡单位
-                    return ;
-                }
-                else {
-                    for(int i = 0; i < this->melee.attacks.size(); ++i) {
-                        if (this->melee.attacks[i]->IsReady(store)) {
-                            this->melee.attacks[i]->Apply(store, this->blocker); // 如果攻击准备好了，就攻击阻挡单位
-                            this->melee.attacks[i]->SetLastTime(store.time); // 更新上次攻击时间
-                            return ;
-                        }
-                    }
-                }
-            }
-        }
-        else if (this->state == State::Walk) {
+        if (is_moving()) { // 如果敌人正在移动
             calc::move_tick(store, *this); // 调用运动函数更新位置
         }
-        // 其他状态处理...
+        state= walkjudge(); // 根据当前方向设置状态
+        return ;
     }
 };
 
-class ForestTroll : public PassiveEnemy{
-    ForestTroll() {
-        this->health = Health(4000,4000); // 设置生命值
-        this->armor = Armor(0,0); // 设置护甲
-        this->speed = 36; // 设置速度
-        this->gold = 200; // 设置击杀奖励
-        this->life_cost = 5; // 设置生命损失
-        this->state = State::Idle; // 设置初始状态
+class ActiveEnemy_Melee : public Enemy{
+public:
+    ActiveEnemy_Melee() {
+        type = EnemyType::ActiveEnemy_Melee; // 设置敌人类型为近战敌人
+    }
+    Unit* blocker = nullptr; // 用于阻挡敌人前进的单位
+    Melee melee; // 近战攻击组件
+
+    void Update(Store& store) override {
+        if(state==State::Death) return; // 如果敌人处于死亡状态，跳过更新
+        if(calc::is_dead(*this)) {
+            this->state = State::Death; // 如果生命值为0，进入死亡状态
+            store.gold += gold; // 增加金币
+            return ;
+        }
+        if (this->state == State::Idle) {
+            if (this->blocker == nullptr) {
+                this->state = walkjudge();
+                return ;
+            }
+            if(this->blocker->state == State::Death) {
+                this->blocker = nullptr; // 如果阻挡单位死亡，清除阻挡单位
+                return ;
+            }
+            for(int i = 0; i < this->melee.attacks.size(); ++i) {
+                if (this->melee.attacks[i]->IsReady(store)) {
+                    std::vector<Unit*> targets = calc::find_soldiers_in_range(store, this->position, this->melee.attacks[i]->radius);
+                    if(std::find(targets.begin(),targets.end(),this->blocker) == targets.end()) continue;
+                    for(auto& target : targets) {
+                        if(target->health.hp <= 0) continue; // 如果目标已经死亡，跳过
+                        this->melee.attacks[i]->Apply(store, target); // 应用攻击
+                    }
+                    this->melee.attacks[i]->SetLastTime(store.time); // 更新上次攻击时间
+                    this->state = State::Attack; // 攻击状态
+                    return ;
+                }
+            }
+            return ;
+        }
+        if (is_moving()) { // 如果敌人正在移动
+            calc::move_tick(store, *this); // 调用运动函数更新位置
+            state = walkjudge(); // 根据当前方向设置状态
+            if(this->blocker != nullptr) state = State::Idle; // 如果有阻挡单位，设置状态为闲置
+            return ;
+        }
+        else if (this->state == State::Attack){
+            if(animation.pending==0) state = State::Idle;
+            return ;
+        }
     }
 };
+
+class ForestTroll : public ActiveEnemy_Melee{
+    public:
+    ForestTroll();
+}

@@ -34,4 +34,17 @@ public:
     State        state;
     virtual bool OnDamage() { return true; };
     virtual ~Unit() = default;
+    
+    bool is_moving(){
+        if(state == State::WalkingLeftRight || state == State::WalkingUp || state == State::WalkingDown || state == State::Running) {
+            return true; // 如果状态是左右行走、向上行走、向下行走或奔跑，返回 true
+        }
+        return false; // 否则返回 false
+    }
+    State walkjudge(){
+        if(heading == Heading::Right) return State::WalkingLeftRight; // 如果方向是向右，设置状态为左右行走
+        else if(heading == Heading::Up) return State::WalkingUp; // 如果方向是向上，设置状态为向上行走
+        else if(heading == Heading::Down) return State::WalkingDown; // 如果方向是向下，设置状态为向下行走
+        else return State::WalkingLeftRight; // 如果方向是向左，设置状态为左右行走
+    }
 };

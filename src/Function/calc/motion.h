@@ -1,4 +1,6 @@
 #pragma once
+#include "utils/macros.h"
+#include <SFML/System/Vector2.hpp>
 class Enemy;
 class Unit;
 class Store;
@@ -31,4 +33,19 @@ void soldier_move_tick(const Store& store, Soldier& self);
  * @param self
  */
 bool enemy_reached_defence_point(const Store& store, const Enemy& self);
+
+/**
+ * @brief 计算单位的真实速度
+ *
+ * @param unit
+ * @return double
+ */
+double real_speed(const Unit& unit);
+
 }   // namespace calc
+
+
+
+
+
+

@@ -30,12 +30,11 @@ public:
     Health       health;
     Armor        armor;
     double       speed;
-    State        state;
     virtual bool OnDamage() { return true; };
     virtual ~Unit() = default;
     
     bool is_moving(){
-        if(state == State::WalkingLeftRight || state == State::WalkingUp || state == State::WalkingDown || state == State::Running) {
+        if(animation.state == State::WalkingLeftRight || animation.state == State::WalkingUp || animation.state == State::WalkingDown || animation.state == State::Running) {
             return true; // 如果状态是左右行走、向上行走、向下行走或奔跑，返回 true
         }
         return false; // 否则返回 false

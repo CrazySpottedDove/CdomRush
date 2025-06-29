@@ -2,6 +2,8 @@
     "files.associations": {
         "vector": "cpp",
         "filesystem": "cpp",
-        "xmemory": "cpp"
+        "xmemory": "cpp",
+        "iosfwd": "cpp",
+        "xlocbuf": "cpp"
     }
 }

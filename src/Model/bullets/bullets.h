@@ -72,7 +72,7 @@ public:
             return; // 如果不是飞行状态，则不更新
         }
 
-        if(damage_event.target->state == State::Death){
+        if(damage_event.target->animation.state == State::Death){
             target_alive = false; // 如果目标死亡，则不再更新
         }
 

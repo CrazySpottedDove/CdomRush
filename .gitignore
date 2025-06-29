@@ -6,4 +6,5 @@ build/
 .cache/
 tmp/
 .vs
+.vscode
 .idea

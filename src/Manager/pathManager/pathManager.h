@@ -23,7 +23,10 @@ public:
         return paths[path_info.path_id][path_info.subpath_id];
     }
     bool IsPathEnd(const PathInfo& path_info) const {
-        return path_info.waypoint_id >= paths[path_info.path_id][path_info.subpath_id].size();
+        return path_info.waypoint_id + 1 >= paths[path_info.path_id][path_info.subpath_id].size();
+    }
+    int GetPointsRemained(const PathInfo& path_info) const {
+        return paths[path_info.path_id][path_info.subpath_id].size() - path_info.waypoint_id - 1;
     }
 private:
     Paths paths;

@@ -67,6 +67,4 @@ namespace calc{
      */
     std::vector<Soldier*> find_soldiers_in_range(const Store& store, const Position& position,
                                              const double range);
-
-
 }

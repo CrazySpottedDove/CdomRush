@@ -28,5 +28,15 @@ return {
             a_size = {2048, 2048},
             f_quad = {1142, 789, 29, 37}
         }
-    }
+    },
+    map_background = {
+        [1] = {
+            a_name = "screen_map-1.png",
+            size = {1920, 1080},
+            trim = {0, 0, 0, 0},
+            a_size = {2048, 2048},
+            f_quad = {6, 6, 1920, 1080},
+            alias = {}
+        }
+    },
 }

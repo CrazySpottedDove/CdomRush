@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <string>
 #include <vector>
+#include "Model/components/path.h"
 typedef std::vector<Position> SubPath;
 typedef std::vector<SubPath>  Path;
 typedef std::vector<Path> Paths;
@@ -14,6 +15,12 @@ public:
     void ClearPaths() { paths.clear(); }
     const Position& GetPathPoint(const std::size_t path_id, const std::size_t sub_path_id, const std::size_t waypoint_id) const{
         return paths[path_id][sub_path_id][waypoint_id];
+    }
+    const Position& GetPathPoint(const PathInfo& path_info) const {
+        return GetPathPoint(path_info.path_id, path_info.subpath_id, path_info.waypoint_id);
+    }
+    const SubPath& GetSubPath(const PathInfo& path_info)const{
+        return paths[path_info.path_id][path_info.subpath_id];
     }
 private:
     Paths paths;

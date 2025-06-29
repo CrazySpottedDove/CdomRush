@@ -1,9 +1,9 @@
 #pragma once
+#include "Manager/pathManager/pathManager.h"
 #include "Manager/resourceManager/animationManager.h"
 #include "Model/components/damage.h"
 #include <memory>
 #include <vector>
-#include "Manager/pathManager/pathManager.h"
 class Bullet;
 class Tower;
 class Enemy;
@@ -14,6 +14,7 @@ class Store
 public:
     double              time = 0.0;
     double              gold = 0.0;
+    int                 life = 20;
     std::vector<Enemy*> GetEnemies() { return enemies; }
 
     std::vector<Tower*> GetTowers() { return towers; }
@@ -33,7 +34,10 @@ public:
     void QueueDamageEvent(const DamageEvent& event) { damage_events.push_back(event); }
 
     AnimationManager animation_manager;
-    PathManager path_manager;
+    PathManager      path_manager;
+
+    void Update();
+
 private:
     std::vector<Enemy*>      enemies;
     std::vector<Tower*>      towers;

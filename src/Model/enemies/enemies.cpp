@@ -84,4 +84,6 @@ ForestTroll::ForestTroll(Position position_)
         static_cast<ActiveEntity*>(this);         // 设置攻击来源为当前敌人
     this->slot     = sf::Vector2f(35.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
+    this->animation.prefix = "aura_forest_troll_regen";
+    this->animation.state = State::Idle;   // 设置动画状态为闲置
 }

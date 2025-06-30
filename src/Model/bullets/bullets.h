@@ -44,8 +44,12 @@ class Arrow : public Bullet
 public:
     Arrow(){
         bullet_type = BulletType::Arrow; // 设置弹道类型为箭矢
-        damage_event = DamageEvent(DamageData(5.5, DamageType::Physical, 0, 0), nullptr, nullptr);
+        damage_event = DamageEvent(DamageData(0, DamageType::Physical, 0, 0), nullptr, nullptr);
         totalDuration_ = 1.0; // 设置总持续时间
+        hit_fx = FxType::None; // 箭矢没有特殊的击中效果
+        radius = 0.0; // 箭矢没有爆炸半径
+        animation.state = State::Flying; // 设置初始状态为飞行
+        animation.prefix = "arrow"; // 设置动画前缀
     }; // 默认构造函数
     Arrow(const Arrow & other) = default; // 拷贝构造函数
     Bullet* Clone() const override {
@@ -76,8 +80,12 @@ class Bolt : public Bullet
 public:
     Bolt(){
         bullet_type = BulletType::Bolt; // 设置弹道类型为法球
-        damage_event = DamageEvent(DamageData(15.0, DamageType::Magical, 0, 0), nullptr, nullptr);
+        damage_event = DamageEvent(DamageData(0.0, DamageType::Magical, 0, 0), nullptr, nullptr);
         totalDuration_ = 0.5; // 设置总持续时间
+        hit_fx = FxType::None; // 法球没有特殊的击中效果
+        radius = 0.0; // 法球没有爆炸半径
+        animation.state = State::Flying; // 设置初始状态为飞行
+        animation.prefix = "bolt"; // 设置动画前缀
     }
     Bolt(const Bolt & other) = default; // 拷贝构造函数
 
@@ -92,10 +100,12 @@ class Bomb : public Bullet
 public:
     Bomb(){
         bullet_type = BulletType::Bomb; // 设置弹道类型为炸弹
-        damage_event = DamageEvent(DamageData(9.5, DamageType::Explosion, 0, 0), nullptr, nullptr);
+        damage_event = DamageEvent(DamageData(0, DamageType::Explosion, 0, 0), nullptr, nullptr);
         totalDuration_ = 1.5; // 设置总持续时间
         hit_fx = FxType::Explosion; // 爆炸效果
         radius = 60.0; // 设置爆炸半径
+        animation.state = State::Flying; // 设置初始状态为飞行
+        animation.prefix = "bomb"; // 设置动画前缀
     }
     Bomb(const Bomb & other) = default; // 拷贝构造函数
 

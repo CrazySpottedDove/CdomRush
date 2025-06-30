@@ -1,5 +1,6 @@
 #include "Model/bullets/bullets.h"
 #include "Manager/store/store.h"
+#include <cmath>
 
 bool Bullet::Insert(Store& store)
 {
@@ -33,8 +34,12 @@ void Arrow::Update(Store& store)
     if (target_alive) target_position = damage_event.target->position;   // 更新目标位置
     sf::Vector2f p1 = GetControlPoint(source_position, target_position);
     this->position  = Bezier(t, source_position, p1, target_position);
+    sf::Vector2f dBezier = 2.0f * (1.0f - t) * (p1 - source_position) + 2.0f * t * (target_position - p1);
+    float angle_radians = std::atan2(dBezier.y, dBezier.x);
+    float angle_degrees = angle_radians * 180.0f / 3.14159265f;
 
-    return;
+    this->animation.rotation = angle_degrees;
+    return ;
 }
 
 void Bolt::Update(Store& store)

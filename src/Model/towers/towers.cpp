@@ -34,6 +34,9 @@ None::None(Position position_) {
         {TowerAction::Upgrade, {TowerType::Engineer1, 125}}, // 125,220,320
         {TowerAction::Upgrade, {TowerType::Mage1, 100}} // 100,160,240
     };
+    Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_archer_%04i"},Position{0.0f, 12.0f}};
+    Layers.push_back(layer1);
+    animation.state = State::Idle; // 设置初始状态为闲置
 }
 
 

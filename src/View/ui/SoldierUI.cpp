@@ -7,6 +7,7 @@
 SoldierUI::SoldierUI(Soldier* soldier, AnimationPlayer& animation_player)
     : soldier_(soldier)
     , animation_player_(animation_player)
+    , animation_context_()  // 初始化动画上下文
     , last_state_(State::Idle)
     , last_heading_(Heading::Right)
     , initialized_(false)
@@ -30,7 +31,7 @@ void SoldierUI::Render(sf::RenderWindow& window, const sf::Vector2f& scale)
     }
     
     // 如果Soldier已死亡且动画播放完成，不再渲染
-    if (soldier_->state == State::Death && animation_player_.IsAnimationFinished(*soldier_)) {
+    if (soldier_->state == State::Death && animation_player_.IsAnimationFinished(*soldier_, animation_context_)) {
         return;
     }
     
@@ -43,7 +44,7 @@ void SoldierUI::Render(sf::RenderWindow& window, const sf::Vector2f& scale)
     UpdateAnimationState();
     
     // 渲染Soldier（使用Unit接口，支持状态驱动和翻转）
-    animation_player_.Render(window, *soldier_, scale);
+    animation_player_.Render(window, *soldier_, animation_context_, scale);
 }
 
 /**
@@ -59,9 +60,11 @@ void SoldierUI::InitializeAnimation()
     last_state_ = soldier_->state;
     last_heading_ = soldier_->heading;
     
-    // 开始播放初始动画（根据Soldier状态确定是否循环）
+    // 根据Soldier状态确定是否循环
     bool should_loop = (soldier_->state != State::Death && soldier_->state != State::Attack);
-    animation_player_.PlayAnimation(*soldier_, should_loop);
+    
+    // 开始播放初始动画（传递animation_context_）
+    animation_player_.PlayAnimation(*soldier_, animation_context_, should_loop);
     
     initialized_ = true;
     
@@ -92,15 +95,15 @@ void SoldierUI::UpdateAnimationState()
         // 根据新状态确定是否循环播放
         bool should_loop = true;
         if (soldier_->state == State::Death || soldier_->state == State::Attack) {
-            should_loop = false;  // 死亡和攻击动画不循环
+            should_loop = false; 
         }
         
-        // 播放新动画
-        animation_player_.PlayAnimation(*soldier_, should_loop);
+        // 播放新动画（传递animation_context_）
+        animation_player_.PlayAnimation(*soldier_, animation_context_, should_loop);
     }
     
-    // 自动更新动画帧（Unit版本会智能检测状态变化）
-    animation_player_.Update(*soldier_);
+    // 自动更新动画帧（传递animation_context_）
+    animation_player_.Update(*soldier_, animation_context_);
 }
 
 /**

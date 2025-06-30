@@ -4,13 +4,11 @@
 #include "Model/soldiers/soldiers.h"
 
 /**
- * @brief SoldierUI类 - 处理Soldier实体的UI渲染和状态管理
+ * @brief SoldierUI类 - 处理Soldier实体的UI渲染和状态切换，还有flip
  * 
- * 功能：
- * 1. 管理Soldier的动画状态切换
- * 2. 处理Soldier的方向翻转逻辑
- * 3. 提供Soldier的渲染功能
- * 4. 自动检测Soldier状态变化并更新动画
+ * 重构后的设计：
+ * 1. 拥有独立的AnimationContext，避免状态冲突
+ * 2. 通过context管理动画状态，实现与其他UI的完全隔离
  */
 class SoldierUI : public BaseUI
 {
@@ -36,11 +34,12 @@ public:
     Soldier* GetSoldier() const { return soldier_; }
 
 private:
-    Soldier* soldier_;                      ///< 关联的Soldier实体
-    AnimationPlayer& animation_player_;     ///< AnimationPlayer引用
-    State last_state_;                      ///< 上次的状态，用于检测状态变化
-    Heading last_heading_;                  ///< 上次的朝向，用于检测朝向变化
-    bool initialized_;                      ///< 是否已初始化动画
+    Soldier* soldier_;                       ///< 关联的Soldier实体
+    AnimationPlayer& animation_player_;      ///< AnimationPlayer引用
+    AnimationContext animation_context_;     ///< 独立的动画上下文
+    State last_state_;                       ///< 上次的状态，用于检测状态变化
+    Heading last_heading_;                   ///< 上次的朝向，用于检测朝向变化
+    bool initialized_;                       ///< 是否已初始化动画
     
     /**
      * @brief 更新动画状态（内部使用）

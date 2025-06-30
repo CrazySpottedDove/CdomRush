@@ -7,7 +7,8 @@
 #define SOUNDS_PATH "assets/sounds/"
 #define PATH_PATH "data/paths/"
 #define DEFAULT_SCREEN_WIDTH 1920
-#define DEFAULT_SCREEN_LENGTH 1080
+#define DEFAULT_SCREEN_HEIGHT 1080
+#define DEFAULT_WINDOW_TITLE "CdomRush"
 constexpr double FRAME_LENGTH = 1.0 / FPS;
 
 #define INVALID_ID -1

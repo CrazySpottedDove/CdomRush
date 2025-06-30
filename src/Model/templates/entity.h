@@ -1,12 +1,14 @@
 #pragma once
 #include "Model/components/animation.h"
 #include "utils/macros.h"
+
 class Store;
 
 // 参与主时钟更新的实体
 
 class Entity{
 public:
+    ID id = INVALID_ID; // 实体ID
     Position position;
     Animation animation;
     virtual ~Entity() = default;

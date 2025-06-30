@@ -8,6 +8,9 @@
 UIManager::UIManager(Store& store)
     : store_(store)
     , animation_player_(std::make_unique<AnimationPlayer>(store.animation_manager))
+    , current_map_prefix_("")           // 初始化时没有地图
+    , current_map_position_(0.0f, 0.0f) // 默认位置
+    , current_map_scale_(1.0f, 1.0f)    // 默认缩放
 {
     std::cout << "UIManager: Initialized with AnimationPlayer" << std::endl;
 }
@@ -29,12 +32,14 @@ void UIManager::Update()
  */
 void UIManager::RenderAll(sf::RenderWindow& window, const sf::Vector2f& scale)
 {
-    // 首先渲染地图
-    RenderMap(window, {0.0f, 0.0f}, scale);
+    // 根据当前地图状态决定是否渲染地图
+    if (HasCurrentMap()) {
+        RenderMap(window, current_map_prefix_, current_map_position_, current_map_scale_);
+    }
     
     // 然后按层次渲染实体：Tower -> Enemy -> Soldier -> Bullet
     
-    // 1. 渲染Tower（建筑层，最底层）
+    // 1. 渲染Tower（最底层）
     for (auto& [tower_ptr, tower_ui] : tower_uis_) {
         if (tower_ui) {
             tower_ui->Render(window, scale);
@@ -66,10 +71,11 @@ void UIManager::RenderAll(sf::RenderWindow& window, const sf::Vector2f& scale)
 /**
  * @brief 单独渲染地图
  */
-void UIManager::RenderMap(sf::RenderWindow& window, const sf::Vector2f& position, const sf::Vector2f& scale)
+void UIManager::RenderMap(sf::RenderWindow& window, const std::string& map_prefix, 
+                         const sf::Vector2f& position, const sf::Vector2f& scale)
 {
     if (animation_player_) {
-        animation_player_->RenderMap(window, position, scale);
+        animation_player_->RenderMap(window, map_prefix, position, scale);
     }
 }
 
@@ -91,17 +97,16 @@ UIManager::UIStats UIManager::GetStats() const
  */
 void UIManager::SyncEnemyUIs()
 {
-    const auto& enemies = store_.GetEnemies();
-    
-    // 清理不存在的Enemy UI
-    CleanupDeadUIs(enemy_uis_, enemies);
-    
-    // 为新Enemy创建UI
-    for (Enemy* enemy : enemies) {
-        if (enemy != nullptr && enemy_uis_.find(enemy) == enemy_uis_.end()) {
-            std::cout << "UIManager: Creating new EnemyUI for enemy at (" 
-                      << enemy->position.x << "," << enemy->position.y << ")" << std::endl;
-            enemy_uis_[enemy] = std::make_unique<EnemyUI>(enemy, *animation_player_);
+    const auto& enemies =  store_.GetEnemies();
+
+    CleanupDeadUIs(enemy_uis_,enemies);//删除死去的即enemies里面没有的
+
+    for(Enemy* enemy:enemies)//增添新的enemy
+    {
+        if(enemy != nullptr && enemy_uis_.find(enemy) == enemy_uis_.end())
+        {
+            std::cout << "UIManager: Creating new EnemyUI for enemy at (" << enemy->position.x <<","<<enemy->position.y <<")" <<std::endl;
+            enemy_uis_[enemy] = std::make_unique<EnemyUI>(enemy,*animation_player_);
         }
     }
 }
@@ -167,24 +172,58 @@ void UIManager::SyncTowerUIs()
 }
 
 /**
- * @brief 清理死亡实体的UI（模板实现）
+ * @brief 清理死亡实体的UI
  */
 template<typename EntityType, typename UIType>
 void UIManager::CleanupDeadUIs(std::unordered_map<EntityType*, std::unique_ptr<UIType>>& ui_map,
                                 const std::vector<EntityType*>& entities)
 {
     auto ui_it = ui_map.begin();
-    while (ui_it != ui_map.end()) {
+    while (ui_it != ui_map.end())
+    {
         EntityType* entity_ptr = ui_it->first;
-        
-        // 检查实体是否还存在于Store中
-        bool entity_exists = std::find(entities.begin(), entities.end(), entity_ptr) != entities.end();
-        
-        if (!entity_exists) {
-            std::cout << "UIManager: Removing UI for deleted entity" << std::endl;
+        bool entity_exists = std::find(entities.begin(),entities.end(),entity_ptr) != entities.end();
+        if(!entity_exists)
+        {
             ui_it = ui_map.erase(ui_it);
-        } else {
+            std::cout << "UIManager: Removing UI for deleted entity" << std::endl;
+        }
+        else
+        {
             ++ui_it;
         }
+    }
+}
+
+// ===============================
+// 地图管理功能实现
+// ===============================
+
+/**
+ * @brief 设置当前地图
+ */
+void UIManager::SetCurrentMap(const std::string& map_prefix, 
+                             const sf::Vector2f& position,
+                             const sf::Vector2f& scale)
+{
+    current_map_prefix_ = map_prefix;
+    current_map_position_ = position;
+    current_map_scale_ = scale;
+    
+    std::cout << "UIManager: Set current map to '" << map_prefix 
+              << "' at position (" << position.x << "," << position.y 
+              << ") with scale (" << scale.x << "," << scale.y << ")" << std::endl;
+}
+
+/**
+ * @brief 清除当前地图
+ */
+void UIManager::ClearCurrentMap()
+{
+    if (!current_map_prefix_.empty()) {
+        std::cout << "UIManager: Clearing map '" << current_map_prefix_ << "'" << std::endl;
+        current_map_prefix_.clear();
+        current_map_position_ = {0.0f, 0.0f};
+        current_map_scale_ = {1.0f, 1.0f};
     }
 } 

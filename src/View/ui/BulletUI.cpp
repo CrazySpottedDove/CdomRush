@@ -7,7 +7,8 @@
 BulletUI::BulletUI(Bullet* bullet, AnimationPlayer& animation_player)
     : bullet_(bullet)
     , animation_player_(animation_player)
-    , last_state_(State::Idle)
+    , animation_context_()  // 初始化动画上下文
+    , last_state_(State::Flying)
     , initialized_(false)
 {
     if (bullet_ == nullptr) {
@@ -41,8 +42,8 @@ void BulletUI::Render(sf::RenderWindow& window, const sf::Vector2f& scale)
     // 更新动画状态
     UpdateAnimationState();
     
-    // 渲染Bullet（使用Entity接口，基础动画播放）
-    animation_player_.Render(window, *bullet_, scale);
+    // 渲染Bullet（使用Entity接口，不支持翻转）
+    animation_player_.Render(window, *bullet_, animation_context_, scale);
 }
 
 /**
@@ -57,14 +58,13 @@ void BulletUI::InitializeAnimation()
     // 记录初始状态
     last_state_ = bullet_->animation.state;
     
-    // 开始播放初始动画（根据Bullet状态确定是否循环）
-    bool should_loop = (bullet_->animation.state == State::Flying);  // 飞行时循环，击中时不循环
-    animation_player_.PlayAnimation(*bullet_, bullet_->animation.state, should_loop);
+    // Bullet通常使用Flying状态，循环播放
+    animation_player_.PlayAnimation(*bullet_, animation_context_, State::Flying, true);
     
     initialized_ = true;
     
     std::cout << "BulletUI: Initialized animation for " << bullet_->animation.prefix 
-              << " with state " << static_cast<int>(bullet_->animation.state) << std::endl;
+              << " with state " << static_cast<int>(State::Flying) << std::endl;
 }
 
 /**
@@ -85,15 +85,12 @@ void BulletUI::UpdateAnimationState()
         // 更新记录的状态
         last_state_ = bullet_->animation.state;
         
-        // 根据新状态确定是否循环播放
-        bool should_loop = (bullet_->animation.state == State::Flying);  // 飞行时循环，击中时不循环
-        
-        // 播放新动画
-        animation_player_.PlayAnimation(*bullet_, bullet_->animation.state, should_loop);
+        // 播放新动画（Entity接口需要明确指定状态）
+        animation_player_.PlayAnimation(*bullet_, animation_context_, bullet_->animation.state, true);
     }
     
-    // 自动更新动画帧（Entity版本的简单前进）
-    animation_player_.Update(*bullet_);
+    // 自动更新动画帧（传递animation_context_）
+    animation_player_.Update(*bullet_, animation_context_);
     
     // TODO: 后续实现旋转逻辑
     // UpdateRotation();
@@ -108,7 +105,7 @@ bool BulletUI::NeedsAnimationUpdate() const
         return false;
     }
     
-    return (last_state_ != bullet_->animation.state);
+    return last_state_ != bullet_->animation.state;
 }
 
 // TODO: 后续实现旋转逻辑

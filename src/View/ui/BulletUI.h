@@ -6,11 +6,11 @@
 /**
  * @brief BulletUI类 - 处理Bullet实体的UI渲染和动画管理
  * 
- * 功能：
- * 1. 管理Bullet的基础动画播放
- * 2. 处理Bullet的旋转逻辑（后续实现）
- * 3. 提供Bullet的渲染功能
- * 4. 自动检测Bullet状态变化并更新动画
+ * 重构后的设计：
+ * 1. 拥有独立的AnimationContext，避免状态冲突
+ * 2. 通过context管理动画状态，实现与其他UI的完全隔离
+ * 3. 管理Bullet的基础动画播放（Entity类型）
+ * 4. 处理Bullet的旋转逻辑（后续实现）
  */
 class BulletUI : public BaseUI
 {
@@ -38,6 +38,7 @@ public:
 private:
     Bullet* bullet_;                        ///< 关联的Bullet实体
     AnimationPlayer& animation_player_;     ///< AnimationPlayer引用
+    AnimationContext animation_context_;    ///< 独立的动画上下文
     State last_state_;                      ///< 上次的状态，用于检测状态变化
     bool initialized_;                      ///< 是否已初始化动画
     // TODO: 旋转相关成员变量

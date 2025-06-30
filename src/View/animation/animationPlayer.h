@@ -7,24 +7,57 @@
 #include "Model/templates/unit.h"
 
 /**
+ * @brief 动画上下文 - 存储每个UI独立的动画状态
+ * 
+ * 这个结构体解决了AnimationPlayer全局状态冲突的问题。
+ * 每个UI类（EnemyUI、BulletUI等）都会拥有自己的AnimationContext实例，
+ * 从而实现动画状态的完全隔离。
+ */
+struct AnimationContext {
+    State current_state = State::Idle;      // 当前播放的动画状态
+    bool loop_enabled = true;               // 是否循环播放
+    bool is_paused = false;                 // 是否暂停
+    
+    /**
+     * @brief 检查是否需要状态切换
+     * @param target_state 目标状态
+     * @return true 如果需要切换状态
+     */
+    bool needs_state_change(State target_state) const {
+        return current_state != target_state;
+    }
+    
+    /**
+     * @brief 更新当前状态
+     * @param new_state 新的状态
+     */
+    void update_state(State new_state) {
+        current_state = new_state;
+    }
+    
+    /**
+     * @brief 重置上下文到初始状态
+     */
+    void reset() {
+        current_state = State::Idle;
+        loop_enabled = true;
+        is_paused = false;
+    }
+};
+
+/**
  * @brief 动画播放器类 - 帧驱动的动画控制，支持Entity和Unit
  * 
- * 这个类负责：
- * 1. 为所有Entity提供基础动画播放功能
- * 2. 为Unit提供状态驱动和方向翻转功能
- * 3. 控制动画帧的前进
- * 4. 将动画渲染到屏幕上
- * 5. 向实体反馈动画播放状态
- * 
- * 支持的实体类型：
- * - Entity: 基础动画播放（建筑、道具、特效等）
- * - Unit: 完整功能（士兵、敌人等，支持状态驱动和翻转）
+ * 重构后的设计：
+ * 1. AnimationPlayer不再维护全局状态，完全无状态
+ * 2. 所有状态都通过AnimationContext参数传递
+ * 3. 每个UI对象拥有自己的AnimationContext，实现状态隔离
+ * 4. 支持多线程安全操作
  * 
  * 使用方法：
- * 1. 创建AnimationPlayer实例
- * 2. 对Entity调用基础接口，对Unit调用扩展接口
- * 3. 调用NextFrame()手动前进或Update()自动前进
- * 4. 调用Render渲染当前帧
+ * 1. 每个UI类创建自己的AnimationContext实例
+ * 2. 调用AnimationPlayer方法时传递context引用
+ * 3. AnimationPlayer基于context和entity/unit进行动画处理
  */
 class AnimationPlayer
 {
@@ -40,70 +73,79 @@ public:
     // ===============================
     
     /**
-     * @brief 播放指定状态的动画（Entity无生命实体 - 基础）
+     * @brief 播放指定状态的动画（Entity版本 - 基础）
      * @param entity Entity对象引用
+     * @param context 动画上下文引用
      * @param state 要播放的动画状态
      * @param loop 是否循环播放（默认true）
      */
-    void PlayAnimation(Entity& entity, State state, bool loop = true);
+    void PlayAnimation(Entity& entity, AnimationContext& context, State state, bool loop = true);
     
     /**
      * @brief 手动前进到下一帧（Entity版）
      * @param entity Entity对象引用
+     * @param context 动画上下文引用
      * @return true 如果成功前进到下一帧，false 如果动画已结束
      */
-    bool NextFrame(Entity& entity);
+    bool NextFrame(Entity& entity, AnimationContext& context);
     
     /**
      * @brief 自动更新动画（Entity版本）
      * @param entity Entity对象引用
+     * @param context 动画上下文引用
      */
-    void Update(Entity& entity);
+    void Update(Entity& entity, AnimationContext& context);
     
     /**
      * @brief 渲染当前帧到指定位置（Entity版本）
      * @param window 渲染窗口
      * @param entity Entity对象
+     * @param context 动画上下文引用
      * @param scale 缩放比例（默认1.0，不缩放）
      * 
      * Note：Entity版本使用entity.position作为渲染位置
      */
-    void Render(sf::RenderWindow& window, const Entity& entity, 
+    void Render(sf::RenderWindow& window, const Entity& entity, const AnimationContext& context,
                const sf::Vector2f& scale = {1.0f, 1.0f});
     
     /**
      * @brief 停止当前动画（Entity版本）
      * @param entity Entity对象引用
+     * @param context 动画上下文引用
      */
-    void StopAnimation(Entity& entity);
+    void StopAnimation(Entity& entity, AnimationContext& context);
     
     /**
      * @brief 重置动画到第一帧（Entity版本）
      * @param entity Entity对象引用
+     * @param context 动画上下文引用
      */
-    void ResetAnimation(Entity& entity);
+    void ResetAnimation(Entity& entity, AnimationContext& context);
     
     /**
      * @brief 检查动画是否播放完成（Entity版本）
      * @param entity Entity对象
+     * @param context 动画上下文引用
      * @return true 如果动画播放完成
      */
-    bool IsAnimationFinished(const Entity& entity) const;
+    bool IsAnimationFinished(const Entity& entity, const AnimationContext& context) const;
     
     /**
      * @brief 暂停/恢复动画（Entity版本）
      * @param entity Entity对象引用
+     * @param context 动画上下文引用
      * @param paused true=暂停，false=恢复
      */
-    void SetPaused(Entity& entity, bool paused);
+    void SetPaused(Entity& entity, AnimationContext& context, bool paused);
     
     /**
      * @brief 跳转到指定帧（Entity版本）
      * @param entity Entity对象引用
+     * @param context 动画上下文引用
      * @param frame_id 目标帧ID（相对于动画组的起始帧）
      * @return true 如果跳转成功
      */
-    bool JumpToFrame(Entity& entity, std::size_t frame_id);
+    bool JumpToFrame(Entity& entity, AnimationContext& context, std::size_t frame_id);
     
     // ===============================
     // Unit接口 - 状态驱动+翻转
@@ -112,70 +154,81 @@ public:
     /**
      * @brief 开始播放动画（Unit版本 - 状态驱动+翻转）
      * @param unit Unit对象引用（包含state、heading、animation等信息）
+     * @param context 动画上下文引用
      * @param loop 是否循环播放（默认true）
      * 
      * 根据unit.state自动选择合适的动画
      * 根据unit.heading决定是否翻转
      */
-    void PlayAnimation(Unit& unit, bool loop = true);
+    void PlayAnimation(Unit& unit, AnimationContext& context, bool loop = true);
     
     /**
      * @brief 手动前进到下一帧（Unit版本）
      * @param unit Unit对象引用
+     * @param context 动画上下文引用
      * @return true 如果成功前进到下一帧，false 如果动画已结束
      */
-    bool NextFrame(Unit& unit);
+    bool NextFrame(Unit& unit, AnimationContext& context);
     
     /**
      * @brief 自动更新动画（Unit版本）
      * @param unit Unit对象引用
+     * @param context 动画上下文引用
      * 
      * 会自动检测Unit状态变化并切换动画
      */
-    void Update(Unit& unit);
+    void Update(Unit& unit, AnimationContext& context);
     
     /**
      * @brief 渲染当前帧到指定位置（Unit版本 - 支持翻转）
      * @param window 窗口
      * @param unit Unit对象（包含动画信息和方向信息）
+     * @param context 动画上下文引用
      * @param scale 缩放比例（默认1.0，不缩放）
      * 
      * 注意：Unit版本使用unit.position作为渲染位置，并支持翻转
      */
-    void Render(sf::RenderWindow& window, const Unit& unit, 
+    void Render(sf::RenderWindow& window, const Unit& unit, const AnimationContext& context,
                const sf::Vector2f& scale = {1.0f, 1.0f});
     
     /**
      * @brief 停止当前动画（Unit版本）
+     * @param unit Unit对象引用
+     * @param context 动画上下文引用
      */
-    void StopAnimation(Unit& unit);
+    void StopAnimation(Unit& unit, AnimationContext& context);
     
     /**
      * @brief 重置动画到第一帧（Unit版本）
+     * @param unit Unit对象引用
+     * @param context 动画上下文引用
      */
-    void ResetAnimation(Unit& unit);
+    void ResetAnimation(Unit& unit, AnimationContext& context);
     
     /**
      * @brief 检查动画是否播放完成（Unit版本）
      * @param unit Unit对象
+     * @param context 动画上下文引用
      * @return true 如果动画播放完成
      */
-    bool IsAnimationFinished(const Unit& unit) const;
+    bool IsAnimationFinished(const Unit& unit, const AnimationContext& context) const;
     
     /**
      * @brief 暂停/恢复动画（Unit版本）
      * @param unit Unit对象引用
+     * @param context 动画上下文引用
      * @param paused true=暂停，false=恢复
      */
-    void SetPaused(Unit& unit, bool paused);
+    void SetPaused(Unit& unit, AnimationContext& context, bool paused);
     
     /**
      * @brief 跳转到指定帧（Unit版本）
      * @param unit Unit对象引用
+     * @param context 动画上下文引用
      * @param frame_id 目标帧ID（相对于动画组的起始帧）
      * @return true 如果跳转成功
      */
-    bool JumpToFrame(Unit& unit, std::size_t frame_id);
+    bool JumpToFrame(Unit& unit, AnimationContext& context, std::size_t frame_id);
     
     /**
      * @brief 渲染地图背景
@@ -193,11 +246,6 @@ public:
 
 private:
     const AnimationManager& animation_manager_;  
-    
-    // 当前播放状态
-    State current_state_;           // 当前播放的状态
-    bool loop_enabled_;             // 是否循环播放
-    bool is_paused_;                // 是否暂停
     
     // ===============================
     // Unit专用

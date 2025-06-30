@@ -4,6 +4,7 @@
 TowerUI::TowerUI(Tower* tower, AnimationPlayer& animation_player)
     : tower_(tower)
     , animation_player_(animation_player)
+    , animation_context_()  // 初始化动画上下文
     , last_state_(State::Idle)
     , initialized_(false)
 {
@@ -27,7 +28,8 @@ void TowerUI::Render(sf::RenderWindow& window, const sf::Vector2f& scale)
     }
     
     UpdateAnimationState();
-    animation_player_.Render(window, *tower_, scale);
+    // 渲染Tower（使用Entity接口，不支持翻转）
+    animation_player_.Render(window, *tower_, animation_context_, scale);
 }
 
 void TowerUI::InitializeAnimation()
@@ -37,8 +39,9 @@ void TowerUI::InitializeAnimation()
     }
     
     last_state_ = tower_->animation.state;
-    bool should_loop = true;
-    animation_player_.PlayAnimation(*tower_, tower_->animation.state, should_loop);
+    // Tower的默认状态通常是Idle，循环播放
+    bool should_loop = (tower_->animation.state == State::Idle);
+    animation_player_.PlayAnimation(*tower_, animation_context_, tower_->animation.state, should_loop);
     
     initialized_ = true;
     
@@ -58,11 +61,19 @@ void TowerUI::UpdateAnimationState()
                   << " to " << static_cast<int>(tower_->animation.state) << std::endl;
         
         last_state_ = tower_->animation.state;
+        
+        // 根据新状态确定是否循环播放
         bool should_loop = true;
-        animation_player_.PlayAnimation(*tower_, tower_->animation.state, should_loop);
+        if (tower_->animation.state == State::Shoot || tower_->animation.state == State::Attack) {
+            should_loop = false;  // 攻击动画不循环
+        }
+        
+        // 播放新动画（Entity接口需要明确指定状态）
+        animation_player_.PlayAnimation(*tower_, animation_context_, tower_->animation.state, should_loop);
     }
     
-    animation_player_.Update(*tower_);
+    // 自动更新动画帧（传递animation_context_）
+    animation_player_.Update(*tower_, animation_context_);
 }
 
 bool TowerUI::NeedsAnimationUpdate() const

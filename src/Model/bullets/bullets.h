@@ -44,7 +44,7 @@ class Arrow : public Bullet
 public:
     Arrow(){
         bullet_type = BulletType::Arrow; // 设置弹道类型为箭矢
-        damage_event = DamageEvent(DamageData(0, DamageType::Physical, 0, 0), nullptr, nullptr);
+        damage_event = DamageEvent(DamageData(0, DamageType::Physical, 0, 0), INVALID_ID, INVALID_ID);
         totalDuration_ = 1.0; // 设置总持续时间
         hit_fx = FxType::None; // 箭矢没有特殊的击中效果
         radius = 0.0; // 箭矢没有爆炸半径
@@ -80,7 +80,7 @@ class Bolt : public Bullet
 public:
     Bolt(){
         bullet_type = BulletType::Bolt; // 设置弹道类型为法球
-        damage_event = DamageEvent(DamageData(0.0, DamageType::Magical, 0, 0), nullptr, nullptr);
+        damage_event = DamageEvent(DamageData(0.0, DamageType::Magical, 0, 0), INVALID_ID, INVALID_ID);
         totalDuration_ = 0.5; // 设置总持续时间
         hit_fx = FxType::None; // 法球没有特殊的击中效果
         radius = 0.0; // 法球没有爆炸半径
@@ -100,7 +100,7 @@ class Bomb : public Bullet
 public:
     Bomb(){
         bullet_type = BulletType::Bomb; // 设置弹道类型为炸弹
-        damage_event = DamageEvent(DamageData(0, DamageType::Explosion, 0, 0), nullptr, nullptr);
+        damage_event = DamageEvent(DamageData(0, DamageType::Explosion, 0, 0), INVALID_ID, INVALID_ID);
         totalDuration_ = 1.5; // 设置总持续时间
         hit_fx = FxType::Explosion; // 爆炸效果
         radius = 60.0; // 设置爆炸半径

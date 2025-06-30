@@ -6,13 +6,13 @@
 // 范围攻击
 class MeleeAttack: public Attack{
 public:
-    MeleeAttack(DamageData data,double radius = 50.0, double cooldown = 1.0, double chance = 1.0)
+    MeleeAttack(DamageData data,ID sourceID = INVALID_ID,double radius = 50.0, double cooldown = 1.0, double chance = 1.0)
         : Attack(cooldown, chance), radius(radius) {
-        damage_event = DamageEvent(data, nullptr, nullptr);
+        damage_event = DamageEvent(data, sourceID, INVALID_ID);
     }
     double radius; // 伤害半径
     DamageEvent damage_event;
-    void Apply(Store& store, Unit* target) noexcept;
+    void Apply(Store& store, ID target) noexcept;
 };
 
 class Melee{

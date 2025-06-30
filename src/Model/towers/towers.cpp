@@ -2,17 +2,25 @@
 #include "Model/components/ranged.h"
 #include "Model/enemies/enemies.h"
 
+#include "Manager/store/store.h"
+
 
 void Tower::Update(Store& store){
     if(animation.state == State::Idle){
         for(auto& attack : ranged.attacks){
             if(attack.IsReady(store)) {
-                Enemy* target_enemy = calc::find_foremost_enemy(store, position, attack.range);
-                if(target_enemy == nullptr) continue; // 如果没有找到目标敌人，跳过
+                ID target_enemy = calc::find_foremost_enemy(store, position, attack.range);
+                Enemy* target_enemy_ptr = store.GetEnemy(target_enemy);
+
+                if(target_enemy == INVALID_ID) continue; // 如果没有找到目标敌人，跳过
+                if(target_enemy_ptr == nullptr) continue; 
+
                 animation.state = State::Shoot; // 设置状态为射击
-                attack.Apply(store, target_enemy, this);
-                if(target_enemy->position.y < position.y) heading = tower_heading::Up; // 如果目标敌人在塔的上方，设置塔的朝向为 Up
+                attack.Apply(store, this->id, target_enemy);
+                if(target_enemy_ptr->position.y < position.y) heading = tower_heading::Up; // 如果目标敌人在塔的上方，设置塔的朝向为 Up
                 else heading = tower_heading::Down; // 如果目标敌人在塔的下方，设置塔的朝向为 Down
+
+                return ;
             }
         }
     }

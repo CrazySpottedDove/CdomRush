@@ -2,32 +2,55 @@
 #include "Manager/store/store.h"
 #include <cmath>
 
+bool Bullet::check_position(Store& store)
+{
+    // 检查目标是否存活
+    if(source_type == SourceType::Tower || source_type == SourceType::Soldier){
+        Enemy* target = store.GetEnemy(damage_event.target);   // 获取目标敌人
+        if (target->animation.state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
+        else target_position = target->position;   // 更新目标位置
+    }
+    if(source_type == SourceType::Enemy){
+        Soldier* target = store.GetSoldier(damage_event.target);   // 获取目标士兵
+        if (target->animation.state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
+        else target_position = target->position;   // 更新目标位置
+    }
+}
+
 bool Bullet::Insert(Store& store)
 {
-    target_alive    = true;                            // 初始化目标存活状态
-    Unit* target = store.GetEnemy(damage_event.target); // 获取目标单位
-    if(target==nullptr) target = store.GetSoldier(damage_event.target); // 如果目标是敌人，则获取士兵
-    target_position = target->position;   // 设置目标位置
+    ActiveEntity* source = store.GetEnemy(damage_event.source);   // 获取源单位
+    if(source != nullptr){
+        Unit* target = store.GetSoldier(damage_event.target); // 获取目标单位
+        source_type = SourceType::Enemy;   // 设置源类型为敌人
+        source_position = source->position; // 设置源位置
+        target_position = target->position; // 设置目标位置
+        return true;
+    }
+    source = store.GetTower(damage_event.source);   // 获取源塔
+    if(source != nullptr){
+        Unit* target = store.GetEnemy(damage_event.target); // 获取目标敌人
+        source_type = SourceType::Tower;   // 设置源类型为塔
+        source_position = source->position; // 设置源位置
+        target_position = target->position; // 设置目标位置
+        return true;
+    }
+    source = store.GetSoldier(damage_event.source);   // 获取源士兵
+    if(source != nullptr){
+        Unit* target = store.GetEnemy(damage_event.target); // 获取目标敌人
+        source_type = SourceType::Soldier;   // 设置源类型为士兵
+        source_position = source->position;   // 设置源位置
+        target_position = target->position;   // 设置目标位置
+        return true;
+    }
 
-    Unit* source = store.GetEnemy(damage_event.source); // 获取源单位
-    if(source == nullptr) source = store.GetSoldier(damage_event.source); // 如果源是敌人，则获取士兵
-    source_position = source->position;   // 设置源位置
-
-    initial_time    = store.time;
-    return true;
+    return false;   // 如果源和目标都不存在，则返回 false
 }
 
 void Arrow::Update(Store& store)
 {
     // 更新箭矢位置和动画
-    if (animation.state != State::Flying) {
-        return;   // 如果不是飞行状态，则不更新
-    }
-
-    if(target_alive)
-    if (damage_event.target->animation.state == State::Death) {
-        target_alive = false;   // 如果目标死亡，则不再更新
-    }
+    if(animation.state == State::Hit) return ;   // 如果已经击中，则不再更新
 
     float t = (store.time - initial_time) / totalDuration_;
     if (t >= 1.0f) {
@@ -36,8 +59,10 @@ void Arrow::Update(Store& store)
         return;
     }
 
+    // 检查目标是否存活
+    check_position(store);
+
     // 计算控制点
-    if (target_alive) target_position = damage_event.target->position;   // 更新目标位置
     sf::Vector2f p1 = GetControlPoint(source_position, target_position);
     this->position  = Bezier(t, source_position, p1, target_position);
     sf::Vector2f dBezier = 2.0f * (1.0f - t) * (p1 - source_position) + 2.0f * t * (target_position - p1);
@@ -51,9 +76,7 @@ void Arrow::Update(Store& store)
 void Bolt::Update(Store& store)
 {
     // 更新法球位置和动画
-    if (animation.state != State::Flying) {
-        return;   // 如果不是飞行状态，则不更新
-    }
+    if(animation.state == State::Hit) return ;   // 如果已经击中，则不再更新
 
     float t = (store.time - initial_time) / totalDuration_;
     if (t >= 1.0f) {
@@ -62,13 +85,10 @@ void Bolt::Update(Store& store)
         return;
     }
 
-    if(target_alive)
-    if (damage_event.target->animation.state == State::Death) {
-        target_alive = false;   // 如果目标死亡，则不再更新
-    }
+    // 检查目标是否存活
+    check_position(store);
 
     // 计算法球位置
-    if (target_alive) target_position = damage_event.target->position;
     this->position = source_position + t * (target_position - source_position);
     return;
 }
@@ -76,33 +96,34 @@ void Bolt::Update(Store& store)
 void Bomb::Update(Store& store)
 {
     // 更新炸弹位置和动画
-    if (animation.state != State::Flying) {
-        return;   // 如果不是飞行状态，则不更新
-    }
+    if(animation.state == State::Hit) return ;   // 如果已经击中，则不再更新
 
     float t = (store.time - initial_time) / totalDuration_;
-    if (t >= 1.0f) {
+    if (t >= 1.0f && (source_type == SourceType::Tower || source_type == SourceType::Soldier)) {
         std::vector<ID> enemy = calc::find_enemies_in_range(store, target_position, radius);
         for (auto& id : enemy) {
-            Enemy* target = store.GetEnemy(id);   // 获取目标敌人
-            if (target->health.hp > 0) {            // 如果目标存活
-                DamageEvent event = damage_event;   // 创建新的伤害事件
-                event.target      = target;         // 设置目标
-                store.QueueDamageEvent(event);      // 结算伤害
-            }
+            DamageEvent event = damage_event;   // 创建新的伤害事件
+            event.target      = id;         // 设置目标
+            store.QueueDamageEvent(event);      // 结算伤害
         }
         animation.state = State::Hit;   // 击中了
         return;
     }
 
-    if(target_alive)
-    if (damage_event.target->animation.state == State::Death) {
-        target_alive = false;   // 如果目标死亡，则不再更新
+    if(t >= 1.0f && source_type == SourceType::Enemy) {
+        std::vector<ID> soldier = calc::find_soldiers_in_range(store, target_position, radius);
+        for (auto& id : soldier) {
+            DamageEvent event = damage_event;   // 创建新的伤害事件
+            event.target      = id;         // 设置目标
+            store.QueueDamageEvent(event);      // 结算伤害
+        }
+        animation.state = State::Hit;   // 击中了
+        return;
     }
 
+    check_position(store);   // 检查目标是否存活
+
     // 计算控制点
-    if (target_alive)
-        damage_event.target->position = damage_event.target->position;   // 更新目标位置
     sf::Vector2f p1 = getControlPoint(source_position, target_position);
     this->position  = Bezier(t, source_position, p1, target_position);
     return;

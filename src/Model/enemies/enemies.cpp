@@ -26,26 +26,28 @@ void ActiveEnemyMelee::Update(Store& store)
     }
     if (this->animation.state == State::Idle) {
         heading = Heading::Right;   // 设置方向为向右
-        if (this->blocker == nullptr) {
+        Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位
+        if (Blocker == nullptr) {
             this->animation.state = walkjudge();
             return;
         }
-        if (this->blocker->animation.state == State::Death) {
-            this->blocker = nullptr;   // 如果阻挡单位死亡，清除阻挡单位
+        if (Blocker->animation.state == State::Death) {
+            blocker = INVALID_ID;   // 如果阻挡单位死亡，清除阻挡单位
             return;
         }
 
-        if (blocker->slot + slot + position != blocker->position) return;
+        if (Blocker->slot + slot + position != Blocker->position) return;
 
         for (int i = 0; i < this->melee.attacks.size(); ++i) {
             if (this->melee.attacks[i]->IsReady(store)) {
-                std::vector<Soldier*> targets = calc::find_soldiers_in_range(
-                    store, blocker->position, this->melee.attacks[i]->radius);
+                std::vector<ID> targets = calc::find_soldiers_in_range(
+                    store, Blocker->position, this->melee.attacks[i]->radius);
                 if (std::find(targets.begin(), targets.end(), this->blocker) == targets.end())
                     continue;
-                for (auto& target : targets) {
+                for (auto& id : targets) {
+                    Soldier* target = store.GetSoldier(id);   // 获取目标单位
                     if (target->health.hp <= 0) continue;           // 如果目标已经死亡，跳过
-                    this->melee.attacks[i]->Apply(store, target);   // 应用攻击
+                    this->melee.attacks[i]->Apply(store, id);   // 应用攻击
                 }
                 this->melee.attacks[i]->SetLastTime(store.time);   // 更新上次攻击时间
                 this->animation.state = State::Attack;             // 攻击状态
@@ -57,7 +59,7 @@ void ActiveEnemyMelee::Update(Store& store)
     if (is_moving()) {                         // 如果敌人正在移动
         calc::enemy_move_tick(store, *this);   // 调用运动函数更新位置
         animation.state = walkjudge();         // 根据当前方向设置状态
-        if (this->blocker != nullptr)
+        if (blocker != INVALID_ID)
             animation.state = State::Idle;   // 如果有阻挡单位，设置状态为闲置
         return;
     }
@@ -80,8 +82,7 @@ ForestTroll::ForestTroll(Position position_)
     this->animation.state = State::Idle;          // 设置初始状态
     this->melee.attacks.push_back(
         new MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 0), 50.0, 1.0, 1.0));
-    this->melee[0]->damage_event.source =
-        static_cast<ActiveEntity*>(this);         // 设置攻击来源为当前敌人
+    this->melee[0]->damage_event.source = id;
     this->slot     = sf::Vector2f(35.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
     this->animation.prefix = "aura_forest_troll_regen";

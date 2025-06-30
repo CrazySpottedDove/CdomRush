@@ -21,7 +21,7 @@ public:
         , value(value_){};
 
 
-    void Apply(Store& store, Unit* target, ActiveEntity* source) noexcept;
+    void Apply(Store& store, ID source, ID target) noexcept;
 };
 
 class Ranged

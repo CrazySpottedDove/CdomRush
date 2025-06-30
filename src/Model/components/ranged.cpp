@@ -1,7 +1,7 @@
 #include "Model/components/ranged.h"
 #include "Manager/store/store.h"
 
-void RangedAttack::Apply(Store& store, Unit* target, ActiveEntity* source) noexcept
+void RangedAttack::Apply(Store& store, ID source, ID target) noexcept
 {
     Bullet* bullet =
         (store.template_manager.bullet_map[bullet_type])->Clone();   // 获取对应类型的子弹
@@ -11,4 +11,6 @@ void RangedAttack::Apply(Store& store, Unit* target, ActiveEntity* source) noexc
     bullet->animation.state         = State::Flying;                 // 设置状态为飞行
     bullet->damage_event.source     = source;                        // 设置源为目标单位
     store.QueueBullet(bullet);                                       // 将子弹加入存储
+
+    SetLastTime(store.time);   // 更新上次攻击时间
 }

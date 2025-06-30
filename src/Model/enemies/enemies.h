@@ -30,12 +30,10 @@ public:
 
     bool Insert(Store& store) override
     {
-        // 在存储中插入敌人
         return true;   // 返回 true 表示插入成功
     }
     bool Remove(Store& store) override
     {
-        // 从存储中移除敌人
         return true;   // 返回 true 表示移除成功
     }
 };
@@ -60,7 +58,7 @@ public:
         type = EnemyType::ActiveEnemyMelee;   // 设置敌人类型为近战敌人
         slot = sf::Vector2f(0.0f, 0.0f);       // 初始化近战偏移
     }
-    Soldier* blocker = nullptr;   // 用于阻挡敌人前进的单位
+    ID blocker = INVALID_ID;   // 用于阻挡敌人前进的单位
     Melee    melee;               // 近战攻击组件
 
     void Update(Store& store) override;

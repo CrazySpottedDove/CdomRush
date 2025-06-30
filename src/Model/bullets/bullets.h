@@ -8,6 +8,13 @@
 
 class Store;
 
+enum class SourceType
+{
+    Tower,  // 塔
+    Enemy,  // 敌人
+    Soldier // 士兵
+};
+
 enum class BulletType
 {
     Arrow, // 箭矢
@@ -17,15 +24,16 @@ enum class BulletType
 class Bullet: public Entity
 {
 public:
-    double radius; // 爆炸半径
+    double radius = 0.0; // 爆炸半径
     double initial_time = 0.0; // 初始时间
     double totalDuration_ = 0.0; // 总持续时间
     FxType hit_fx = FxType::None; // 击中效果
     DamageEvent damage_event;
-    bool target_alive = true; // 目标是否存活
     Position source_position;
     Position target_position;
     BulletType bullet_type; // 弹道类型
+    SourceType source_type; // 源类型
+    bool target_alive = true; // 目标是否存活
 
     Bullet(const Bullet & other) = default; // 拷贝构造函数
     Bullet() = default; // 默认构造函数
@@ -33,6 +41,7 @@ public:
     bool Remove(Store& store) override{
         return true;
     }
+    bool check_position(Store& store);
 
     virtual Bullet* Clone() const = 0; // 纯虚函数，用于克隆子弹对象
 };
@@ -42,9 +51,9 @@ public:
 class Arrow : public Bullet
 {
 public:
-    Arrow(){
+    Arrow(ID sourceID, ID targetID){
         bullet_type = BulletType::Arrow; // 设置弹道类型为箭矢
-        damage_event = DamageEvent(DamageData(0, DamageType::Physical, 0, 0), INVALID_ID, INVALID_ID);
+        damage_event = DamageEvent(DamageData(0, DamageType::Physical, 0, 0), sourceID, targetID);
         totalDuration_ = 1.0; // 设置总持续时间
         hit_fx = FxType::None; // 箭矢没有特殊的击中效果
         radius = 0.0; // 箭矢没有爆炸半径
@@ -78,9 +87,9 @@ public:
 class Bolt : public Bullet
 {
 public:
-    Bolt(){
+    Bolt(ID sourceID, ID targetID){
         bullet_type = BulletType::Bolt; // 设置弹道类型为法球
-        damage_event = DamageEvent(DamageData(0.0, DamageType::Magical, 0, 0), INVALID_ID, INVALID_ID);
+        damage_event = DamageEvent(DamageData(0.0, DamageType::Magical, 0, 0), sourceID, targetID);
         totalDuration_ = 0.5; // 设置总持续时间
         hit_fx = FxType::None; // 法球没有特殊的击中效果
         radius = 0.0; // 法球没有爆炸半径
@@ -98,9 +107,9 @@ public:
 class Bomb : public Bullet
 {
 public:
-    Bomb(){
+    Bomb(ID sourceID, ID targetID){
         bullet_type = BulletType::Bomb; // 设置弹道类型为炸弹
-        damage_event = DamageEvent(DamageData(0, DamageType::Explosion, 0, 0), INVALID_ID, INVALID_ID);
+        damage_event = DamageEvent(DamageData(0, DamageType::Explosion, 0, 0), sourceID, targetID);
         totalDuration_ = 1.5; // 设置总持续时间
         hit_fx = FxType::Explosion; // 爆炸效果
         radius = 60.0; // 设置爆炸半径

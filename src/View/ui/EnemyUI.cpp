@@ -7,6 +7,7 @@
 EnemyUI::EnemyUI(Enemy* enemy, AnimationPlayer& animation_player)
     : enemy_(enemy)
     , animation_player_(animation_player)
+    , animation_context_()  // 初始化动画上下文
     , last_state_(State::Idle)
     , last_heading_(Heading::Right)
     , initialized_(false)
@@ -30,7 +31,7 @@ void EnemyUI::Render(sf::RenderWindow& window, const sf::Vector2f& scale)
     }
     
     // 如果Enemy已死亡且动画播放完成，不再渲染
-    if (enemy_->state == State::Death && animation_player_.IsAnimationFinished(*enemy_)) {
+    if (enemy_->state == State::Death && animation_player_.IsAnimationFinished(*enemy_, animation_context_)) {
         return;
     }
     
@@ -43,7 +44,7 @@ void EnemyUI::Render(sf::RenderWindow& window, const sf::Vector2f& scale)
     UpdateAnimationState();
     
     // 渲染Enemy（使用Unit接口，支持状态驱动和翻转）
-    animation_player_.Render(window, *enemy_, scale);
+    animation_player_.Render(window, *enemy_, animation_context_, scale);
 }
 
 /**
@@ -59,9 +60,11 @@ void EnemyUI::InitializeAnimation()
     last_state_ = enemy_->state;
     last_heading_ = enemy_->heading;
     
-    // 开始播放初始动画（根据Enemy状态确定是否循环）
+    // 根据Enemy状态确定是否循环
     bool should_loop = (enemy_->state != State::Death && enemy_->state != State::Attack);
-    animation_player_.PlayAnimation(*enemy_, should_loop);
+    
+    // 开始播放初始动画（传递animation_context_）
+    animation_player_.PlayAnimation(*enemy_, animation_context_, should_loop);
     
     initialized_ = true;
     
@@ -95,11 +98,12 @@ void EnemyUI::UpdateAnimationState()
             should_loop = false; 
         }
         
-        animation_player_.PlayAnimation(*enemy_, should_loop);
+        // 播放新动画
+        animation_player_.PlayAnimation(*enemy_, animation_context_, should_loop);
     }
     
-    // 自动更新动画帧（Unit版本可检测状态变化）
-    animation_player_.Update(*enemy_);
+    // 自动更新动画帧
+    animation_player_.Update(*enemy_, animation_context_);
 }
 
 /**

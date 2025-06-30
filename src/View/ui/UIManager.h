@@ -15,16 +15,10 @@
  * 
  * 功能：
  * 1. 维护四个映射容器：EnemyUIs、SoldierUIs、BulletUIs、TowerUIs
- * 2. 与Store联系获取实体数据
+ * 2. 与Store联系由实体指针获取实体数据
  * 3. 与AnimationPlayer联系获取美术资源
- * 4. 自动管理UI对象的生命周期
+ * 4. 管理UI对象的生命周期，实体指针到UI对象的映射
  * 5. 提供统一的渲染接口
- * 
- * 架构设计：
- * - Store提供数据源（实体指针）
- * - AnimationPlayer提供美术资源
- * - UIManager管理实体指针到UI对象的映射
- * - 各种UI类处理具体的状态逻辑和渲染
  */
 class UIManager
 {
@@ -60,10 +54,12 @@ public:
     /**
      * @brief 单独渲染地图
      * @param window 渲染窗口
+     * @param map_prefix 地图资源前缀（如"screen_map"）
      * @param position 地图位置
      * @param scale 地图缩放比例
      */
-    void RenderMap(sf::RenderWindow& window, const sf::Vector2f& position = {0.0f, 0.0f}, 
+    void RenderMap(sf::RenderWindow& window, const std::string& map_prefix,
+                   const sf::Vector2f& position = {0.0f, 0.0f}, 
                    const sf::Vector2f& scale = {1.0f, 1.0f});
     
     /**
@@ -76,6 +72,37 @@ public:
         size_t tower_count;
     };
     UIStats GetStats() const;
+    
+    // ===============================
+    // 地图管理功能
+    // ===============================
+    
+    /**
+     * @brief 设置当前地图
+     * @param map_prefix 地图资源前缀（如"screen_map", "menu_background"等）
+     * @param position 地图位置（默认0,0）
+     * @param scale 地图缩放（默认1.0）
+     */
+    void SetCurrentMap(const std::string& map_prefix, 
+                       const sf::Vector2f& position = {0.0f, 0.0f},
+                       const sf::Vector2f& scale = {1.0f, 1.0f});
+    
+    /**
+     * @brief 清除当前地图（不再渲染地图背景）
+     */
+    void ClearCurrentMap();
+    
+    /**
+     * @brief 检查是否有地图在显示
+     * @return true 如果当前有地图
+     */
+    bool HasCurrentMap() const { return !current_map_prefix_.empty(); }
+    
+    /**
+     * @brief 获取当前地图前缀
+     * @return 当前地图前缀，如果没有地图则返回空字符串
+     */
+    const std::string& GetCurrentMapPrefix() const { return current_map_prefix_; }
 
 private:
     Store& store_;                                                      ///< Store引用
@@ -86,6 +113,13 @@ private:
     std::unordered_map<Soldier*, std::unique_ptr<SoldierUI>> soldier_uis_; ///< Soldier映射
     std::unordered_map<Bullet*, std::unique_ptr<BulletUI>> bullet_uis_; ///< Bullet映射
     std::unordered_map<Tower*, std::unique_ptr<TowerUI>> tower_uis_;    ///< Tower映射
+    
+    // ===============================
+    // 地图状态管理
+    // ===============================
+    std::string current_map_prefix_;                                      ///< 当前地图前缀
+    sf::Vector2f current_map_position_;                                   ///< 当前地图位置
+    sf::Vector2f current_map_scale_;                                      ///< 当前地图缩放
     
     /**
      * @brief 同步Enemy列表（内部使用）

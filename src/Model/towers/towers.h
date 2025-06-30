@@ -32,17 +32,25 @@ struct Layer{
     Animation animation;
     Position offset;
 };
+
+enum class tower_heading{
+    Up,
+    Down
+};
 // TODO: 每个 Tower 应该维护一个 Action 列表，这个列表可以被 View 层访问到，从而让 View 层得知需要怎样的 UI 更新
 class Tower : public ActiveEntity
 {
 public:
+    tower_heading heading = tower_heading::Down; // 默认塔的朝向为 Up
     Ranged ranged;
     TowerType type = TowerType::None; // 默认塔类型为 None
     Position            position;
     int                total_price;
+    // 每个 Tower 的操作列表，每个操作会对应一个新的tower类型和一个价格:
     std::vector <std::pair<TowerAction, std::pair<TowerType, int>>> tower_actions;
-    std::vector<Layer> Layers; // 每个 Tower 的图层列表
-    // 每个 Tower 的操作列表，每个操作会对应一个新的tower类型和一个价格
+    // 每个 Tower 的图层列表:
+    std::vector<Layer> Layers;
+    
     bool Insert(Store& store) override {
         return true;
     }
@@ -51,41 +59,19 @@ public:
     }
     virtual void layer_update() = 0; // 每个 Tower 都需要实现自己的图层更新逻辑
     
-    virtual void shoot_bullet(RangedAttack& attack,Store& store,Enemy* & target_enemy) = 0; // 每个 Tower 都需要实现自己的射击逻辑
-    
-    void Update(Store& store) override {
-        if(animation.state == State::Idle){
-            for(auto& attack : ranged.attacks){
-                if(attack.IsReady(store)) {
-                    Enemy* target_enemy = calc::find_foremost_enemy(store, position, attack.range);
-                    if(target_enemy == nullptr) continue; // 如果没有找到目标敌人，跳过
-                    animation.state = State::Shoot; // 设置状态为射击
-                    
-                    shoot_bullet(attack,store,target_enemy); // 执行射击逻辑
-                }
-            }
-        }
-        else if(animation.state == State::Shoot){
-            if(animation.pending == false) {
-                animation.state = State::Idle; // 如果动画未进行，设置状态为闲置
-            }
-        }
-        layer_update();
-    }
+    void Update(Store& store) override;
 };
 
 class None : public Tower {
 public:
     None(Position position);
-    None() = default;
+    None() = delete;
     void layer_update() override{};
-    void shoot_bullet(RangedAttack& attack,Store& store,Enemy* & target_enemy) override{};
 };
 
-class ArcherTower : public Tower {
+class Archer1 : public Tower {
 public:
-    ArcherTower(Position position, int total_price);
-    ArcherTower() = default;
+    Archer1(Position position, int total_price);
+    Archer1() = delete;
     void layer_update() override;
-    void shoot_bullet(RangedAttack& attack,Store& store,Enemy* & target_enemy) override;
 };

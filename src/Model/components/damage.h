@@ -41,13 +41,13 @@ struct DamageData
 struct DamageEvent
 {
     DamageData data;
-    Unit*        target      = nullptr;
-    ActiveEntity*      source      = nullptr;
+    ID        target      = INVALID_ID; // 目标ID
+    ID        source      = INVALID_ID; // 源ID
     DamageEvent():data(DamageData(0.0, DamageType::Physical, 0.0, 0)){};
-    DamageEvent(const DamageData& data, Unit* target, ActiveEntity* source)
+    DamageEvent(const DamageData& data, ID target_, ID source_)
         : data(data)
-        , source(source)
-        , target(target)
+        , source(source_)
+        , target(target_)
         {};
     
 };

@@ -5,8 +5,14 @@
 bool Bullet::Insert(Store& store)
 {
     target_alive    = true;                            // 初始化目标存活状态
-    target_position = damage_event.target->position;   // 设置目标位置
-    source_position = damage_event.source->position;   // 设置源位置
+    Unit* target = store.GetEnemy(damage_event.target); // 获取目标单位
+    if(target==nullptr) target = store.GetSoldier(damage_event.target); // 如果目标是敌人，则获取士兵
+    target_position = target->position;   // 设置目标位置
+
+    Unit* source = store.GetEnemy(damage_event.source); // 获取源单位
+    if(source == nullptr) source = store.GetSoldier(damage_event.source); // 如果源是敌人，则获取士兵
+    source_position = source->position;   // 设置源位置
+
     initial_time    = store.time;
     return true;
 }
@@ -76,8 +82,9 @@ void Bomb::Update(Store& store)
 
     float t = (store.time - initial_time) / totalDuration_;
     if (t >= 1.0f) {
-        std::vector<Enemy*> enermy = calc::find_enemies_in_range(store, target_position, radius);
-        for (auto& target : enermy) {
+        std::vector<ID> enemy = calc::find_enemies_in_range(store, target_position, radius);
+        for (auto& id : enemy) {
+            Enemy* target = store.GetEnemy(id);   // 获取目标敌人
             if (target->health.hp > 0) {            // 如果目标存活
                 DamageEvent event = damage_event;   // 创建新的伤害事件
                 event.target      = target;         // 设置目标

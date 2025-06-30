@@ -40,17 +40,8 @@ void ActiveEnemyMelee::Update(Store& store)
 
         for (int i = 0; i < this->melee.attacks.size(); ++i) {
             if (this->melee.attacks[i]->IsReady(store)) {
-                std::vector<ID> targets = calc::find_soldiers_in_range(
-                    store, Blocker->position, this->melee.attacks[i]->radius);
-                if (std::find(targets.begin(), targets.end(), this->blocker) == targets.end())
-                    continue;
-                for (auto& id : targets) {
-                    Soldier* target = store.GetSoldier(id);   // 获取目标单位
-                    if (target->health.hp <= 0) continue;           // 如果目标已经死亡，跳过
-                    this->melee.attacks[i]->Apply(store, id);   // 应用攻击
-                }
-                this->melee.attacks[i]->SetLastTime(store.time);   // 更新上次攻击时间
-                this->animation.state = State::Attack;             // 攻击状态
+                melee.attacks[i]->Apply(store,id,blocker);   // 执行近战攻击
+                this->animation.state = State::Attack;   // 设置状态为攻击
                 return;
             }
         }

@@ -76,6 +76,6 @@ ForestTroll::ForestTroll(Position position_)
     this->melee[0]->damage_event.source = id;
     this->slot     = sf::Vector2f(35.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
-    this->animation.prefix = "aura_forest_troll_regen";
+    this->animation.prefix = "forest_troll";
     this->animation.state = State::Idle;   // 设置动画状态为闲置
 }

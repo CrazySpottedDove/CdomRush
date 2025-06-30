@@ -41,6 +41,7 @@ struct AnimationGroup
 {
     std::size_t from;   // 起始帧索引
     std::size_t to;     // 结束帧索引
+    AnimationGroup() = default;
     AnimationGroup(const std::size_t from, const std::size_t to): from(from), to(to) {}
 };
 

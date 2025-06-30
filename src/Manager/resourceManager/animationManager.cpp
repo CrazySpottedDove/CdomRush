@@ -152,9 +152,8 @@ void AnimationManager::LoadAnimationGroupsFromLua()
         for (const auto& state_pair : state_group) {
             const State          state        = state_map[state_pair.first.as<std::string>()];
             const sol::table     frames_table = state_pair.second.as<sol::table>();
-            const AnimationGroup animation_group(frames_table["from"].get<std::size_t>(),
-                                                 frames_table["to"].get<std::size_t>());
-            animation_group_map[prefix][state] = animation_group;
+            animation_group_map[prefix][state] = AnimationGroup(
+                frames_table["from"].get<std::size_t>(), frames_table["to"].get<std::size_t>());
         }
     }
 }

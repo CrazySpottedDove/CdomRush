@@ -5,6 +5,7 @@
 #include "Manager/resourceManager/animationManager.h"
 #include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
+#include "Model/components/state.h"
 #include "Model/enemies/enemies.h"
 #include "Model/soldiers/soldiers.h"
 #include "View/animation/animationPlayer.h"
@@ -39,7 +40,7 @@
  * @note 发现敌人已经死亡或者从 store 中移除时，不执行伤害事件，直接删去
  *
  */
-void Store::UpdateDamageEvents()
+void Store::UpdateDamageEvents(sf::RenderWindow& window)
 {
     const auto new_damage_event_end = std::remove_if(
         damage_events.begin(), damage_events.end(), [this](DamageEvent& damage_event) -> bool {
@@ -59,12 +60,12 @@ void Store::UpdateDamageEvents()
     damage_events.erase(new_damage_event_end, damage_events.end());
 }
 
-void Store::UpdateEnemies(){
+void Store::UpdateEnemies(sf::RenderWindow& window){
     auto it = enemies.begin();
     while(it != enemies.end()){
         Enemy* enemy = it->second;
         if(calc::is_dead(*enemy) && calc::should_remove(*this, *enemy)){
-            // ui_manager.DeQueueEnemyUI(enemy);
+            ui_manager.DeQueueEnemyUI(enemy);
             delete enemy;
             it = enemies.erase(it);
             continue;
@@ -72,71 +73,76 @@ void Store::UpdateEnemies(){
         if(calc::enemy_reached_defence_point(*this, *enemy)){
             life -= enemy->life_cost;
             gold += enemy->gold;
+            enemy->Remove(*this);
+            ui_manager.DeQueueEnemyUI(enemy);
             delete enemy;
             it = enemies.erase(it);
             continue;
         }
         enemy->Update(*this);
+        ui_manager.RenderEnemyUI(window, enemy);
         ++it;
     }
 }
 
+void Store::UpdateBullets(sf::RenderWindow& window){
+    auto it = bullets.begin();
+    while(it != bullets.end()){
+        Bullet* bullet = it->second;
+        if(bullet->animation.state == State::Hit && animation_manager.RequireAnimationGroup(bullet->animation.prefix,bullet->animation.state).to <= bullet->animation.frame_id){
+            bullet->Remove(*this);
+            ui_manager.DeQueueBulletUI(bullet);
+            delete bullet;
+            it = bullets.erase(it);
+            continue;
+        }
+        bullet->Update(*this);
+        ui_manager.RenderBulletUI(window, bullet);
+        ++it;
+    }
+}
 
-
-
-
-void Store::Update()
+void Store::UpdateSoldiers(sf::RenderWindow& window)
 {
-    // const auto new_damage_event_end = std::remove_if(
-    //     damage_events.begin(), damage_events.end(), [](DamageEvent& damage_event) -> bool {
-    //         // 检查目标是否有效且存活
-    //         if (damage_event.target == nullptr || calc::is_dead(*damage_event.target)) {
-    //             return true;   // 移除无效事件
-    //         }
+    auto it = soldiers.begin();
+    while(it != soldiers.end()){
+        Soldier* soldier = it->second;
+        if(calc::is_dead(*soldier) && calc::should_remove(*this, *soldier)){
+            soldier->Remove(*this);
+            ui_manager.DeQueueSoldierUI(soldier);
+            delete soldier;
+            it = soldiers.erase(it);
+            continue;
+        }
+        soldier->Update(*this);
+        ui_manager.RenderSoldierUI(window, soldier);
+        ++it;
+    }
+}
 
-    //         if (damage_event.data.apply_delay > 0) {
-    //             // 减少延迟计数
-    //             --damage_event.data.apply_delay;
-    //             return false;   // 保留事件
-    //         }
+/**
+ * @brief 删除和购买塔应该通过事件来处理，塔的 update 中因此没有删除这一项
+ *
+ * @param window
+ */
+void Store::UpdateTowers(sf::RenderWindow& window)
+{
+    auto it = towers.begin();
+    while(it != towers.end()){
+        Tower* tower = it->second;
+        tower->Update(*this);
+        ui_manager.RenderTowerUI(window, tower);
+        ++it;
+    }
+}
 
-    //         // 延迟为0，执行伤害
-    //         calc::enforce_damage(damage_event);
-    //         return true;   // 移除已执行的事件
-    //     });
-
-    // // 删除已处理的事件
-    // damage_events.erase(new_damage_event_end, damage_events.end());
-
-    // // 执行所有敌人的更新事件
-    // const auto new_enemy_end =
-    //     std::remove_if(enemies.begin(), enemies.end(), [this](Enemy* enemy) -> bool {
-    //         if (calc::is_dead(*enemy) && calc::should_remove(*this, *enemy)) {
-    //             delete enemy;
-    //             return true;   // 删除敌人
-    //         }
-    //         if (calc::enemy_reached_defence_point(*this, *enemy)) {
-    //             life -= enemy->life_cost;
-    //             gold += enemy->gold;
-    //             delete enemy;
-    //             return true;
-    //         }
-    //         enemy->Update(*this);
-    //         return false;   // 保留活着的敌人
-    //     });
-    // enemies.erase(new_enemy_end, enemies.end());
-
-    // const auto new_soldier_end =
-    //     std::remove_if(soldiers.begin(), soldiers.end(), [this](Soldier* soldier) -> bool {
-    //         if (calc::is_dead(*soldier) && calc::should_remove(*this, *soldier)) {
-    //             delete soldier;
-    //             return true;   // 删除士兵
-    //         }
-    //         soldier->Update(*this);
-    //         return false;   // 保留活着的士兵
-    //     });
-
-    // soldiers.erase(new_soldier_end, soldiers.end());
+void Store::Update(sf::RenderWindow& window)
+{
+    UpdateDamageEvents(window);
+    UpdateEnemies(window);
+    UpdateBullets(window);
+    UpdateSoldiers(window);
+    UpdateTowers(window);
 }
 
 void Store::Game(sf::RenderWindow& window)
@@ -153,17 +159,13 @@ void Store::Game(sf::RenderWindow& window)
         case GameState::GameStart:
             time = 0.0;
             while (true) {
-                Update();
+                Update(window);
                 time += FRAME_LENGTH;
             }
             break;
         case GameState::GamePlaying:
             while (true) {
-                Update();
-                Enemy* enemy = enemies[1];
-                ui_manager.enemy_uis_[enemy]->Render(window);
-                std::this_thread::sleep_for(
-                    std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
+                Update(window);
                 time += FRAME_LENGTH;
                 window.display();
                 break;

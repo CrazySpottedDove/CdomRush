@@ -5,6 +5,12 @@
 class Store;
 
 // 参与主时钟更新的实体
+enum class SourceType
+{
+    Tower,  // 塔
+    Enemy,  // 敌人
+    Soldier // 士兵
+};
 
 class Entity{
 public:

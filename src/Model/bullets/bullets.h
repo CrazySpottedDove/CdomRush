@@ -8,13 +8,6 @@
 
 class Store;
 
-enum class SourceType
-{
-    Tower,  // 塔
-    Enemy,  // 敌人
-    Soldier // 士兵
-};
-
 enum class BulletType
 {
     Arrow, // 箭矢

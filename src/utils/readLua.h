@@ -7,10 +7,17 @@
 
 inline sol::table ReadLua(const std::string& file)
 {
+    static sol::state lua = []() {
+        sol::state l;
+        l.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string, sol::lib::math);
+        return l;
+    }();
     try {
-        sol::state lua;
+        std::cout << 1;
         lua.open_libraries(sol::lib::base, sol::lib::table, sol::lib::string);
+        std::cout << 2;
         const sol::object result = lua.script_file(file);
+        std::cout <<3;
         return result.as<sol::table>();
     }
     catch (const sol::error& e) {

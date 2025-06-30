@@ -1,8 +1,9 @@
 #include "Manager/resourceManager/textureManager.h"
-
+#include <iostream>
 void TextureManager::LoadTexture(const std::string& filename, const TextureLevel level)
 {
     if (textures.count(filename) == 0) {
+        std::cout << filename;
         if (!textures[filename].loadFromFile(filename)) {
             throw std::runtime_error("Failed to load texture: " + filename);
         };

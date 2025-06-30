@@ -2,13 +2,20 @@
 #include "Function/calc/damage.h"
 #include "Function/calc/hp.h"
 #include "Function/calc/motion.h"
+#include "Manager/resourceManager/animationManager.h"
 #include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
 #include "Model/enemies/enemies.h"
 #include "Model/soldiers/soldiers.h"
+#include "View/animation/animationPlayer.h"
+#include "View/ui/EnemyUI.h"
+#include "View/ui/UIManager.h"
 #include "utils/macros.h"
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <algorithm>
 #include <chrono>
+#include <memory>
 #include <thread>
 
 // Bullet* Store::CreateBullet(const BulletType type){
@@ -81,7 +88,7 @@ void Store::Update()
     // soldiers.erase(new_soldier_end, soldiers.end());
 }
 
-void Store::Game()
+void Store::Game(sf::RenderWindow& window)
 {
     static constexpr int FRAME_LENGTH_IN_MILLISECONDS = FRAME_LENGTH * 1000;
     while (true) {
@@ -89,7 +96,8 @@ void Store::Game()
         case GameState::Begin:
             // AnimationPlayer::DrawTotalMap();
             // AnimationPlayer::
-
+            ui_manager.RenderMap(window,"map_background");
+            window.display();
             break;
         case GameState::GameStart:
             time = 0.0;
@@ -101,9 +109,13 @@ void Store::Game()
         case GameState::GamePlaying:
             while (true) {
                 Update();
+                Enemy* enemy = enemies[1];
+                ui_manager.enemy_uis_[enemy]->Render(window);
                 std::this_thread::sleep_for(
                     std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
                 time += FRAME_LENGTH;
+                window.display();
+                break;
             }
         case GameState::GameOver:
             // AnimationPlayer::DrawGameOver();
@@ -116,4 +128,10 @@ void Store::Game()
     }
 }
 
-Store::Store() {}
+Store::Store(){
+    ui_manager.store_ = this;
+    ui_manager.animation_player_ = std::make_unique<AnimationPlayer>(animation_manager);
+    ForestTroll* test_enemy= new ForestTroll(sf::Vector2f(300, 300));
+    QueueEnemy(test_enemy);
+    ui_manager.enemy_uis_[test_enemy] = std::make_unique<EnemyUI>(test_enemy, *ui_manager.animation_player_);
+}

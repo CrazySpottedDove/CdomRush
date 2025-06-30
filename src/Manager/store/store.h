@@ -5,6 +5,8 @@
 #include "Manager/templateManager/templateManager.h"
 #include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
+#include "View/ui/UIManager.h"
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
@@ -26,11 +28,11 @@ enum class GameState
 class Store
 {
 public:
-    Store();
+    Store() ;
     double                     time       = 0.0;
     double                     gold       = 0.0;
     int                        life       = 20;
-    GameState                  game_state = GameState::Begin;
+    GameState                  game_state = GameState::GamePlaying;
     const std::unordered_map<ID, Enemy*>& GetEnemies() const { return enemies; }
 
     const std::unordered_map<ID, Tower*>& GetTowers() const { return towers; }
@@ -77,10 +79,11 @@ public:
     PathManager      path_manager;
     TemplateManager template_manager;
     LevelManager level_manager;
+    UIManager ui_manager;
     void Update();
 
     // 游戏进行的主函数
-    void Game();
+    void Game(sf::RenderWindow& window);
 
 private:
     std::unordered_map<ID, Enemy*> enemies;

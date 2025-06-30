@@ -3,7 +3,7 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
-#include "Manager/store/store.h"
+class Store;
 #include "View/animation/animationPlayer.h"
 #include "EnemyUI.h"
 #include "SoldierUI.h"
@@ -23,11 +23,7 @@
 class UIManager
 {
 public:
-    /**
-     * @brief 构造函数
-     * @param store Store引用，提供实体数据
-     */
-    explicit UIManager(Store& store);
+    UIManager();
 
     /**
      * @brief 析构函数
@@ -109,9 +105,10 @@ public:
     std::unordered_map<Soldier*, std::unique_ptr<SoldierUI>> soldier_uis_;   ///< Soldier映射
     std::unordered_map<Bullet*, std::unique_ptr<BulletUI>>   bullet_uis_;    ///< Bullet映射
     std::unordered_map<Tower*, std::unique_ptr<TowerUI>>     tower_uis_;     ///< Tower映射
+    Store*                                                   store_;         ///< Store引用
+    std::unique_ptr<AnimationPlayer> animation_player_;   ///< AnimationPlayer实例
 private:
-    Store& store_;                                                      ///< Store引用
-    std::unique_ptr<AnimationPlayer> animation_player_;                 ///< AnimationPlayer实例
+
 
     // ===============================
     // 地图状态管理

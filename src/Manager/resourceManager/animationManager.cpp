@@ -46,11 +46,12 @@ void AnimationManager::LoadSpriteFrameDatasFromLua(const sol::table&  sprite_fra
 {
     for (const auto& pair : sprite_frames_table) {
         const std::string prefix       = pair.first.as<std::string>();
-        const sol::table&  frame_tables = pair.second.as<sol::table>();
+        const sol::table& frame_tables = pair.second.as<sol::table>();
         for (const auto& frame_table : frame_tables) {
             const sol::table frame_data_unparsed = frame_table.second.as<sol::table>();
             SpriteFrameData  frame_data;
             ParseSpriteFrameData(frame_data_unparsed, frame_data);
+            std::cout << "Try to load texture:" << IMAGES_PATH + frame_data.textureName;
             texture_manager.LoadTexture(IMAGES_PATH + frame_data.textureName, level);
             switch (level) {
             case TextureLevel::Common:
@@ -70,6 +71,7 @@ void AnimationManager::LoadSpriteFrameDatasFromLua(const sol::table&  sprite_fra
 
 void AnimationManager::LoadSpriteFrameResources(const std::string& path, const TextureLevel level)
 {
+    std::cout << "-1";
     const sol::table& sprite_frames_table = ReadLua(path);
 
     LoadSpriteFrameDatasFromLua(sprite_frames_table, level);
@@ -96,6 +98,7 @@ AnimationManager::AnimationManager()
                     std::cout << "  Loading: " << path.filename() << std::endl;
 
                     try {
+                        std::cout << 0;
                         LoadSpriteFrameResources(path.string());
                         ++loaded_count;
                     }
@@ -106,6 +109,7 @@ AnimationManager::AnimationManager()
                 }
             }
         }
+        // LoadSpriteFrameResources("assets/images/common/common.lua");
 
         std::cout << "Successfully loaded " << loaded_count << std::endl;
 
@@ -150,8 +154,8 @@ void AnimationManager::LoadAnimationGroupsFromLua()
         const sol::table  state_group = pair.second.as<sol::table>();
 
         for (const auto& state_pair : state_group) {
-            const State          state        = state_map[state_pair.first.as<std::string>()];
-            const sol::table     frames_table = state_pair.second.as<sol::table>();
+            const State      state             = state_map[state_pair.first.as<std::string>()];
+            const sol::table frames_table      = state_pair.second.as<sol::table>();
             animation_group_map[prefix][state] = AnimationGroup(
                 frames_table["from"].get<std::size_t>(), frames_table["to"].get<std::size_t>());
         }
@@ -170,12 +174,12 @@ std::pair<const SpriteFrameData&, const sf::Texture&> AnimationManager::RequireF
 {
     auto it = common_sprite_frame_data_map.find(prefix);
     if (it != common_sprite_frame_data_map.end()) {
-        const auto& frame_data = it->second[frame_index];
-        return {frame_data, texture_manager.getTexture(frame_data.textureName)};
+        const auto& frame_data = it->second[frame_index - 1];
+        return {frame_data, texture_manager.getTexture(IMAGES_PATH + frame_data.textureName)};
     }
     else if (specific_sprite_frame_data_map.find(prefix) != specific_sprite_frame_data_map.end()) {
-        const auto& frame_data = specific_sprite_frame_data_map.at(prefix)[frame_index];
-        return {frame_data, texture_manager.getTexture(frame_data.textureName)};
+        const auto& frame_data = specific_sprite_frame_data_map.at(prefix)[frame_index - 1];
+        return {frame_data, texture_manager.getTexture(IMAGES_PATH+ frame_data.textureName)};
     }
     else {
         throw std::runtime_error("SpriteFrameData not found for prefix: " + prefix);

@@ -5,9 +5,9 @@
 /**
  * @brief 构造函数
  */
-UIManager::UIManager(Store& store)
-    : store_(store)
-    , animation_player_(std::make_unique<AnimationPlayer>(store.animation_manager))
+UIManager::UIManager()
+    : store_(nullptr)
+    , animation_player_(nullptr)
     , current_map_prefix_("")           // 初始化时没有地图
     , current_map_position_(0.0f, 0.0f) // 默认位置
     , current_map_scale_(1.0f, 1.0f)    // 默认缩放

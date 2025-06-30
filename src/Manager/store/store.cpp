@@ -2,6 +2,7 @@
 #include "Function/calc/damage.h"
 #include "Function/calc/hp.h"
 #include "Function/calc/motion.h"
+#include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
 #include "Model/enemies/enemies.h"
 #include "Model/soldiers/soldiers.h"
@@ -9,6 +10,13 @@
 #include <algorithm>
 #include <chrono>
 #include <thread>
+
+// Bullet* Store::CreateBullet(const BulletType type){
+//     Bullet* new_bullet = template_manager.bullet_map[type]->Clone();
+//     new_bullet.id = next_bullet_id++;
+//     return new_bullet;
+// }
+
 
 // 核心：指针要么有效，要么为 nullptr，不可以有悬垂引用
 
@@ -100,15 +108,13 @@ void Store::Game()
         switch (game_state) {
         case GameState::Begin:
             // AnimationPlayer::DrawTotalMap();
-
             // AnimationPlayer::
+            
             break;
         case GameState::GameStart:
             time = 0.0;
             while (true) {
                 Update();
-                std::this_thread::sleep_for(
-                    std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
                 time += FRAME_LENGTH;
             }
             break;
@@ -126,6 +132,7 @@ void Store::Game()
             // AnimationPlayer::DrawLoading();
             break;
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
     }
 }
 

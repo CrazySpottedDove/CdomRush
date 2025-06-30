@@ -3,6 +3,7 @@
 #include "Manager/pathManager/pathManager.h"
 #include "Manager/resourceManager/animationManager.h"
 #include "Manager/templateManager/templateManager.h"
+#include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
 #include <memory>
 #include <unordered_map>
@@ -50,6 +51,8 @@ public:
 
     void QueueDamageEvent(const DamageEvent& event) { damage_events.push_back(event); }
 
+    Bullet* CreateBullet(const BulletType type);
+
     Enemy* GetEnemy(const ID id) const {
         auto it = enemies.find(id);
         return it != enemies.end() ? it->second : nullptr;
@@ -80,10 +83,6 @@ public:
     void Game();
 
 private:
-    void UpdateGameLogic();
-    void CleanUpInvalidReferences();
-    void ExecuteDeletions();
-
     std::unordered_map<ID, Enemy*> enemies;
     std::unordered_map<ID, Tower*>   towers;
     std::unordered_map<ID, Bullet*>  bullets;

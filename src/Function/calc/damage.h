@@ -36,7 +36,7 @@ void enforce_damage(const DamageEvent& damage_event);
  * @note 找不到敌人时，返回 nullptr
  * @return Unit*
  */
-std::pair<ID, Enemy*> find_foremost_enemy(const Store& store, const Position& position,
+ ID find_foremost_enemy(const Store& store, const Position& position,
                                           const double range, const bool require_active = false);
 
 /**
@@ -48,7 +48,7 @@ std::pair<ID, Enemy*> find_foremost_enemy(const Store& store, const Position& po
  * @note 找不到士兵时，返回 nullptr
  * @return Unit*
  */
-std::pair<ID, Soldier*> find_nearest_soldier(const Store& store, const Position& position,
+ ID find_nearest_soldier(const Store& store, const Position& position,
                                              const double range);
 
 /**
@@ -59,7 +59,7 @@ std::pair<ID, Soldier*> find_nearest_soldier(const Store& store, const Position&
  * @param range
  * @return std::vector<Unit*>
  */
-std::vector<std::pair<ID, Enemy*>> find_enemies_in_range(const Store&    store,
+std::vector<ID> find_enemies_in_range(const Store&    store,
                                                          const Position& position,
                                                          const double    range);
 
@@ -71,7 +71,7 @@ std::vector<std::pair<ID, Enemy*>> find_enemies_in_range(const Store&    store,
  * @param range
  * @return std::vector<Unit*>
  */
-std::vector<std::pair<ID, Soldier*>> find_soldiers_in_range(const Store&    store,
+std::vector<ID> find_soldiers_in_range(const Store&    store,
                                                             const Position& position,
                                                             const double    range);
 }   // namespace calc

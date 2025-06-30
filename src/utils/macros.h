@@ -6,5 +6,6 @@
 #define LEVEL_DATA_PATH "data/levels/"
 #define SOUNDS_PATH "assets/sounds/"
 constexpr double FRAME_LENGTH = 1.0 / FPS;
-typedef std::size_t  ID;
+#define INVALID_ID -1
+typedef int  ID;
 typedef sf::Vector2f Position;

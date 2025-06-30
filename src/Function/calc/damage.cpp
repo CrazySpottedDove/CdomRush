@@ -6,7 +6,9 @@
 #include "Model/components/damage.h"
 #include "Model/enemies/enemies.h"
 #include "Model/templates/unit.h"
+#include "utils/macros.h"
 #include <SFML/System/Vector2.hpp>
+#include <unordered_map>
 #include <vector>
 
 void calc::enforce_damage(const DamageEvent& damage_event)
@@ -60,17 +62,18 @@ void calc::update_damage_value(const Buff& buff, double& value)
     value = (value + buff.damage_inc) * buff.damage_factor;
 }
 
-Enemy* calc::find_foremost_enemy(const Store& store, const Position& position, const double range,
+ID calc::find_foremost_enemy(const Store& store, const Position& position, const double range,
                                  const bool require_active)
 {
-    const std::vector<Enemy*>& enemies = store.GetEnemies();
+    const std::unordered_map<ID, Enemy*>& enemies = store.GetEnemies();
     if (enemies.empty()) {
-        return nullptr;
+        return {0, nullptr};
     }
 
     Enemy* foremost_enemy      = nullptr;
     int    min_points_remained = std::numeric_limits<int>::max();
-    for (const auto& enemy : enemies) {
+    ID   foremost_enemy_id      = 0;
+    for (const auto& [enemy_id, enemy] : enemies) {
         // 死亡的敌人，不索敌
         if (calc::is_dead(*enemy)) {
             continue;
@@ -93,7 +96,7 @@ Enemy* calc::find_foremost_enemy(const Store& store, const Position& position, c
             foremost_enemy      = enemy;
         }
     }
-    return foremost_enemy;
+    return ;
 }
 
 Soldier* find_nearest_soldier(const Store& store, const Position& position, const double range)

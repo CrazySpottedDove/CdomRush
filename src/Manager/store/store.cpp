@@ -26,26 +26,6 @@
 
 // 最后，我们遍历 entities_to_delete 集合，删除其中的所有实体。
 
-void Store::UpdateGameLogic()
-{
-    // // 处理伤害事件
-    // damage_events.erase(std::remove_if(
-    //     damage_events.begin(), damage_events.end(), [this](DamageEvent& damage_event) -> bool {
-    //         if (damage_event.target == nullptr || calc::is_dead(*damage_event.target)) {
-    //             return true;
-    //         }
-    //         if (damage_event.data.apply_delay > 0) {
-    //             // 减少延迟计数
-    //             --damage_event.data.apply_delay;
-    //             return false;   // 保留事件
-    //         }
-
-    //         // 延迟为0，执行伤害
-    //         calc::enforce_damage(damage_event);
-    //         return true;   // 移除已执行的事件
-    //     }));
-}
-
 
 void Store::Update()
 {
@@ -109,7 +89,7 @@ void Store::Game()
         case GameState::Begin:
             // AnimationPlayer::DrawTotalMap();
             // AnimationPlayer::
-            
+
             break;
         case GameState::GameStart:
             time = 0.0;

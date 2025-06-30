@@ -12,50 +12,58 @@
 #include <unordered_map>
 #include <vector>
 
-void calc::enforce_damage(const DamageEvent& damage_event)
+void calc::enforce_damage(Store& store, const DamageEvent& damage_event)
 {
     const auto& data       = damage_event.data;
-    auto&       target     = *damage_event.target;
+    Unit*       target     = store.GetEnemy(damage_event.target);
+    Unit* source = store.GetSoldier(damage_event.source);
+    if (target == nullptr){
+        target = store.GetSoldier(damage_event.target);
+        source = store.GetEnemy(damage_event.source);
+    }
+    if (target == nullptr) {
+        return; // 目标不存在
+    }
     double      value      = data.value;
     double      protection = 0.0;
     switch (data.type) {
     case DamageType::True: break;
     case DamageType::Physical:
-        protection = target.armor.physical + target.buff.physical_armor_inc - data.ignore_armor;
+        protection = target->armor.physical + target->buff.physical_armor_inc - data.ignore_armor;
         break;
     case DamageType::Magical:
-        protection = target.armor.magical + target.buff.magical_armor_inc - data.ignore_armor;
+        protection = target->armor.magical + target->buff.magical_armor_inc - data.ignore_armor;
         break;
     case DamageType::Explosion:
         protection =
-            (target.armor.physical + target.buff.physical_armor_inc - data.ignore_armor) * 0.5;
+            (target->armor.physical + target->buff.physical_armor_inc - data.ignore_armor) * 0.5;
         break;
-    case DamageType::Poison: protection = target.armor.poison - data.ignore_armor; break;
-    case DamageType::Fire: protection = target.armor.fire - data.ignore_armor; break;
+    case DamageType::Poison: protection = target->armor.poison - data.ignore_armor; break;
+    case DamageType::Fire: protection = target->armor.fire - data.ignore_armor; break;
     case DamageType::Electrical:
         protection =
-            (target.armor.physical + target.buff.physical_armor_inc - data.ignore_armor) * 0.5 +
-            target.armor.electrical;
+            (target->armor.physical + target->buff.physical_armor_inc - data.ignore_armor) * 0.5 +
+            target->armor.electrical;
         break;
     case DamageType::Tear:
-        if (target.armor.physical + target.buff.physical_armor_inc <= 0.0) {
+        if (target->armor.physical + target->buff.physical_armor_inc <= 0.0) {
             value *= 2.0;
         }
         break;
-    case DamageType::Blood: protection = target.armor.blood - data.ignore_armor; break;
-    case DamageType::Physical_Armor: calc::physical_armor_dec(target, data.value); break;
-    case DamageType::Magical_Armor: calc::magical_armor_dec(target, data.value); break;
+    case DamageType::Blood: protection = target->armor.blood - data.ignore_armor; break;
+    case DamageType::Physical_Armor: calc::physical_armor_dec(*target, data.value); break;
+    case DamageType::Magical_Armor: calc::magical_armor_dec(*target, data.value); break;
     }
 
     if (protection > 1.0) {
         protection = 1.0;
     }
 
-    if (damage_event.source != nullptr) {
-        calc::update_damage_value(damage_event.source->buff, value);
+    if (source != nullptr) {
+        calc::update_damage_value(source->buff, value);
     }
 
-    target.health.hp -= value * (1.0 - protection);
+    target->health.hp -= value * (1.0 - protection);
 }
 
 void calc::update_damage_value(const Buff& buff, double& value)

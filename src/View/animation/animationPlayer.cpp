@@ -1,4 +1,5 @@
 #include "animationPlayer.h"
+#include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -22,27 +23,27 @@ void AnimationPlayer::PlayAnimation(Entity& entity, AnimationContext& context, S
 {
     // 使用指定的state
     bool should_reset = false;
-    
+
     if (!entity.animation.pending) {
         should_reset = true;
-        std::cout << "Starting new animation for Entity prefix: " << entity.animation.prefix 
+        std::cout << "Starting new animation for Entity prefix: " << entity.animation.prefix
                   << " (state: " << static_cast<int>(state) << ")" << std::endl;
     } else if (context.needs_state_change(state)) {
         should_reset = true;
-        std::cout << "Switching Entity animation from " << static_cast<int>(context.current_state) 
+        std::cout << "Switching Entity animation from " << static_cast<int>(context.current_state)
                   << " to " << static_cast<int>(state) << std::endl;
     }
-    
+
     if (should_reset) {
         entity.animation.pending = true;
         entity.animation.frame_id = 0;
-        entity.animation.state = state; 
+        entity.animation.state = state;
         context.update_state(state);
         context.is_paused = false;
     }
-    
+
     context.loop_enabled = loop;
-    std::cout << "Entity animation settings: loop=" << loop 
+    std::cout << "Entity animation settings: loop=" << loop
               << ", current_frame=" << entity.animation.frame_id << std::endl;
 }
 
@@ -54,18 +55,18 @@ bool AnimationPlayer::NextFrame(Entity& entity, AnimationContext& context)
     if (!entity.animation.pending || context.is_paused) {
         return false;
     }
-    
+
     try {
         std::size_t total_frames = GetAnimationFrameCount(entity.animation.prefix, context.current_state);
-        
+
         if (total_frames == 0) {
             std::cerr << "Warning: Entity animation has 0 frames for prefix: " << entity.animation.prefix << std::endl;
             entity.animation.pending = false;
             return false;
         }
-        
+
         entity.animation.frame_id++;
-        
+
         if (entity.animation.frame_id >= total_frames) {
             if (context.loop_enabled) {
                 entity.animation.frame_id = 0;
@@ -78,11 +79,11 @@ bool AnimationPlayer::NextFrame(Entity& entity, AnimationContext& context)
                 return false;
             }
         }
-        
-        std::cout << "Entity advanced to frame " << entity.animation.frame_id 
+
+        std::cout << "Entity advanced to frame " << entity.animation.frame_id
                   << " for prefix: " << entity.animation.prefix << std::endl;
         return true;
-        
+
     } catch (const std::exception& e) {
         std::cerr << "Error advancing Entity animation frame: " << e.what() << std::endl;
         entity.animation.pending = false;
@@ -108,41 +109,40 @@ void AnimationPlayer::Render(sf::RenderWindow& window, const Entity& entity, con
     if (!entity.animation.pending) {
         return;
     }
-    
+
     try {
         std::size_t actual_frame_index = CalculateActualFrameIndex(entity.animation, context.current_state);
-        
+
         const auto& [frame_data, texture] = animation_manager_.RequireFrameData(entity.animation.prefix, actual_frame_index);
-        
+
         sf::Sprite sprite(texture);
         // 设置纹理裁剪区域（实际图像内容）
         sprite.setTextureRect(frame_data.frameRect);
-        
+
         // 设置原点到图像中心
-        sprite.setOrigin(
-            static_cast<float>(frame_data.frameRect.width) / 2.0f,
-            static_cast<float>(frame_data.frameRect.height) / 2.0f
+        sprite.setOrigin(sf::Vector2f(static_cast<float>(frame_data.frameRect.size.x) / 2.0f,
+                                      static_cast<float>(frame_data.frameRect.size.y) / 2.0f)
         );
-        
-        sprite.setScale(scale);  
-        
+
+        sprite.setScale(scale);
+
         // 计算最终渲染位置：entity位置 + trim偏移 + 图像中心偏移
         sf::Vector2f final_position = entity.position;
         final_position.x += static_cast<float>(frame_data.trim_left) * scale.x;
         final_position.y += static_cast<float>(frame_data.trim_top) * scale.y;
-        
+
         // 加上图像中心的偏移
-        final_position.x += static_cast<float>(frame_data.frameRect.width) / 2.0f * scale.x;
-        final_position.y += static_cast<float>(frame_data.frameRect.height) / 2.0f * scale.y;
+        final_position.x += static_cast<float>(frame_data.frameRect.size.x) / 2.0f * scale.x;
+        final_position.y += static_cast<float>(frame_data.frameRect.size.y) / 2.0f * scale.y;
         sprite.setPosition(final_position);
-        
+
         window.draw(sprite);
-        
+
         // displaySize信息
         std::cout << "Entity render - displaySize: " << frame_data.displaySize.x << "x" << frame_data.displaySize.y
-                  << ", frameRect: " << frame_data.frameRect.width << "x" << frame_data.frameRect.height
+                  << ", frameRect: " << frame_data.frameRect.size.x << "x" << frame_data.frameRect.size.y
                   << ", trim: (" << frame_data.trim_left << "," << frame_data.trim_top << ")" << std::endl;
-        
+
     } catch (const std::exception& e) {
         std::cerr << "Error rendering Entity animation frame: " << e.what() << std::endl;
     }
@@ -156,7 +156,7 @@ void AnimationPlayer::StopAnimation(Entity& entity, AnimationContext& context)
     entity.animation.pending = false;
     entity.animation.frame_id = 0;
     context.is_paused = false;
-    
+
     std::cout << "Entity animation stopped for prefix: " << entity.animation.prefix << std::endl;
 }
 
@@ -167,7 +167,7 @@ void AnimationPlayer::ResetAnimation(Entity& entity, AnimationContext& context)
 {
     entity.animation.frame_id = 0;
     context.is_paused = false;
-    
+
     std::cout << "Entity animation reset to frame 0 for prefix: " << entity.animation.prefix << std::endl;
 }
 
@@ -179,7 +179,7 @@ bool AnimationPlayer::IsAnimationFinished(const Entity& entity, const AnimationC
     if (context.loop_enabled || entity.animation.pending) {
         return false;
     }
-    
+
     try {
         std::size_t total_frames = GetAnimationFrameCount(entity.animation.prefix, context.current_state);
         return entity.animation.frame_id >= total_frames - 1;
@@ -195,7 +195,7 @@ bool AnimationPlayer::IsAnimationFinished(const Entity& entity, const AnimationC
 void AnimationPlayer::SetPaused(Entity& entity, AnimationContext& context, bool paused)
 {
     context.is_paused = paused;
-    std::cout << "Entity animation " << (paused ? "paused" : "resumed") 
+    std::cout << "Entity animation " << (paused ? "paused" : "resumed")
               << " for prefix: " << entity.animation.prefix << std::endl;
 }
 
@@ -207,11 +207,11 @@ bool AnimationPlayer::JumpToFrame(Entity& entity, AnimationContext& context, std
     try {
         if (IsValidFrameId(entity.animation.prefix, context.current_state, frame_id)) {
             entity.animation.frame_id = frame_id;
-            std::cout << "Entity jumped to frame " << frame_id 
+            std::cout << "Entity jumped to frame " << frame_id
                       << " for prefix: " << entity.animation.prefix << std::endl;
             return true;
         } else {
-            std::cerr << "Invalid frame ID " << frame_id 
+            std::cerr << "Invalid frame ID " << frame_id
                       << " for Entity prefix: " << entity.animation.prefix << std::endl;
             return false;
         }
@@ -230,22 +230,22 @@ bool AnimationPlayer::JumpToFrame(Entity& entity, AnimationContext& context, std
  */
 void AnimationPlayer::PlayAnimation(Unit& unit, AnimationContext& context, bool loop)
 {
-    State target_animation_state = unit.state;
-    
+    State target_animation_state = unit.animation.state;
+
     bool should_reset = false;
-    
+
     if (!unit.animation.pending) {
         should_reset = true;
-        std::cout << "Starting new animation for Unit prefix: " << unit.animation.prefix 
-                  << " (Unit state: " << static_cast<int>(unit.state) 
+        std::cout << "Starting new animation for Unit prefix: " << unit.animation.prefix
+                  << " (Unit state: " << static_cast<int>(unit.animation.state)
                   << ", Heading: " << static_cast<int>(unit.heading) << ")" << std::endl;
     } else if (context.needs_state_change(target_animation_state)) {
         should_reset = true;
-        std::cout << "Switching Unit animation from " << static_cast<int>(context.current_state) 
-                  << " to " << static_cast<int>(target_animation_state) 
-                  << " (Unit state: " << static_cast<int>(unit.state) << ")" << std::endl;
+        std::cout << "Switching Unit animation from " << static_cast<int>(context.current_state)
+                  << " to " << static_cast<int>(target_animation_state)
+                  << " (Unit state: " << static_cast<int>(unit.animation.state) << ")" << std::endl;
     }
-    
+
     if (should_reset) {
         unit.animation.pending = true;
         unit.animation.frame_id = 0;
@@ -253,7 +253,7 @@ void AnimationPlayer::PlayAnimation(Unit& unit, AnimationContext& context, bool 
         context.update_state(target_animation_state);
         context.is_paused = false;
     }
-    
+
     context.loop_enabled = loop;
 }
 
@@ -265,18 +265,18 @@ bool AnimationPlayer::NextFrame(Unit& unit, AnimationContext& context)
     if (!unit.animation.pending || context.is_paused) {
         return false;
     }
-    
+
     try {
         std::size_t total_frames = GetAnimationFrameCount(unit.animation.prefix, context.current_state);
-        
+
         if (total_frames == 0) {
             std::cerr << "Warning: Unit animation has 0 frames for prefix: " << unit.animation.prefix << std::endl;
             unit.animation.pending = false;
             return false;
         }
-        
+
         unit.animation.frame_id++;
-        
+
         if (unit.animation.frame_id >= total_frames) {
             if (context.loop_enabled) {
                 unit.animation.frame_id = 0;
@@ -289,11 +289,11 @@ bool AnimationPlayer::NextFrame(Unit& unit, AnimationContext& context)
                 return false;
             }
         }
-        
-        std::cout << "Unit advanced to frame " << unit.animation.frame_id 
+
+        std::cout << "Unit advanced to frame " << unit.animation.frame_id
                   << " for prefix: " << unit.animation.prefix << std::endl;
         return true;
-        
+
     } catch (const std::exception& e) {
         std::cerr << "Error advancing Unit animation frame: " << e.what() << std::endl;
         unit.animation.pending = false;
@@ -307,12 +307,12 @@ bool AnimationPlayer::NextFrame(Unit& unit, AnimationContext& context)
 void AnimationPlayer::Update(Unit& unit, AnimationContext& context)
 {
     // Unit版本：检查状态变化并自动切换动画
-    State target_animation_state = unit.state;
+    State target_animation_state = unit.animation.state;
     if (context.needs_state_change(target_animation_state)) {
-        PlayAnimation(unit, context, context.loop_enabled);  
+        PlayAnimation(unit, context, context.loop_enabled);
         return;
     }
-    
+
     NextFrame(unit, context);
 }
 
@@ -325,53 +325,52 @@ void AnimationPlayer::Render(sf::RenderWindow& window, const Unit& unit, const A
     if (!unit.animation.pending) {
         return;
     }
-    
+
     try {
         std::size_t actual_frame_index = CalculateActualFrameIndex(unit.animation, context.current_state);
-        
+
         const auto& [frame_data, texture] = animation_manager_.RequireFrameData(unit.animation.prefix, actual_frame_index);
-        
+
         sf::Sprite sprite(texture);
         // 设置纹理裁剪区域（实际图像内容）
         sprite.setTextureRect(frame_data.frameRect);
-        
+
         // 设置原点到图像中心
-        sprite.setOrigin(
-            static_cast<float>(frame_data.frameRect.width) / 2.0f,
-            static_cast<float>(frame_data.frameRect.height) / 2.0f
+        sprite.setOrigin(sf::Vector2f(static_cast<float>(frame_data.frameRect.size.x) / 2.0f,
+                                      static_cast<float>(frame_data.frameRect.size.y) / 2.0f)
         );
-        
-        bool needs_flip = ShouldFlipHorizontally(unit.state, unit.heading);
+
+        bool needs_flip = ShouldFlipHorizontally(unit.animation.state, unit.heading);
         sf::Vector2f final_scale = scale;
         if (needs_flip) {
             final_scale.x = -scale.x;  // 水平翻转以中心为支点
-            std::cout << "Applying horizontal flip for Unit state: " 
-                      << static_cast<int>(unit.state) 
+            std::cout << "Applying horizontal flip for Unit state: "
+                      << static_cast<int>(unit.animation.state)
                       << ", heading: " << static_cast<int>(unit.heading) << std::endl;
         }
         sprite.setScale(final_scale);
-        
+
         // 计算最终渲染位置
         sf::Vector2f final_position = unit.position;
-        
+
         // 期望位置 = unit.position + trim偏移 + 图像中心偏移
         final_position.x += static_cast<float>(frame_data.trim_left) * scale.x;
         final_position.y += static_cast<float>(frame_data.trim_top) * scale.y;
-        
+
         // 加上图像中心的偏移
-        final_position.x += static_cast<float>(frame_data.frameRect.width) / 2.0f * scale.x;
-        final_position.y += static_cast<float>(frame_data.frameRect.height) / 2.0f * scale.y;
-        
+        final_position.x += static_cast<float>(frame_data.frameRect.size.x) / 2.0f * scale.x;
+        final_position.y += static_cast<float>(frame_data.frameRect.size.y) / 2.0f * scale.y;
+
         sprite.setPosition(final_position);
         window.draw(sprite);
-        
+
         // displaySize和翻转
         std::cout << "Unit render - displaySize: " << frame_data.displaySize.x << "x" << frame_data.displaySize.y
-                  << ", frameRect: " << frame_data.frameRect.width << "x" << frame_data.frameRect.height
-                  << ", trim: (" << frame_data.trim_left << "," << frame_data.trim_top 
+                  << ", frameRect: " << frame_data.frameRect.size.x << "x" << frame_data.frameRect.size.y
+                  << ", trim: (" << frame_data.trim_left << "," << frame_data.trim_top
                   << "," << frame_data.trim_right << "," << frame_data.trim_bottom << ")"
                   << ", flipped: " << needs_flip << std::endl;
-        
+
     } catch (const std::exception& e) {
         std::cerr << "Error rendering Unit animation frame: " << e.what() << std::endl;
     }
@@ -385,7 +384,7 @@ void AnimationPlayer::StopAnimation(Unit& unit, AnimationContext& context)
     unit.animation.pending = false;
     unit.animation.frame_id = 0;
     context.is_paused = false;
-    
+
     std::cout << "Unit animation stopped for prefix: " << unit.animation.prefix << std::endl;
 }
 
@@ -396,7 +395,7 @@ void AnimationPlayer::ResetAnimation(Unit& unit, AnimationContext& context)
 {
     unit.animation.frame_id = 0;
     context.is_paused = false;
-    
+
     std::cout << "Unit animation reset to frame 0 for prefix: " << unit.animation.prefix << std::endl;
 }
 
@@ -408,7 +407,7 @@ bool AnimationPlayer::IsAnimationFinished(const Unit& unit, const AnimationConte
     if (context.loop_enabled || unit.animation.pending) {
         return false;
     }
-    
+
     try {
         std::size_t total_frames = GetAnimationFrameCount(unit.animation.prefix, context.current_state);
         return unit.animation.frame_id >= total_frames - 1;
@@ -424,7 +423,7 @@ bool AnimationPlayer::IsAnimationFinished(const Unit& unit, const AnimationConte
 void AnimationPlayer::SetPaused(Unit& unit, AnimationContext& context, bool paused)
 {
     context.is_paused = paused;
-    std::cout << "Unit animation " << (paused ? "paused" : "resumed") 
+    std::cout << "Unit animation " << (paused ? "paused" : "resumed")
               << " for prefix: " << unit.animation.prefix << std::endl;
 }
 
@@ -436,11 +435,11 @@ bool AnimationPlayer::JumpToFrame(Unit& unit, AnimationContext& context, std::si
     try {
         if (IsValidFrameId(unit.animation.prefix, context.current_state, frame_id)) {
             unit.animation.frame_id = frame_id;
-            std::cout << "Unit jumped to frame " << frame_id 
+            std::cout << "Unit jumped to frame " << frame_id
                       << " for prefix: " << unit.animation.prefix << std::endl;
             return true;
         } else {
-            std::cerr << "Invalid frame ID " << frame_id 
+            std::cerr << "Invalid frame ID " << frame_id
                       << " for Unit prefix: " << unit.animation.prefix << std::endl;
             return false;
         }
@@ -462,11 +461,11 @@ bool AnimationPlayer::ShouldFlipHorizontally(State unit_state, Heading heading) 
     if (unit_state == State::WalkingLeftRight) {
         return heading == Heading::Left;  // 向左走时需要翻转
     }
-    
+
     // 此处待添加更多翻转逻辑
-    if (unit_state == State::Running && heading == Heading::Left) 
+    if (unit_state == State::Running && heading == Heading::Left)
         return true;
-    
+
     return false;
 }
 
@@ -481,16 +480,16 @@ std::size_t AnimationPlayer::CalculateActualFrameIndex(const Animation& animatio
 {
     try {
         const auto& animation_group = animation_manager_.RequireAnimationGroup(animation.prefix, state);
-        
+
         std::size_t actual_index = animation_group.from + animation.frame_id;
-        
+
         if (actual_index > animation_group.to) {
-            std::cerr << "Warning: Frame index " << actual_index 
-                      << " exceeds animation group range [" << animation_group.from 
+            std::cerr << "Warning: Frame index " << actual_index
+                      << " exceeds animation group range [" << animation_group.from
                       << ", " << animation_group.to << "]" << std::endl;
             return animation_group.to;
         }
-        
+
         return actual_index;
     }
     catch (const std::exception& e) {
@@ -526,7 +525,7 @@ bool AnimationPlayer::IsValidFrameId(const std::string& prefix, State state, std
 /**
  * @brief 渲染地图背景
  */
-void AnimationPlayer::RenderMap(sf::RenderWindow& window, 
+void AnimationPlayer::RenderMap(sf::RenderWindow& window,
                                const std::string& map_prefix,
                                const sf::Vector2f& position,
                                const sf::Vector2f& scale) const
@@ -534,23 +533,23 @@ void AnimationPlayer::RenderMap(sf::RenderWindow& window,
     try {
         // 地图被当作静态动画：状态=Idle，获取动画组信息
         const auto& animation_group = animation_manager_.RequireAnimationGroup(map_prefix, State::Idle);
-        
+
         // 使用动画组的起始帧（对于地图来说，from和to都是1）
         std::size_t actual_frame_index = animation_group.from;
-        
+
         const auto& [frame_data, texture] = animation_manager_.RequireFrameData(map_prefix, actual_frame_index);
-        
+
         sf::Sprite map_sprite(texture);
         // 设置纹理裁剪区域
         map_sprite.setTextureRect(frame_data.frameRect);
-        
+
         // 设置位置和缩放
         map_sprite.setPosition(position);
         map_sprite.setScale(scale);
-        
+
         // 渲染地图
         window.draw(map_sprite);
-        
+
         // 调试信息（每60帧输出一次）
         static int debug_counter = 0;
         debug_counter++;
@@ -559,9 +558,9 @@ void AnimationPlayer::RenderMap(sf::RenderWindow& window,
                       << " at (" << position.x << "," << position.y << ")"
                       << " scale (" << scale.x << "," << scale.y << ")"
                       << " frame_index (" << actual_frame_index << ")"
-                      << " size (" << frame_data.frameRect.width << "x" << frame_data.frameRect.height << ")" << std::endl;
+                      << " size (" << frame_data.frameRect.size.x << "x" << frame_data.frameRect.size.y << ")" << std::endl;
         }
-        
+
     } catch (const std::exception& e) {
         std::cerr << "Error rendering map '" << map_prefix << "': " << e.what() << std::endl;
         std::cerr << "请确保地图资源已通过AnimationManager加载,并且存在idle动画组" << std::endl;

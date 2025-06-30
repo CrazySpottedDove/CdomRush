@@ -32,7 +32,7 @@ public:
     double                     time       = 0.0;
     double                     gold       = 0.0;
     int                        life       = 20;
-    GameState                  game_state = GameState::GamePlaying;
+    GameState                  game_state = GameState::GameStart;
     const std::unordered_map<ID, Enemy*>& GetEnemies() const { return enemies; }
 
     const std::unordered_map<ID, Tower*>& GetTowers() const { return towers; }
@@ -41,13 +41,13 @@ public:
 
     const std::unordered_map<ID, Soldier*>& GetSoldiers() const { return soldiers; }
 
-    void QueueEnemy(Enemy* enemy) { enemies[++next_id] = enemy; }
+    void QueueEnemy(Enemy* enemy) { enemies[next_id++] = enemy; }
 
-    void QueueTower(Tower* tower) { towers[++next_id] = tower; }
+    void QueueTower(Tower* tower) { towers[next_id++] = tower; }
 
-    void QueueBullet(Bullet* bullet) { bullets[++next_id] = bullet; }
+    void QueueBullet(Bullet* bullet) { bullets[next_id++] = bullet; }
 
-    void QueueSoldier(Soldier* soldier) { soldiers[++next_id] = soldier; }
+    void QueueSoldier(Soldier* soldier) { soldiers[next_id++] = soldier; }
 
     void QueueDamageEvent(DamageEvent&& event) { damage_events.push_back(std::move(event)); }
 
@@ -93,4 +93,9 @@ private:
     ID next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象
     std::vector<DamageEvent> damage_events;
+    void UpdateDamageEvents();
+    void UpdateEnemies();
+    void UpdateBullets();
+    void UpdateTowers();
+    void UpdateSoldiers();
 };

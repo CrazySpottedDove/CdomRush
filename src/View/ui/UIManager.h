@@ -100,6 +100,15 @@ public:
      */
     const std::string& GetCurrentMapPrefix() const { return current_map_prefix_; }
 
+    void QueueEnemyUI(Enemy* enemy);
+    void QueueSoldierUI(Soldier* soldier);
+    void QueueBulletUI(Bullet* bullet);
+    void QueueTowerUI(Tower* tower);
+    void DeQueueEnemyUI(Enemy* enemy);
+    void DeQueueSoldierUI(Soldier* soldier);
+    void DeQueueBulletUI(Bullet* bullet);
+    void DeQueueTowerUI(Tower* tower);
+
     // 四个映射容器：实体指针 -> UI对象
     std::unordered_map<Enemy*, std::unique_ptr<EnemyUI>>     enemy_uis_;     ///< Enemy映射
     std::unordered_map<Soldier*, std::unique_ptr<SoldierUI>> soldier_uis_;   ///< Soldier映射

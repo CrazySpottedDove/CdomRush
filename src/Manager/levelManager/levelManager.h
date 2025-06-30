@@ -1,11 +1,10 @@
 #pragma once
-
-#include "Manager/resourceManager/animationManager.h"
 #include "utils/macros.h"
 #include <string>
 #include <utility>
 #include <vector>
 
+class Store;
 // (关卡名称，关卡点的位置)
 typedef std::pair<std::string, Position> Level;
 struct LevelData{
@@ -26,11 +25,11 @@ public:
     }
 
     /**
-     * @brief 加载 current_level_name 对应的关卡资源
+     * @brief 加载 current_level_name 对应的关卡资源，包括纹理和路径
      *
-     * @param animation_manager
+     * @param store
      */
-    void LoadLevelResource(AnimationManager& animation_manager);
+    void LoadLevelResource(Store& store);
 private:
     void        ReadLevelDataFile(LevelData& level_data);
     std::string current_level_name;

@@ -1,6 +1,8 @@
 #include "UIManager.h"
+#include "View/ui/BulletUI.h"
 #include <iostream>
 #include <algorithm>
+#include <memory>
 
 /**
  * @brief 构造函数
@@ -14,6 +16,43 @@ UIManager::UIManager()
 {
     std::cout << "UIManager: Initialized with AnimationPlayer" << std::endl;
 }
+
+void UIManager::QueueBulletUI(Bullet* bullet){
+    bullet_uis_[bullet] = std::make_unique<BulletUI>(bullet, *animation_player_);
+}
+
+void UIManager::DeQueueBulletUI(Bullet* bullet){
+    auto it = bullet_uis_.find(bullet);
+    bullet_uis_.erase(it);
+}
+
+void UIManager::QueueEnemyUI(Enemy* enemy){
+    enemy_uis_[enemy] = std::make_unique<EnemyUI>(enemy, *animation_player_);
+}
+
+void UIManager::DeQueueEnemyUI(Enemy* enemy){
+    auto it = enemy_uis_.find(enemy);
+    enemy_uis_.erase(it);
+}
+
+void UIManager::QueueSoldierUI(Soldier* soldier){
+    soldier_uis_[soldier] = std::make_unique<SoldierUI>(soldier, *animation_player_);
+}
+
+void UIManager::DeQueueSoldierUI(Soldier* soldier){
+    auto it = soldier_uis_.find(soldier);
+    soldier_uis_.erase(it);
+}
+
+void UIManager::QueueTowerUI(Tower* tower){
+    tower_uis_[tower] = std::make_unique<TowerUI>(tower, *animation_player_);
+}
+
+void UIManager::DeQueueTowerUI(Tower* tower){
+    auto it = tower_uis_.find(tower);
+    tower_uis_.erase(it);
+}
+
 
 // /**
 //  * @brief 更新UI管理器

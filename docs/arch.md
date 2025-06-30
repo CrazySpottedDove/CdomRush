@@ -30,24 +30,38 @@ View 层需要实现各个可以接受输入事件的可视模块，如按钮，
 
 实现具体的行为逻辑，如：
 
-- 伤害的结算函数
-- 生命值的恢复函数
-- 位置的更新函数
-- 护甲值的更新函数
-- buff 的更新函数
-- 各种点击事件的回调函数
+* 伤害的结算函数
+* 生命值的恢复函数
+* 位置的更新函数
+* 护甲值的更新函数
+* buff 的更新函数
+* 各种点击事件的回调函数
 
 ## Manager 层
 
 Manager 层需要确认总的游戏状态，如：
 
-- 暂停
-- 选择关卡
-- 战斗中
-- 结算
+* 暂停
+* 选择关卡
+* 战斗中
+* 结算
 
 Manager 层需要编写主线程函数和副线程函数。
 
 Manager 层需要管理所有的美术资源。
 
 Manager 层需要维护游戏的全局变量。
+
+## ADD ON
+
+UIManager 提供接口：
+
+```cpp
+QueueEnemyUI(Enemy*)
+QueueSoldierUI(Soldier*)
+QueueTowerUI(Tower*)
+QueueBulletUI(Bullet*)
+DeQueueEnemyUI(Enemy*)
+// and so on
+```
+

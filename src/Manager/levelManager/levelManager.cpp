@@ -1,9 +1,10 @@
 #include "Manager/levelManager/levelManager.h"
-#include "Manager/resourceManager/animationManager.h"
 #include "Manager/resourceManager/textureManager.h"
+#include "Manager/store/store.h"
 #include "utils/macros.h"
 #include "utils/readLua.h"
 #include <sol/table.hpp>
+#include <string>
 
 LevelManager::LevelManager()
 {
@@ -30,12 +31,13 @@ void LevelManager::ReadLevelDataFile(LevelData& level_data)
     }
 }
 
-void LevelManager::LoadLevelResource(AnimationManager& animation_manager)
+void LevelManager::LoadLevelResource(Store& store)
 {
     LevelData level_data;
     ReadLevelDataFile(level_data);
     for (const std::string& texture_lua_path : level_data.required_textures) {
         const std::string true_lua_path = std::string(IMAGES_PATH) + texture_lua_path;
-        animation_manager.LoadSpriteFrameResources(true_lua_path, TextureLevel::Specific);
+        store.animation_manager.LoadSpriteFrameResources(true_lua_path, TextureLevel::Specific);
     }
+    store.path_manager.ReadPathsFromLua(std::string(PATH_PATH) + current_level_name + ".lua");
 }

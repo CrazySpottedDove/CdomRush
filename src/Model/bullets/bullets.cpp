@@ -2,7 +2,7 @@
 #include "Manager/store/store.h"
 #include <cmath>
 
-bool Bullet::check_position(Store& store)
+void Bullet::check_position(Store& store)
 {
     // 检查目标是否存活
     if(source_type == SourceType::Tower || source_type == SourceType::Soldier){

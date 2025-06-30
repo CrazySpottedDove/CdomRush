@@ -40,7 +40,7 @@ void ActiveEnemyMelee::Update(Store& store)
 
         for (int i = 0; i < this->melee.attacks.size(); ++i) {
             if (this->melee.attacks[i]->IsReady(store)) {
-                melee.attacks[i]->Apply(store,id,blocker);   // 执行近战攻击
+                melee.attacks[i]->Apply(store,id,blocker,SourceType::Enemy);   // 执行近战攻击
                 this->animation.state = State::Attack;   // 设置状态为攻击
                 return;
             }

@@ -41,7 +41,7 @@ public:
     bool Remove(Store& store) override{
         return true;
     }
-    bool check_position(Store& store);
+    void check_position(Store& store);
 
     virtual Bullet* Clone() const = 0; // 纯虚函数，用于克隆子弹对象
 };

@@ -1,5 +1,6 @@
 #include "UIManager.h"
 #include "View/ui/BulletUI.h"
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
 #include <algorithm>
 #include <memory>
@@ -53,6 +54,25 @@ void UIManager::DeQueueTowerUI(Tower* tower){
     tower_uis_.erase(it);
 }
 
+void UIManager::RenderEnemyUI(sf::RenderWindow&window, Enemy* enemy, const sf::Vector2f& scale){
+    const auto it = enemy_uis_.find(enemy);
+    it->second->Render(window, scale);
+}
+
+void UIManager::RenderSoldierUI(sf::RenderWindow&window, Soldier* soldier, const sf::Vector2f& scale){
+    const auto it = soldier_uis_.find(soldier);
+    it->second->Render(window, scale);
+}
+
+void UIManager::RenderBulletUI(sf::RenderWindow&window, Bullet* bullet, const sf::Vector2f& scale){
+    const auto it = bullet_uis_.find(bullet);
+    it->second->Render(window, scale);
+}
+
+void UIManager::RenderTowerUI(sf::RenderWindow&window, Tower* tower, const sf::Vector2f& scale){
+    const auto it = tower_uis_.find(tower);
+    it->second->Render(window, scale);
+}
 
 // /**
 //  * @brief 更新UI管理器

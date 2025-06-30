@@ -30,5 +30,17 @@ return{
             to = 1,
             from = 1
         }
+    },
+    map_flag = {
+        idle = {
+            to = 134,
+            from = 90
+        } -- 其实这是战役
+    },
+    acaroth = {
+        idle = {
+            to = 1,
+            from = 1
+        } -- 阿卡洛斯遗迹的地图
     }
 }

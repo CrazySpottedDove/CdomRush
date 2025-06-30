@@ -4,7 +4,7 @@
 TemplateManager::TemplateManager() {
     bullet_map = {
         {BulletType::Arrow, new Arrow()},
-        {BulletType::Bolt, new Bolt()},
-        {BulletType::Bomb, new Bomb()}
+        // {BulletType::Bolt, new Bolt()},
+        // {BulletType::Bomb, new Bomb()}
     };
 }

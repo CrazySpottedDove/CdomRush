@@ -2,6 +2,7 @@
 #include "Function/calc/damage.h"
 #include "Function/calc/hp.h"
 #include "Function/calc/motion.h"
+#include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
 #include "Model/enemies/enemies.h"
 #include "Model/soldiers/soldiers.h"
@@ -10,6 +11,13 @@
 #include <chrono>
 #include <thread>
 
+// Bullet* Store::CreateBullet(const BulletType type){
+//     Bullet* new_bullet = template_manager.bullet_map[type]->Clone();
+//     new_bullet.id = next_bullet_id++;
+//     return new_bullet;
+// }
+
+
 // 核心：指针要么有效，要么为 nullptr，不可以有悬垂引用
 
 // 在每一次 Update 周期中，首先，执行所有的 Update 事件。其中，生命周期结束的变量进入 entities_to_delete 集合中，并不立刻删除。因此，此时它们的指针依旧有效。
@@ -17,26 +25,6 @@
 // 在所有的 Update 事件结束后，我们遍历所有的实体，将其中持有的所有存在于 entities_to_delete 集合中的指针置为 nullptr。
 
 // 最后，我们遍历 entities_to_delete 集合，删除其中的所有实体。
-
-void Store::UpdateGameLogic()
-{
-    // // 处理伤害事件
-    // damage_events.erase(std::remove_if(
-    //     damage_events.begin(), damage_events.end(), [this](DamageEvent& damage_event) -> bool {
-    //         if (damage_event.target == nullptr || calc::is_dead(*damage_event.target)) {
-    //             return true;
-    //         }
-    //         if (damage_event.data.apply_delay > 0) {
-    //             // 减少延迟计数
-    //             --damage_event.data.apply_delay;
-    //             return false;   // 保留事件
-    //         }
-
-    //         // 延迟为0，执行伤害
-    //         calc::enforce_damage(damage_event);
-    //         return true;   // 移除已执行的事件
-    //     }));
-}
 
 
 void Store::Update()
@@ -100,15 +88,13 @@ void Store::Game()
         switch (game_state) {
         case GameState::Begin:
             // AnimationPlayer::DrawTotalMap();
-
             // AnimationPlayer::
+
             break;
         case GameState::GameStart:
             time = 0.0;
             while (true) {
                 Update();
-                std::this_thread::sleep_for(
-                    std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
                 time += FRAME_LENGTH;
             }
             break;
@@ -126,6 +112,7 @@ void Store::Game()
             // AnimationPlayer::DrawLoading();
             break;
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
     }
 }
 

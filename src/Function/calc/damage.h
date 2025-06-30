@@ -25,7 +25,7 @@ void update_damage_value(const Buff& buff, double& value);
  *
  * @param damage_event [in]
  */
-void enforce_damage(const DamageEvent& damage_event);
+void enforce_damage(Store& store, const DamageEvent& damage_event);
 
 /**
  * @brief 找到离家最近的敌人

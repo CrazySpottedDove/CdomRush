@@ -10,10 +10,12 @@ find_package(SFML COMPONENTS System Network Graphics Audio Window CONFIG REQUIRE
 # find_package(sol2 CONFIG REQUIRED)
 find_package(lua REQUIRED)
 
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE HEADERS "src/*.h")
+
 # 添加可执行文件
 add_executable(CdomRush
-    src/main.cpp
-    # 添加其他源文件...
+    ${SOURCES}
 )
 
 # 链接SFML库 - 使用新的目标名称

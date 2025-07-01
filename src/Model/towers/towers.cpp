@@ -151,7 +151,25 @@ Archer3::Archer3(Position position_, int total_price_) {
 }
 
 void Engineer::layer_update(){
-
+    if(animation.state == State::Idle){
+        Layers[2].animation.state = State::Idle; // 设置工程师的闲置
+        Layers[3].animation.state = State::Idle; // 设置工程师的闲置
+        Layers[4].animation.state = State::Idle; // 设置工程师的闲置 
+        Layers[5].animation.state = State::Idle; // 设置工程师的闲置
+        Layers[6].animation.state = State::Idle; // 设置工程师的闲置
+        Layers[7].animation.state = State::Idle; // 设置工程师的闲置
+        Layers[8].animation.state = State::Idle; // 设置工程师的闲置
+    }
+    else{
+        Layers[2].animation.state = State::Shoot; // 设置工程师的闲置
+        Layers[3].animation.state = State::Shoot; // 设置工程师的闲置
+        Layers[4].animation.state = State::Shoot; // 设置工程师的闲置
+        Layers[5].animation.state = State::Shoot; // 设置工程师的闲置
+        Layers[6].animation.state = State::Shoot; // 设置工程师的闲置
+        Layers[7].animation.state = State::Shoot; // 设置工程师的闲置
+        Layers[8].animation.state = State::Shoot; // 设置工程师的闲置
+    }
+    return ;
 }
 Engineer1::Engineer1(Position position_, int total_price_) {
     type = TowerType::Engineer1; // 设置塔类型为工程师1
@@ -162,15 +180,18 @@ Engineer1::Engineer1(Position position_, int total_price_) {
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
     ranged.attacks.push_back(RangedAttack(3.0, 160.0, BulletType::Bomb, 0.0, 10.0, sf::Vector2f(0,50), 1.0)); // 添加攻击
-    Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_engineer_%04i"},Position{0.0f, 12.0f}};
-    Layer layer2{Animation{State::Idle, 0.0, true, 0, "engineer_tower_0001"},Position{0.0f, 37.0f}};
-    Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "engineerlvl1"},Position{-9.0f, 51.0f}};
-    Layer layer4{Animation{State::IdleDown, 0.0, true, 0, "engineerlvl1"},Position{9.0f, 51.0f}};
+    
+    Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_artillery_%04i"},Position{0.0f, 15.0f}};
+    Layer layer2{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer1"},Position{0.0f, 41.0f}};
+    Layer layer3{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer2"},Position{0.0f, 41.0f}};
+    Layer layer4{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer3"},Position{0.0f, 41.0f}};
+    Layer layer5{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer4"},Position{0.0f, 41.0f}};
+    Layer layer6{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer5"},Position{0.0f, 41.0f}};
+    Layer layer7{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer6"},Position{0.0f, 41.0f}};
+    Layer layer8{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer7"},Position{0.0f, 41.0f}};
 
-    Layers.push_back(layer1);
-    Layers.push_back(layer2);
-    Layers.push_back(layer3);
-    Layers.push_back(layer4);
+    Layers.push_back(layer1);Layers.push_back(layer2);Layers.push_back(layer3);Layers.push_back(layer4);
+    Layers.push_back(layer5);Layers.push_back(layer6);Layers.push_back(layer7);Layers.push_back(layer8);
 
     animation.state = State::Idle; // 设置初始状态为闲置
     heading = tower_heading::Down; // 默认塔的朝向为 Down

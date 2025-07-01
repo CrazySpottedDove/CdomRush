@@ -65,3 +65,28 @@ DeQueueEnemyUI(Enemy*)
 // and so on
 ```
 
+## 渲染方案
+
+`Animation` 的成员加上 `Position` 足够完成全部的渲染工作。
+
+```cpp
+    State       state;
+    double      rotation = 0.0;    // 旋转角度
+    bool        pending  = true;   // 动画正在进行
+    bool        flip     = false;
+    std::size_t frame_id = 0;   // 动画进行到第几帧
+    std::string prefix;         // 动画的前缀名
+```
+
+对于 `Layer` ，拥有
+
+```cpp
+struct Layer{
+    Animation animation;
+    Position offset;
+};
+```
+
+所以只要将主体的 `postion` 加上它的 `offset` 就可以完成渲染。
+
+因此，最普遍的接口是一个接受 `const Position&` , `Animation&` 的渲染函数。

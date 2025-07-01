@@ -20,7 +20,7 @@ struct SubWave{
 struct Wave{
     double duration; // 本波持续时间。持续时间结束后，即可准备下一波。
     double preparation_time; // 准备时间，在准备时间未归零前，玩家可以选择提前出波获得奖励
-    std::vector<SubWave> sub_waves; // 本波的子波
+    std::vector<SubWave> sub_waves; // 本波的子波，默认已按时间顺序排序好
     Wave() = default;
     Wave(const double duration, const double preparation_time)
         : duration(duration), preparation_time(preparation_time) {}
@@ -32,25 +32,58 @@ struct PendingEnemy{
     size_t path_id;
     size_t subpath_id;
     bool      operator>(const PendingEnemy& other) const { return spawn_time > other.spawn_time; }
+    PendingEnemy() = default;
+    PendingEnemy(const EnemyType& enemy_type, const double spawn_time, const size_t path_id, const size_t subpath_id)
+        : enemy_type(enemy_type), spawn_time(spawn_time), path_id(path_id), subpath_id(subpath_id) {}
 };
 
 class WaveManager{
 public:
     std::size_t current_wave_index = 0;
+    std::size_t current_subwave_index = 0;
     double current_wave_time = 0;
     bool preparing = true;
     WaveManager() = default;
-    void ClearWaves(){
-        waves.clear();
-    }
-    void LoadWavesFromLua(const std::string& file);
+
     /**
      * @brief 根据时间，更新波次，衍生敌人
      *
      * @param store
      */
     void Update(Store& store);
+
+    /**
+     * @brief 在进入一个关卡时，初始化 WaveManager
+     *
+     * @param file
+     */
+    void Init(const std::string& file){
+        current_wave_index = 0;
+        current_wave_time = 0;
+        current_subwave_index = 0;
+        preparing = true;
+        ClearWaves();
+        LoadWavesFromLua(file);
+    }
+
+    /**
+     * @brief 反映还有没有波次
+     *
+     * @return true
+     * @return false
+     */
+    bool IsFinished(){
+        return current_wave_index >= waves.size();
+    }
 private:
     std::vector<Wave> waves;
     std::priority_queue<PendingEnemy, std::vector<PendingEnemy>, std::greater<PendingEnemy>> pending_enemies; // 等待生成的敌人
+    void ClearWaves()
+    {
+        waves.clear();
+        while (!pending_enemies.empty()) {
+            pending_enemies.pop();
+        }
+    }
+    void LoadWavesFromLua(const std::string& file);
 };

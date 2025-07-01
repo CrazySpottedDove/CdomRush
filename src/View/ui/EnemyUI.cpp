@@ -1,5 +1,6 @@
 #include "EnemyUI.h"
 #include <iostream>
+#include "utils/macros.h"
 
 /**
  * @brief 构造函数
@@ -7,7 +8,7 @@
 EnemyUI::EnemyUI(Enemy* enemy, AnimationPlayer& animation_player)
     : enemy_(enemy)
     , animation_player_(animation_player)
-    , animation_context_()  // 初始化动画上下文
+    , animation_context_()      // 初始化独立的动画上下文
     , last_state_(State::Idle)
     , last_heading_(Heading::Right)
     , initialized_(false)
@@ -16,9 +17,11 @@ EnemyUI::EnemyUI(Enemy* enemy, AnimationPlayer& animation_player)
         std::cerr << "Warning: EnemyUI created with null enemy pointer" << std::endl;
         return;
     }
-
-    std::cout << "EnemyUI created for enemy at (" << enemy_->position.x << "," << enemy_->position.y
-              << ") with prefix: " << enemy_->animation.prefix << std::endl;
+    
+    DEBUG_CODE(std::cout << "EnemyUI created for enemy at (" << enemy_->position.x << "," << enemy_->position.y 
+              << ") with prefix: " << enemy_->animation.prefix 
+              << ", heading: " << static_cast<int>(enemy_->heading) << std::endl;)
+    
 }
 
 /**
@@ -68,9 +71,9 @@ void EnemyUI::InitializeAnimation()
 
     initialized_ = true;
 
-    std::cout << "EnemyUI: Initialized animation for " << enemy_->animation.prefix
+    DEBUG_CODE(std::cout << "EnemyUI: Initialized animation for " << enemy_->animation.prefix
               << " with state " << static_cast<int>(enemy_->animation.state)
-              << " and heading " << static_cast<int>(enemy_->heading) << std::endl;
+              << " and heading " << static_cast<int>(enemy_->heading) << std::endl;)
 }
 
 /**
@@ -84,9 +87,9 @@ void EnemyUI::UpdateAnimationState()
 
     // 检查是否需要更新动画
     if (NeedsAnimationUpdate()) {
-        std::cout << "EnemyUI: State/Heading changed for " << enemy_->animation.prefix
+        DEBUG_CODE(std::cout << "EnemyUI: State/Heading changed for " << enemy_->animation.prefix
                   << " from (" << static_cast<int>(last_state_) << "," << static_cast<int>(last_heading_)
-                  << ") to (" << static_cast<int>(enemy_->animation.state) << "," << static_cast<int>(enemy_->heading) << ")" << std::endl;
+                  << ") to (" << static_cast<int>(enemy_->animation.state) << "," << static_cast<int>(enemy_->heading) << ")" << std::endl;)
 
         // 更新记录的状态
         last_state_ = enemy_->animation.state;

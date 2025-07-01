@@ -1,5 +1,6 @@
 #include "SoldierUI.h"
 #include <iostream>
+#include "utils/macros.h"
 
 /**
  * @brief 构造函数
@@ -7,7 +8,7 @@
 SoldierUI::SoldierUI(Soldier* soldier, AnimationPlayer& animation_player)
     : soldier_(soldier)
     , animation_player_(animation_player)
-    , animation_context_()  // 初始化动画上下文
+    , animation_context_()      // 初始化独立的动画上下文
     , last_state_(State::Idle)
     , last_heading_(Heading::Right)
     , initialized_(false)
@@ -16,9 +17,11 @@ SoldierUI::SoldierUI(Soldier* soldier, AnimationPlayer& animation_player)
         std::cerr << "Warning: SoldierUI created with null soldier pointer" << std::endl;
         return;
     }
-
-    std::cout << "SoldierUI created for soldier at (" << soldier_->position.x << "," << soldier_->position.y
-              << ") with prefix: " << soldier_->animation.prefix << std::endl;
+    
+    DEBUG_CODE(std::cout << "SoldierUI created for soldier at (" << soldier_->position.x << "," << soldier_->position.y 
+              << ") with prefix: " << soldier_->animation.prefix 
+              << ", heading: " << static_cast<int>(soldier_->heading) << std::endl;)
+    
 }
 
 /**
@@ -68,9 +71,9 @@ void SoldierUI::InitializeAnimation()
 
     initialized_ = true;
 
-    std::cout << "SoldierUI: Initialized animation for " << soldier_->animation.prefix
+    DEBUG_CODE(std::cout << "SoldierUI: Initialized animation for " << soldier_->animation.prefix
               << " with state " << static_cast<int>(soldier_->animation.state)
-              << " and heading " << static_cast<int>(soldier_->heading) << std::endl;
+              << " and heading " << static_cast<int>(soldier_->heading) << std::endl;)
 }
 
 /**
@@ -84,9 +87,9 @@ void SoldierUI::UpdateAnimationState()
 
     // 检查是否需要更新动画
     if (NeedsAnimationUpdate()) {
-        std::cout << "SoldierUI: State/Heading changed for " << soldier_->animation.prefix
+        DEBUG_CODE(std::cout << "SoldierUI: State/Heading changed for " << soldier_->animation.prefix
                   << " from (" << static_cast<int>(last_state_) << "," << static_cast<int>(last_heading_)
-                  << ") to (" << static_cast<int>(soldier_->animation.state) << "," << static_cast<int>(soldier_->heading) << ")" << std::endl;
+                  << ") to (" << static_cast<int>(soldier_->animation.state) << "," << static_cast<int>(soldier_->heading) << ")" << std::endl;)
 
         // 更新记录的状态
         last_state_ = soldier_->animation.state;

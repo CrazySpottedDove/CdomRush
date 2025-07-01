@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
-#define FPS  60
+#define FPS 60
 #define IMAGES_PATH "assets/images/"
 #define LEVEL_MAP_FILE "data/level_map.lua"
 #define LEVEL_DATA_PATH "data/levels/"
@@ -11,13 +11,15 @@
 #define DEFAULT_WINDOW_TITLE "CdomRush"
 
 #ifdef DEBUG
-    #define DEBUG_CODE(debug_code) { debug_code }
+#    include <iostream>
+#    define DEBUG_CODE(debug_code) {debug_code}
 #else
-    #define DEBUG_CODE(debug_code) {}
+#    define DEBUG_CODE(debug_code) \
+        {}
 #endif
 
 constexpr double FRAME_LENGTH = 1.0 / FPS;
 
 #define INVALID_ID -1
-typedef int ID;
+typedef int          ID;
 typedef sf::Vector2f Position;

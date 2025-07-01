@@ -1,21 +1,22 @@
 #include "UIManager.h"
-#include "View/ui/BulletUI.h"
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
 #include <algorithm>
-#include <memory>
+#include "utils/macros.h"
 
 /**
  * @brief 构造函数
  */
-UIManager::UIManager()
+UIManager::UIManager(const AnimationManager& animation_manager)
     : store_(nullptr)
     , animation_player_(nullptr)
+    , animation_manager_(animation_manager)
     , current_map_prefix_("")           // 初始化时没有地图
     , current_map_position_(0.0f, 0.0f) // 默认位置
     , current_map_scale_(1.0f, 1.0f)    // 默认缩放
+    , selected_level_id_(-1)            // 初始化时没有选中关卡
+    , global_level_selection_callback_(nullptr) // 初始化回调为空
 {
-    std::cout << "UIManager: Initialized with AnimationPlayer" << std::endl;
+    DEBUG_CODE(std::cout << "UIManager: Initialized with AnimationManager reference" << std::endl;)
 }
 
 void UIManager::QueueBulletUI(Bullet* bullet){
@@ -96,6 +97,13 @@ void UIManager::RenderAll(sf::RenderWindow& window, const sf::Vector2f& scale)
         RenderMap(window, current_map_prefix_, current_map_position_, current_map_scale_);
     }
 
+    // 渲染关卡选择旗子（在实体之前渲染，作为地图的一部分）
+    for (auto& [level_id, flag_ui] : flag_uis_) {
+        if (flag_ui) {
+            flag_ui->Render(window, scale);
+        }
+    }
+
     // 然后按层次渲染实体：Tower -> Enemy -> Soldier -> Bullet
 
     // 1. 渲染Tower（最底层）
@@ -147,7 +155,8 @@ UIManager::UIStats UIManager::GetStats() const
         enemy_uis_.size(),
         soldier_uis_.size(),
         bullet_uis_.size(),
-        tower_uis_.size()
+        tower_uis_.size(),
+        flag_uis_.size()
     };
 }
 
@@ -269,9 +278,9 @@ void UIManager::SetCurrentMap(const std::string& map_prefix,
     current_map_position_ = position;
     current_map_scale_ = scale;
 
-    std::cout << "UIManager: Set current map to '" << map_prefix
+    DEBUG_CODE(std::cout << "UIManager: Set current map to '" << map_prefix
               << "' at position (" << position.x << "," << position.y
-              << ") with scale (" << scale.x << "," << scale.y << ")" << std::endl;
+              << ") with scale (" << scale.x << "," << scale.y << ")" << std::endl;)
 }
 
 /**
@@ -280,9 +289,103 @@ void UIManager::SetCurrentMap(const std::string& map_prefix,
 void UIManager::ClearCurrentMap()
 {
     if (!current_map_prefix_.empty()) {
-        std::cout << "UIManager: Clearing map '" << current_map_prefix_ << "'" << std::endl;
+        DEBUG_CODE(std::cout << "UIManager: Clearing map '" << current_map_prefix_ << "'" << std::endl;)
         current_map_prefix_.clear();
         current_map_position_ = {0.0f, 0.0f};
         current_map_scale_ = {1.0f, 1.0f};
+    }
+}
+
+// ===============================
+// 关卡选择功能实现
+// ===============================
+
+/**
+ * @brief 处理鼠标事件
+ */
+bool UIManager::HandleMouseEvent(const sf::Event& event, const sf::RenderWindow& window)
+{
+    // 将鼠标像素坐标转换为世界坐标
+    sf::Vector2f mouse_world_pos;
+    if (event.type == sf::Event::MouseMoved) {
+        mouse_world_pos = window.mapPixelToCoords({event.mouseMove.x, event.mouseMove.y});
+    } else if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased) {
+        mouse_world_pos = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
+    }
+
+    // 遍历所有旗子，让它们处理鼠标事件
+    for (auto& [level_id, flag_ui] : flag_uis_) {
+        if (flag_ui && flag_ui->HandleMouseEvent(event, mouse_world_pos)) {
+            return true;  // 事件被某个旗子处理
+        }
+    }
+    
+    return false;  // 没有旗子处理这个事件
+}
+
+/**
+ * @brief 设置全局关卡选择回调函数
+ */
+void UIManager::SetGlobalLevelSelectionCallback(std::function<void(int)> callback)
+{
+    global_level_selection_callback_ = callback;
+    
+    // 同时设置给所有现有的旗子
+    for (auto& [level_id, flag_ui] : flag_uis_) {
+        if (flag_ui) {
+            flag_ui->SetClickCallback([this](int level_id) {
+                OnFlagClicked(level_id);
+            });
+        }
+    }
+    
+    DEBUG_CODE(std::cout << "UIManager: Global level selection callback set for " 
+              << flag_uis_.size() << " flags" << std::endl;)
+}
+
+/**
+ * @brief 清除所有旗子的选中状态
+ */
+void UIManager::ClearAllFlagSelections()
+{
+    for (auto& [level_id, flag_ui] : flag_uis_) {
+        if (flag_ui && flag_ui->GetLevelStatus() == LevelStatus::Selected) {
+            // 恢复到之前的状态（Available或Completed）
+            LevelStatus new_status = LevelStatus::Available;
+            // 这里可以根据实际的关卡进度来设置
+            // 例如：如果某个关卡已完成，应该恢复为Completed状态
+            flag_ui->SetLevelStatus(new_status);
+        }
+    }
+    
+    selected_level_id_ = -1;
+    DEBUG_CODE(std::cout << "UIManager: Cleared all flag selections" << std::endl;)
+}
+
+/**
+ * @brief 处理旗子点击事件
+ */
+void UIManager::OnFlagClicked(int level_id)
+{
+    DEBUG_CODE(std::cout << "UIManager: Flag clicked for level " << level_id << std::endl;)
+    
+    // 检查旗子是否存在且可点击
+    auto it = flag_uis_.find(level_id);
+    if (it == flag_uis_.end() || !it->second || !it->second->IsClickable()) {
+        DEBUG_CODE(std::cout << "UIManager: Level " << level_id << " is not clickable" << std::endl;)
+        return;
+    }
+    
+    // 清除之前的选中状态
+    ClearAllFlagSelections();
+    
+    // 设置新的选中状态
+    it->second->SetLevelStatus(LevelStatus::Selected);
+    selected_level_id_ = level_id;
+    
+    // 调用全局回调函数
+    if (global_level_selection_callback_) {
+        global_level_selection_callback_(level_id);
+        DEBUG_CODE(std::cout << "UIManager: Level " << level_id << " selection notified to global callback" << std::endl;)
     }
 }

@@ -2,28 +2,36 @@
 #include <unordered_map>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <functional>
 
 class Store;
 #include "View/animation/animationPlayer.h"
+#include "Manager/resourceManager/animationManager.h"
 #include "EnemyUI.h"
 #include "SoldierUI.h"
 #include "BulletUI.h"
 #include "TowerUI.h"
+#include "FlagUI.h"
 
 /**
  * @brief UIManager类 - 顶层UI管理器
  *
  * 功能：
  * 1. 维护四个映射容器：EnemyUIs、SoldierUIs、BulletUIs、TowerUIs
- * 2. 与Store联系由实体指针获取实体数据
- * 3. 与AnimationPlayer联系获取美术资源
- * 4. 管理UI对象的生命周期，实体指针到UI对象的映射
- * 5. 提供统一的渲染接口
+ * 2. 维护关卡选择旗子容器：FlagUIs
+ * 3. 与Store联系由实体指针获取实体数据
+ * 4. 与AnimationPlayer联系获取美术资源
+ * 5. 管理UI对象的生命周期，实体指针到UI对象的映射
+ * 6. 提供统一的渲染接口和关卡选择支持
  */
 class UIManager
 {
 public:
-    UIManager();
+    /**
+     * @brief 构造函数
+     * @param animation_manager AnimationManager引用，用于FlagUI自渲染
+     */
+    explicit UIManager(const AnimationManager& animation_manager);
 
     /**
      * @brief 析构函数
@@ -66,6 +74,7 @@ public:
         size_t soldier_count;
         size_t bullet_count;
         size_t tower_count;
+        size_t flag_count;
     };
     UIStats GetStats() const;
 
@@ -112,15 +121,49 @@ public:
     void RenderSoldierUI(sf::RenderWindow& window, Soldier* soldier, const sf::Vector2f& scale = {1.0f, 1.0f});
     void RenderBulletUI(sf::RenderWindow& window, Bullet* bullet, const sf::Vector2f& scale = {1.0f, 1.0f});
     void RenderTowerUI(sf::RenderWindow& window, Tower* tower, const sf::Vector2f& scale = {1.0f, 1.0f});
-    // 四个映射容器：实体指针 -> UI对象
+
+    // ===============================
+    // 关卡选择功能
+    // ===============================
+
+    /**
+     * @brief 处理鼠标事件（用于旗子交互）
+     * @param event SFML事件
+     * @param window 窗口引用（用于坐标转换）
+     * @return true 如果事件被处理
+     */
+    bool HandleMouseEvent(const sf::Event& event, const sf::RenderWindow& window);
+
+    /**
+     * @brief 设置全局关卡选择回调函数（已简化，推荐使用InitializeLevelFlags的内置回调）
+     * @param callback 关卡被选中时调用的回调函数
+     * @deprecated 当前设计使用直接GameState切换，此方法可选
+     */
+    void SetGlobalLevelSelectionCallback(std::function<void(int)> callback);
+
+    /**
+     * @brief 清除所有旗子的选中状态
+     */
+    void ClearAllFlagSelections();
+
+    /**
+     * @brief 获取当前选中的关卡ID
+     * @return 选中的关卡ID，如果没有选中则返回-1
+     */
+    int GetSelectedLevelId() const { return selected_level_id_; }
+
+    // 五个映射容器：实体指针 -> UI对象（组长设计：public直接访问）
     std::unordered_map<Enemy*, std::unique_ptr<EnemyUI>>     enemy_uis_;     ///< Enemy映射
     std::unordered_map<Soldier*, std::unique_ptr<SoldierUI>> soldier_uis_;   ///< Soldier映射
     std::unordered_map<Bullet*, std::unique_ptr<BulletUI>>   bullet_uis_;    ///< Bullet映射
     std::unordered_map<Tower*, std::unique_ptr<TowerUI>>     tower_uis_;     ///< Tower映射
-    Store*                                                   store_;         ///< Store引用
-    std::unique_ptr<AnimationPlayer> animation_player_;   ///< AnimationPlayer实例
-private:
+    std::unordered_map<int, std::unique_ptr<FlagUI>>         flag_uis_;      ///< 关卡旗子映射（level_id -> FlagUI）
+    
+    Store*                                                   store_;         ///< Store指针
+    std::unique_ptr<AnimationPlayer>                         animation_player_;   ///< AnimationPlayer实例
+    const AnimationManager&                                  animation_manager_;  ///< AnimationManager引用（用于FlagUI自渲染）
 
+private:
 
     // ===============================
     // 地图状态管理
@@ -128,6 +171,18 @@ private:
     std::string current_map_prefix_;                                      ///< 当前地图前缀
     sf::Vector2f current_map_position_;                                   ///< 当前地图位置
     sf::Vector2f current_map_scale_;                                      ///< 当前地图缩放
+
+    // ===============================
+    // 关卡选择状态管理
+    // ===============================
+    int selected_level_id_;                                               ///< 当前选中的关卡ID（-1表示未选中）
+    std::function<void(int)> global_level_selection_callback_;            ///< 全局关卡选择回调函数
+
+    /**
+     * @brief 处理旗子点击事件（内部使用）
+     * @param level_id 被点击的关卡ID
+     */
+    void OnFlagClicked(int level_id);
 
     // /**
     //  * @brief 同步Enemy列表（内部使用）

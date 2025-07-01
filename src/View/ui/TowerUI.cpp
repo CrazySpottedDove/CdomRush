@@ -1,20 +1,22 @@
 #include "TowerUI.h"
 #include <iostream>
+#include "utils/macros.h"
 
+/**
+ * @brief 构造函数
+ */
 TowerUI::TowerUI(Tower* tower, AnimationPlayer& animation_player)
     : tower_(tower)
     , animation_player_(animation_player)
-    , animation_context_()  // 初始化动画上下文
+    , animation_context_()  // 初始化独立的动画上下文
     , last_state_(State::Idle)
     , initialized_(false)
 {
-    if (tower_ == nullptr) {
-        std::cerr << "Warning: TowerUI created with null tower pointer" << std::endl;
-        return;
+    if (tower_) {
+        DEBUG_CODE(std::cout << "TowerUI created for tower at (" << tower_->position.x << "," << tower_->position.y
+                  << ") with prefix: " << tower_->animation.prefix << std::endl;)
+        
     }
-    
-    std::cout << "TowerUI created for tower at (" << tower_->position.x << "," << tower_->position.y 
-              << ") with prefix: " << tower_->animation.prefix << std::endl;
 }
 
 void TowerUI::Render(sf::RenderWindow& window, const sf::Vector2f& scale)
@@ -45,8 +47,8 @@ void TowerUI::InitializeAnimation()
     
     initialized_ = true;
     
-    std::cout << "TowerUI: Initialized animation for " << tower_->animation.prefix 
-              << " with state " << static_cast<int>(tower_->animation.state) << std::endl;
+    DEBUG_CODE(std::cout << "TowerUI: Initialized animation for " << tower_->animation.prefix 
+              << " with state " << static_cast<int>(tower_->animation.state) << std::endl;)
 }
 
 void TowerUI::UpdateAnimationState()
@@ -56,9 +58,9 @@ void TowerUI::UpdateAnimationState()
     }
     
     if (NeedsAnimationUpdate()) {
-        std::cout << "TowerUI: State changed for " << tower_->animation.prefix 
+        DEBUG_CODE(std::cout << "TowerUI: State changed for " << tower_->animation.prefix 
                   << " from " << static_cast<int>(last_state_) 
-                  << " to " << static_cast<int>(tower_->animation.state) << std::endl;
+                  << " to " << static_cast<int>(tower_->animation.state) << std::endl;)
         
         last_state_ = tower_->animation.state;
         

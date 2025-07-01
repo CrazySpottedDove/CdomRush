@@ -60,6 +60,11 @@ public:
     virtual void layer_update() = 0; // 每个 Tower 都需要实现自己的图层更新逻辑
     
     void Update(Store& store) override;
+
+    Tower(const Tower&) = default; // 拷贝构造函数
+    Tower() = default; // 默认构造函数
+
+    virtual Tower* Clone() = 0;
 };
 
 class None : public Tower {
@@ -69,9 +74,32 @@ public:
     void layer_update() override{};
 };
 
-class Archer1 : public Tower {
+class Archer : public Tower {
 public:
-    Archer1(Position position, int total_price);
-    Archer1() = delete;
+    Archer() = default; // 显式声明为public
     void layer_update() override;
+};
+
+class Archer1 : public Archer {
+public:
+    Archer1(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Archer1(*this);
+    }
+};
+
+class Archer2 : public Archer {
+public:
+    Archer2(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Archer2(*this);
+    }
+};
+
+class Archer3 : public Archer {
+public:
+    Archer3(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Archer3(*this);
+    }
 };

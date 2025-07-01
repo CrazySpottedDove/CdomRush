@@ -31,7 +31,7 @@ public:
      * @brief 构造函数
      * @param animation_manager AnimationManager引用，用于FlagUI自渲染
      */
-    explicit UIManager(const AnimationManager& animation_manager);
+    explicit UIManager();
 
     /**
      * @brief 析构函数
@@ -158,10 +158,10 @@ public:
     std::unordered_map<Bullet*, std::unique_ptr<BulletUI>>   bullet_uis_;    ///< Bullet映射
     std::unordered_map<Tower*, std::unique_ptr<TowerUI>>     tower_uis_;     ///< Tower映射
     std::unordered_map<int, std::unique_ptr<FlagUI>>         flag_uis_;      ///< 关卡旗子映射（level_id -> FlagUI）
-    
+
     Store*                                                   store_;         ///< Store指针
     std::unique_ptr<AnimationPlayer>                         animation_player_;   ///< AnimationPlayer实例
-    const AnimationManager&                                  animation_manager_;  ///< AnimationManager引用（用于FlagUI自渲染）
+    // const AnimationManager&                                  animation_manager_;  ///< AnimationManager引用（用于FlagUI自渲染）
 
 private:
 

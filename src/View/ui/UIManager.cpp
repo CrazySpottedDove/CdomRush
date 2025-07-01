@@ -1,4 +1,5 @@
 #include "UIManager.h"
+#include <SFML/Window/Event.hpp>
 #include <iostream>
 #include <algorithm>
 #include "utils/macros.h"
@@ -6,10 +7,9 @@
 /**
  * @brief 构造函数
  */
-UIManager::UIManager(const AnimationManager& animation_manager)
+UIManager::UIManager()
     : store_(nullptr)
     , animation_player_(nullptr)
-    , animation_manager_(animation_manager)
     , current_map_prefix_("")           // 初始化时没有地图
     , current_map_position_(0.0f, 0.0f) // 默认位置
     , current_map_scale_(1.0f, 1.0f)    // 默认缩放
@@ -307,10 +307,18 @@ bool UIManager::HandleMouseEvent(const sf::Event& event, const sf::RenderWindow&
 {
     // 将鼠标像素坐标转换为世界坐标
     sf::Vector2f mouse_world_pos;
-    if (event.type == sf::Event::MouseMoved) {
-        mouse_world_pos = window.mapPixelToCoords({event.mouseMove.x, event.mouseMove.y});
-    } else if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased) {
-        mouse_world_pos = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
+    if (event.is<sf::Event::MouseMoved>()) {
+        const auto& mouse_pos = event.getIf<sf::Event::MouseMoved>()->position;
+        mouse_world_pos =
+            window.mapPixelToCoords(mouse_pos);
+    } else if (event.is<sf::Event::MouseButtonPressed>()){
+        const auto& mouse_pos = event.getIf<sf::Event::MouseButtonPressed>()->position;
+        mouse_world_pos =
+            window.mapPixelToCoords(mouse_pos);
+    } else if (event.is<sf::Event::MouseButtonReleased>()) {
+        const auto& mouse_pos = event.getIf<sf::Event::MouseButtonReleased>()->position;
+        mouse_world_pos =
+            window.mapPixelToCoords(mouse_pos);
     }
 
     // 遍历所有旗子，让它们处理鼠标事件
@@ -319,7 +327,7 @@ bool UIManager::HandleMouseEvent(const sf::Event& event, const sf::RenderWindow&
             return true;  // 事件被某个旗子处理
         }
     }
-    
+
     return false;  // 没有旗子处理这个事件
 }
 
@@ -329,7 +337,7 @@ bool UIManager::HandleMouseEvent(const sf::Event& event, const sf::RenderWindow&
 void UIManager::SetGlobalLevelSelectionCallback(std::function<void(int)> callback)
 {
     global_level_selection_callback_ = callback;
-    
+
     // 同时设置给所有现有的旗子
     for (auto& [level_id, flag_ui] : flag_uis_) {
         if (flag_ui) {
@@ -338,8 +346,8 @@ void UIManager::SetGlobalLevelSelectionCallback(std::function<void(int)> callbac
             });
         }
     }
-    
-    DEBUG_CODE(std::cout << "UIManager: Global level selection callback set for " 
+
+    DEBUG_CODE(std::cout << "UIManager: Global level selection callback set for "
               << flag_uis_.size() << " flags" << std::endl;)
 }
 
@@ -357,7 +365,7 @@ void UIManager::ClearAllFlagSelections()
             flag_ui->SetLevelStatus(new_status);
         }
     }
-    
+
     selected_level_id_ = -1;
     DEBUG_CODE(std::cout << "UIManager: Cleared all flag selections" << std::endl;)
 }
@@ -368,21 +376,21 @@ void UIManager::ClearAllFlagSelections()
 void UIManager::OnFlagClicked(int level_id)
 {
     DEBUG_CODE(std::cout << "UIManager: Flag clicked for level " << level_id << std::endl;)
-    
+
     // 检查旗子是否存在且可点击
     auto it = flag_uis_.find(level_id);
     if (it == flag_uis_.end() || !it->second || !it->second->IsClickable()) {
         DEBUG_CODE(std::cout << "UIManager: Level " << level_id << " is not clickable" << std::endl;)
         return;
     }
-    
+
     // 清除之前的选中状态
     ClearAllFlagSelections();
-    
+
     // 设置新的选中状态
     it->second->SetLevelStatus(LevelStatus::Selected);
     selected_level_id_ = level_id;
-    
+
     // 调用全局回调函数
     if (global_level_selection_callback_) {
         global_level_selection_callback_(level_id);

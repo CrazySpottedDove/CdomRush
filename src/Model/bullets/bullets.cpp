@@ -126,5 +126,10 @@ void Bomb::Update(Store& store)
     // 计算控制点
     sf::Vector2f p1 = getControlPoint(source_position, target_position);
     this->position  = Bezier(t, source_position, p1, target_position);
+    sf::Vector2f dBezier = 2.0f * (1.0f - t) * (p1 - source_position) + 2.0f * t * (target_position - p1);
+    float angle_radians = std::atan2(dBezier.y, dBezier.x);
+    float angle_degrees = angle_radians * 180.0f / 3.14159265f;
+
+    this->animation.rotation = angle_degrees;
     return;
 }

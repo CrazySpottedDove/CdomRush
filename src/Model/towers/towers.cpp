@@ -58,12 +58,30 @@ void Archer::layer_update() {
         Layers[4].animation.state = State::IdleUp; // 设置朝上的动画
     }
     else if(animation.state == State::Shoot && heading == tower_heading::Down){
-        Layers[3].animation.state = State::ShootingDown; // 设置射击朝下的动画状态
-        Layers[4].animation.state = State::ShootingDown; // 设置射击朝下的动画
+        shooter = ~ shooter; // 切换射手状态
+        if(shooter){
+            Layers[3].animation.state = State::ShootingDown; // 设置射击朝下的动画状态
+            Layers[4].animation.state = State::IdleDown; // 设置射击朝下的动画
+            ranged.attacks[0].bullet_start_offset = Position{10.0f, 50.0f}; // 设置子弹起始偏移位置
+        }
+        else{
+            Layers[3].animation.state = State::IdleDown; // 设置射击朝下的动画状态
+            Layers[4].animation.state = State::ShootingDown; // 设置射击朝下的动画
+            ranged.attacks[0].bullet_start_offset = Position{-10.0f, 50.0f}; // 设置子弹起始偏移位置
+        }
     }
     else if(animation.state == State::Shoot && heading == tower_heading::Up){
-        Layers[3].animation.state = State::ShootingUp; // 设置射击朝上的动画状态
-        Layers[4].animation.state = State::ShootingUp; // 设置射击朝上的动画
+        shooter = ~ shooter; // 切换射手状态
+        if(shooter){
+            Layers[3].animation.state = State::ShootingUp; // 设置射击朝上的动画状态
+            Layers[4].animation.state = State::IdleUp; // 设置射击朝上的动画
+            ranged.attacks[0].bullet_start_offset = Position{10.0f, 50.0f}; // 设置子弹起始偏移位置
+        }
+        else{
+            Layers[3].animation.state = State::IdleUp; // 设置射击朝上的动画状态
+            Layers[4].animation.state = State::ShootingUp; // 设置射击朝上的动画
+            ranged.attacks[0].bullet_start_offset = Position{-10.0f, 50.0f}; // 设置子弹起始偏移位置
+        }
     }
 }
 Archer1::Archer1(Position position_, int total_price_) {
@@ -74,7 +92,7 @@ Archer1::Archer1(Position position_, int total_price_) {
         {TowerAction::Upgrade, {TowerType::Archer2, 110}}, // 70,110,160
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(0.8, 140.0, BulletType::Arrow, 0.0, 5.5, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(0.8, 140.0, BulletType::Arrow, 0.0, 5.5, sf::Vector2f(-10,50), 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_archer_%04i"},Position{0.0f, 12.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "archer_tower_0001"},Position{0.0f, 37.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shooterarcherlvl1"},Position{-9.0f, 51.0f}};
@@ -96,7 +114,7 @@ Archer2::Archer2(Position position_, int total_price_) {
         {TowerAction::Upgrade, {TowerType::Archer3, 160}}, // 70,110,160
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(0.6, 160.0, BulletType::Arrow, 0.0, 10.0, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(0.6, 160.0, BulletType::Arrow, 0.0, 10.0, sf::Vector2f(-10,50), 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_archer_%04i"},Position{0.0f, 12.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "archer_tower_0002"},Position{0.0f, 37.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shooterarcherlvl2"},Position{-9.0f, 52.0f}};
@@ -117,11 +135,37 @@ Archer3::Archer3(Position position_, int total_price_) {
     tower_actions = {
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(0.5, 180.0, BulletType::Arrow, 0.0, 15.0, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(0.5, 180.0, BulletType::Arrow, 0.0, 15.0, sf::Vector2f(-10,50), 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_archer_%04i"},Position{0.0f, 12.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "archer_tower_0003"},Position{0.0f, 37.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shooterarcherlvl3"},Position{-9.0f, 52.0f}};
     Layer layer4{Animation{State::IdleDown, 0.0, true, 0, "shooterarcherlvl3"},Position{9.0f, 52.0f}};
+
+    Layers.push_back(layer1);
+    Layers.push_back(layer2);
+    Layers.push_back(layer3);
+    Layers.push_back(layer4);
+
+    animation.state = State::Idle; // 设置初始状态为闲置
+    heading = tower_heading::Down; // 默认塔的朝向为 Down
+}
+
+void Engineer::layer_update(){
+
+}
+Engineer1::Engineer1(Position position_, int total_price_) {
+    type = TowerType::Engineer1; // 设置塔类型为工程师1
+    position = position_;
+    total_price = total_price_;
+    tower_actions = {
+        {TowerAction::Upgrade, {TowerType::Engineer2, 220}}, // 125,220,320
+        {TowerAction::Sell, {TowerType::None, -total_price }},
+    };
+    ranged.attacks.push_back(RangedAttack(3.0, 160.0, BulletType::Bomb, 0.0, 10.0, sf::Vector2f(0,50), 1.0)); // 添加攻击
+    Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_engineer_%04i"},Position{0.0f, 12.0f}};
+    Layer layer2{Animation{State::Idle, 0.0, true, 0, "engineer_tower_0001"},Position{0.0f, 37.0f}};
+    Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "engineerlvl1"},Position{-9.0f, 51.0f}};
+    Layer layer4{Animation{State::IdleDown, 0.0, true, 0, "engineerlvl1"},Position{9.0f, 51.0f}};
 
     Layers.push_back(layer1);
     Layers.push_back(layer2);

@@ -41,6 +41,7 @@ enum class tower_heading{
 class Tower : public ActiveEntity
 {
 public:
+    Position rally_point = sf::Vector2f(0,0); // 集结点位置
     tower_heading heading = tower_heading::Down; // 默认塔的朝向为 Up
     Ranged ranged;
     TowerType type = TowerType::None; // 默认塔类型为 None
@@ -114,3 +115,18 @@ public:
         return new Engineer1(*this);
     }
 };
+class Engineer2 : public Engineer {
+public:
+    Engineer2(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Engineer2(*this);
+    }
+};
+class Engineer3 : public Engineer {
+public:
+    Engineer3(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Engineer3(*this);
+    }
+};
+

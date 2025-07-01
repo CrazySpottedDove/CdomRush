@@ -52,7 +52,7 @@ public:
         hit_fx = FxType::None; // 箭矢没有特殊的击中效果
         radius = 0.0; // 箭矢没有爆炸半径
         animation.state = State::Flying; // 设置初始状态为飞行
-        animation.prefix = "arrow"; // 设置动画前缀
+        animation.prefix = "archer_arcane_proy2_0001"; // 设置动画前缀
     }; // 默认构造函数
     Arrow(const Arrow & other) = default; // 拷贝构造函数
     Bullet* Clone() const override {
@@ -108,7 +108,7 @@ public:
         hit_fx = FxType::Explosion; // 爆炸效果
         radius = 60.0; // 设置爆炸半径
         animation.state = State::Flying; // 设置初始状态为飞行
-        animation.prefix = "bomb"; // 设置动画前缀
+        animation.prefix = "bombs_0001"; // 设置动画前缀
     }
     Bomb(const Bomb & other) = default; // 拷贝构造函数
 

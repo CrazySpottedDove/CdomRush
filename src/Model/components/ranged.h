@@ -23,7 +23,7 @@ public:
         ,bullet_start_offset(offset){};
 
 
-    void Apply(Store& store, ID source, ID target) noexcept;
+    void Apply(Store& store, ID source, ID target, std::string prefix_) noexcept;
 };
 
 class Ranged

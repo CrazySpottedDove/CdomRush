@@ -66,6 +66,8 @@ public:
     Tower() = default; // 默认构造函数
 
     virtual Tower* Clone() = 0;
+
+    virtual std::string return_prefix() const = 0;
 };
 
 class None : public Tower {
@@ -73,6 +75,12 @@ public:
     None(Position position);
     None() = delete;
     void layer_update() override{};
+    Tower* Clone() override {
+        return new None(*this);
+    }
+    std::string return_prefix() const override {
+        return "build_terrain_0001";
+    }
 };
 
 class Archer : public Tower {
@@ -87,6 +95,9 @@ public:
     Tower* Clone() override {
         return new Archer1(*this);
     }
+    std::string return_prefix() const override {
+        return "arrow";
+    }
 };
 class Archer2 : public Archer {
 public:
@@ -94,12 +105,18 @@ public:
     Tower* Clone() override {
         return new Archer2(*this);
     }
+    std::string return_prefix() const override {
+        return "arrow";
+    }
 };
 class Archer3 : public Archer {
 public:
     Archer3(Position position = sf::Vector2f(0,0), int total_price = 0);
     Tower* Clone() override {
         return new Archer3(*this);
+    }
+    std::string return_prefix() const override {
+        return "arrow";
     }
 };
 
@@ -114,6 +131,9 @@ public:
     Tower* Clone() override {
         return new Engineer1(*this);
     }
+    std::string return_prefix() const override {
+        return "engineer_tower_0001";
+    }
 };
 class Engineer2 : public Engineer {
 public:
@@ -121,12 +141,18 @@ public:
     Tower* Clone() override {
         return new Engineer2(*this);
     }
+    std::string return_prefix() const override {
+        return "bombs_0002";
+    }
 };
 class Engineer3 : public Engineer {
 public:
     Engineer3(Position position = sf::Vector2f(0,0), int total_price = 0);
     Tower* Clone() override {
         return new Engineer3(*this);
+    }
+    std::string return_prefix() const override {
+        return "bombs_0003";
     }
 };
 

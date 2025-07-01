@@ -12,7 +12,7 @@ TemplateManager::TemplateManager()
         // {BulletType::Bomb, new Bomb()}
     };
     tower_map = {
-
+        
     };
     enemy_map = {
         {EnemyType::ForestTroll, new ForestTroll()}

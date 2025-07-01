@@ -1,10 +1,12 @@
 #include "Manager/levelManager/levelManager.h"
 #include "Manager/resourceManager/textureManager.h"
 #include "Manager/store/store.h"
+#include "Model/towers/towers.h"
 #include "utils/macros.h"
 #include "utils/readLua.h"
 #include <sol/table.hpp>
 #include <string>
+#include <unordered_map>
 
 LevelManager::LevelManager()
 {
@@ -33,11 +35,28 @@ void LevelManager::ReadLevelDataFile(LevelData& level_data)
 
 void LevelManager::LoadTowerPositions(Store& store)
 {
-    const std::string file_path = std::string(TOWER_PATH) + current_level_name + ".lua";
+    static const std::unordered_map<std::string, TowerType> tower_type_map = {
+        {"tower_holder_grass", TowerType::None},
+        {"tower_archer_1", TowerType::Archer1},
+        {"tower_archer_2", TowerType::Archer2},
+        {"tower_archer_3", TowerType::Archer3},
+        {"tower_engineer_1", TowerType::Engineer1},
+        {"tower_engineer_2", TowerType::Engineer2},
+        {"tower_engineer_3", TowerType::Engineer3},
+        {"tower_mage_1", TowerType::Mage1},
+        {"tower_mage_2", TowerType::Mage2},
+        {"tower_mage_3", TowerType::Mage3}};
+    const std::string file_path           = std::string(TOWER_PATH) + current_level_name + ".lua";
     const sol::table  tower_positions_map = ReadLua(file_path);
     for (const auto& [key, value] : tower_positions_map) {
         const sol::table tower_position_table = value.as<sol::table>();
-        
+        const TowerType type = tower_type_map.at(tower_position_table["type"].get<std::string>());
+        Tower* tower = store.template_manager.CreateTower(type);
+        tower->position.x = tower_position_table["position"]["x"].get<float>();
+        tower->position.y = tower_position_table["position"]["y"].get<float>();
+        tower->rally_point.x = tower_position_table["rally_point"]["x"].get<float>();
+        tower->rally_point.y = tower_position_table["rally_point"]["y"].get<float>();
+        store.QueueTower(tower);
     }
 }
 
@@ -54,7 +73,7 @@ void LevelManager::LoadLevelResource(Store& store)
     store.path_manager.ReadPathsFromLua(std::string(PATH_PATH) + current_level_name + ".lua");
 
     // 加载波次
-    store.wave_manager.Init(std::string(WAVE_PATH)+current_level_name+".lua");
+    store.wave_manager.Init(std::string(WAVE_PATH) + current_level_name + ".lua");
 
     // 加载塔位
     LoadTowerPositions(store);

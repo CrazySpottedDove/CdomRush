@@ -1,7 +1,7 @@
 #include "Model/components/ranged.h"
 #include "Manager/store/store.h"
 
-void RangedAttack::Apply(Store& store, ID source, ID target, std::string prefix_) noexcept
+void RangedAttack::Apply(Store& store, ID source, ID target, std::string prefix_, Position bullet_start_offset) noexcept
 {
     Bullet* bullet = store.template_manager.CreateBullet(bullet_type);                // 获取对应类型的子弹
     bullet->damage_event.source     = source;                        // 设置源为目标单位

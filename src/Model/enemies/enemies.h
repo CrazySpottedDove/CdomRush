@@ -10,18 +10,25 @@
 #include <vector>
 class Store;
 
-enum class EnemyType
+enum class EnemyInnerType
 {
     PassiveEnemy,        // 无害敌人
     ActiveEnemyMelee,   // 近战敌人
     ActiveEnemyRange,   // 远程敌人
     None
 };
+
+enum class EnemyType
+{
+    ForestTroll   // 森林巨魔
+};
+
+
 class Enemy : public Unit   // 默认的敌人有这些东西
 {
 public:
     sf::Vector2f slot;   // 近战偏移
-    EnemyType    type;   // 敌人类型
+    EnemyInnerType    type;   // 敌人类型
     int          gold;
     int          life_cost;
     PathInfo     path_info;
@@ -43,7 +50,7 @@ class PassiveEnemy : public Enemy
 public:
     PassiveEnemy()
     {
-        type = EnemyType::PassiveEnemy;    // 设置敌人类型为无害敌人
+        type = EnemyInnerType::PassiveEnemy;    // 设置敌人类型为无害敌人
         slot = sf::Vector2f(0.0f, 0.0f);   // 初始化近战偏移
     }
     void Update(Store& store) override;
@@ -55,7 +62,7 @@ class ActiveEnemyMelee : public Enemy
 public:
     ActiveEnemyMelee()
     {
-        type = EnemyType::ActiveEnemyMelee;   // 设置敌人类型为近战敌人
+        type = EnemyInnerType::ActiveEnemyMelee;   // 设置敌人类型为近战敌人
         slot = sf::Vector2f(0.0f, 0.0f);       // 初始化近战偏移
     }
     ID blocker = INVALID_ID;   // 用于阻挡敌人前进的单位

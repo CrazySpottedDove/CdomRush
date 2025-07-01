@@ -3,8 +3,7 @@
 
 void RangedAttack::Apply(Store& store, ID source, ID target) noexcept
 {
-    Bullet* bullet =
-        (store.template_manager.bullet_map[bullet_type])->Clone();   // 获取对应类型的子弹
+    Bullet* bullet = store.CreateBullet(bullet_type);   // 获取对应类型的子弹
     bullet->damage_event.target     = target;                        // 设置目标
     bullet->radius                  = radius;                        // 设置爆炸半径
     bullet->damage_event.data.value = value;                         // 设置伤害值

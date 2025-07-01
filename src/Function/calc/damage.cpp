@@ -88,7 +88,7 @@ ID calc::find_foremost_enemy(const Store& store, const Position& position, const
         }
 
         // 被动的敌人，不索敌
-        if (require_active && enemy->type == EnemyType::PassiveEnemy) {
+        if (require_active && enemy->type == EnemyInnerType::PassiveEnemy) {
             continue;
         }
 

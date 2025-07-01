@@ -61,6 +61,7 @@ void Store::UpdateDamageEvents(sf::RenderWindow& window)
 }
 
 void Store::UpdateEnemies(sf::RenderWindow& window){
+    wave_manager.Update(*this);
     auto it = enemies.begin();
     while(it != enemies.end()){
         Enemy* enemy = it->second;

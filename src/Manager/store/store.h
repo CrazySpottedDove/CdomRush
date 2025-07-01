@@ -3,6 +3,7 @@
 #include "Manager/pathManager/pathManager.h"
 #include "Manager/resourceManager/animationManager.h"
 #include "Manager/templateManager/templateManager.h"
+#include "Manager/waveManager/waveManager.h"
 #include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
 #include "View/ui/UIManager.h"
@@ -100,6 +101,7 @@ public:
     TemplateManager  template_manager;
     LevelManager     level_manager;
     UIManager        ui_manager;
+    WaveManager      wave_manager;
     void             Update(sf::RenderWindow& window);
 
     // 游戏进行的主函数

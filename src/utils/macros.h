@@ -4,8 +4,9 @@
 #define IMAGES_PATH "assets/images/"
 #define LEVEL_MAP_FILE "data/level_map.lua"
 #define LEVEL_DATA_PATH "data/levels/"
-#define SOUNDS_PATH "assets/sounds/"
+#define SOUND_PATH "assets/sounds/"
 #define PATH_PATH "data/paths/"
+#define WAVE_PATH "data/waves/"
 #define DEFAULT_SCREEN_WIDTH 1920
 #define DEFAULT_SCREEN_HEIGHT 1080
 #define DEFAULT_WINDOW_TITLE "CdomRush"

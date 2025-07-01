@@ -35,9 +35,14 @@ void LevelManager::LoadLevelResource(Store& store)
 {
     LevelData level_data;
     ReadLevelDataFile(level_data);
+    // 加载纹理 （和音频）
     for (const std::string& texture_lua_path : level_data.required_textures) {
         const std::string true_lua_path = std::string(IMAGES_PATH) + texture_lua_path;
         store.animation_manager.LoadSpriteFrameResources(true_lua_path, TextureLevel::Specific);
     }
+    // 加载路径
     store.path_manager.ReadPathsFromLua(std::string(PATH_PATH) + current_level_name + ".lua");
+
+    // 加载波次
+    store.wave_manager.Init(std::string(WAVE_PATH)+current_level_name+".lua");
 }

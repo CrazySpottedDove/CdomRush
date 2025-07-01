@@ -15,7 +15,7 @@ TemplateManager::TemplateManager()
 
     };
     enemy_map = {
-
+        {EnemyType::ForestTroll, new ForestTroll()}
     };
 }
 
@@ -30,24 +30,24 @@ Bullet* TemplateManager::CreateBullet(const BulletType type) const
     return it->second->Clone();
 }
 
-// Tower* TemplateManager::CreateTower(const TowerType type) const
-// {
-//     auto it = tower_map.find(type);
-//     DEBUG_CODE(
-//         if (it == tower_map.end()) {
-//             std::cerr << "Error: Tower type " << static_cast<int>(type) << "not found."
-//                       << std::endl;
-//         } else { std::cout << "Creating Tower of type: " << static_cast<int>(type) << std::endl; })
-//     return it->second->Clone();
-// }
+Tower* TemplateManager::CreateTower(const TowerType type) const
+{
+    auto it = tower_map.find(type);
+    DEBUG_CODE(
+        if (it == tower_map.end()) {
+            std::cerr << "Error: Tower type " << static_cast<int>(type) << "not found."
+                      << std::endl;
+        } else { std::cout << "Creating Tower of type: " << static_cast<int>(type) << std::endl; })
+    return it->second->Clone();
+}
 
-// Enemy* TemplateManager::CreateEnemy(const EnemyType type) const
-// {
-//     auto it = enemy_map.find(type);
-//     DEBUG_CODE(
-//         if (it == enemy_map.end()) {
-//             std::cerr << "Error: Enemy type " << static_cast<int>(type) << "not found."
-//                       << std::endl;
-//         } else { std::cout << "Creating Enemy of type: " << static_cast<int>(type) << std::endl; })
-//     return it->second->Clone();
-// }
+Enemy* TemplateManager::CreateEnemy(const EnemyType type) const
+{
+    auto it = enemy_map.find(type);
+    DEBUG_CODE(
+        if (it == enemy_map.end()) {
+            std::cerr << "Error: Enemy type " << static_cast<int>(type) << "not found."
+                      << std::endl;
+        } else { std::cout << "Creating Enemy of type: " << static_cast<int>(type) << std::endl; })
+    return it->second->Clone();
+}

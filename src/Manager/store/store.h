@@ -76,8 +76,6 @@ public:
 
     void QueueEvent(Event&& event) { event_queue.push(std::move(event)); }
 
-    Bullet* CreateBullet(const BulletType type);
-
     Enemy* GetEnemy(const ID id) const
     {
         auto it = enemies.find(id);

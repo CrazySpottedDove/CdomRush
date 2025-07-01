@@ -16,7 +16,7 @@ return{
             to = 72,
             from = 50
         },
-        walkingRightLeft = {
+        walkingLeftRight = {
             to = 25,
             from = 1
         },

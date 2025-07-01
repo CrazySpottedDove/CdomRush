@@ -45,6 +45,7 @@ Enemy* TemplateManager::CreateEnemy(const EnemyType type) const
 {
     auto it = enemy_map.find(type);
     DEBUG_CODE(
+        std::cerr << enemy_map.size() << " enemy types available." << std::endl;
         if (it == enemy_map.end()) {
             std::cerr << "Error: Enemy type " << static_cast<int>(type) << "not found."
                       << std::endl;

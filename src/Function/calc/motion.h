@@ -42,6 +42,12 @@ bool enemy_reached_defence_point(const Store& store, const Enemy& self);
  */
 double real_speed(const Unit& unit);
 
+/**
+ * @brief 映射逻辑坐标和渲染坐标
+ *
+ * @param pos
+ */
+void map_position(Position& pos);
 }   // namespace calc
 
 

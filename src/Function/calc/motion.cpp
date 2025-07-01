@@ -5,6 +5,7 @@
 #include "Model/templates/unit.h"
 #include "utils/macros.h"
 #include <SFML/System/Vector2.hpp>
+#include <iostream>
 
 double calc::real_speed(const Unit& unit)
 {
@@ -21,7 +22,7 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
 
     const sf::Vector2f displacement = next_waypoint - self.position;
     const sf::Vector2f direction    = displacement.normalized();
-    
+
     const float movement = real_speed * FRAME_LENGTH;
     self.position += direction * movement;
 
@@ -36,7 +37,7 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
                 self.heading = Heading::Right;
             }
             else {
-                self.heading = Heading::Up;
+                self.heading = Heading::Down;
             }
         }
         else {
@@ -44,7 +45,7 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
                 self.heading = Heading::Right;
             }
             else {
-                self.heading = Heading::Down;
+                self.heading = Heading::Up;
             }
         }
     }else {
@@ -53,7 +54,7 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
                 self.heading = Heading::Left;
             }
             else {
-                self.heading = Heading::Up;
+                self.heading = Heading::Down;
             }
         }
         else {
@@ -61,13 +62,24 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
                 self.heading = Heading::Left;
             }
             else {
-                self.heading = Heading::Down;
+                self.heading = Heading::Up;
             }
         }
     }
+    DEBUG_CODE(
+        std::cerr << "Enemy moved to " << self.position.x << ", " << self.position.y
+                  << " with heading " << static_cast<int>(self.heading) << std::endl;
+        std::cerr << "Next waypoint: " << next_waypoint.x << ", " << next_waypoint.y
+                  << std::endl;
+    )
 }
 
 bool calc::enemy_reached_defence_point(const Store& store, const Enemy& self)
 {
     return store.path_manager.IsPathEnd(self.path_info);
+}
+
+void calc::map_position(Position& pos){
+    pos.x = DEFAULT_SCREEN_WIDTH * pos.x / ORIGIN_SCREEN_WIDTH;
+    pos.y = DEFAULT_SCREEN_HEIGHT - (DEFAULT_SCREEN_HEIGHT * pos.y / ORIGIN_SCREEN_HEIGHT);
 }

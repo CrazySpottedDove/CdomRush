@@ -31,6 +31,16 @@ void LevelManager::ReadLevelDataFile(LevelData& level_data)
     }
 }
 
+void LevelManager::LoadTowerPositions(Store& store)
+{
+    const std::string file_path = std::string(TOWER_PATH) + current_level_name + ".lua";
+    const sol::table  tower_positions_map = ReadLua(file_path);
+    for (const auto& [key, value] : tower_positions_map) {
+        const sol::table tower_position_table = value.as<sol::table>();
+        
+    }
+}
+
 void LevelManager::LoadLevelResource(Store& store)
 {
     LevelData level_data;
@@ -45,4 +55,7 @@ void LevelManager::LoadLevelResource(Store& store)
 
     // 加载波次
     store.wave_manager.Init(std::string(WAVE_PATH)+current_level_name+".lua");
+
+    // 加载塔位
+    LoadTowerPositions(store);
 }

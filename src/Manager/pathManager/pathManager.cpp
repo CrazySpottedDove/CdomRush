@@ -1,4 +1,6 @@
 #include "Manager/pathManager/pathManager.h"
+#include "Function/calc/motion.h"
+#include "utils/macros.h"
 #include "utils/readLua.h"
 #include <iostream>
 #include <sol/state.hpp>
@@ -12,7 +14,7 @@ void PathManager::ReadPathsFromLua(const std::string& file)
         // 遍历每个路径
         for (const auto& path_pair : paths_table) {
 
-            const sol::table  path_table = path_pair.second.as<sol::table>();
+            const sol::table path_table = path_pair.second.as<sol::table>();
 
             Path current_path;
 
@@ -25,11 +27,10 @@ void PathManager::ReadPathsFromLua(const std::string& file)
                 // 遍历子路径中的每个路径点
                 for (const auto& waypoint_pair : subpath_table) {
                     const sol::table waypoint_table = waypoint_pair.second.as<sol::table>();
-
                     // 解析Position
                     Position waypoint(waypoint_table["x"].get<double>(),
                                       waypoint_table["y"].get<double>());
-
+                    calc::map_position(waypoint);
                     current_subpath.push_back(waypoint);
                 }
 
@@ -37,7 +38,6 @@ void PathManager::ReadPathsFromLua(const std::string& file)
             }
 
             paths.push_back(current_path);
-
         }
 
         std::cout << "Successfully loaded " << paths.size() << " paths" << std::endl;

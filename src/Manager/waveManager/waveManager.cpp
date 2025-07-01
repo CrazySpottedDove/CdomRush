@@ -17,6 +17,14 @@ SubWave::SubWave(const double time, const std::size_t path_id, const std::size_t
 {
     static const std::unordered_map<std::string, EnemyType> enemy_type_map = {
         {"ForestTroll", EnemyType::ForestTroll}};
+    auto it = enemy_type_map.find(enemy_type);
+    this->enemy_type = it->second;
+    DEBUG_CODE(
+        if (it != enemy_type_map.end()) {
+            std::cout << "Set EnemyType to " << enemy_type << std::endl;
+         } else {
+            std::cerr << "Error: Unknown enemy type '" << enemy_type << "'." << std::endl;
+        })
 }
 
 void WaveManager::LoadWavesFromLua(const std::string& path)
@@ -44,6 +52,11 @@ void WaveManager::LoadWavesFromLua(const std::string& path)
 void WaveManager::Update(Store& store)
 {
     current_wave_time += FRAME_LENGTH;
+
+    if (IsFinished()) {
+        return;   // 没有更多的波次了
+    }
+
     // 还在等待
     if (preparing) {
         if (current_wave_time >= waves[current_wave_index].preparation_time) {
@@ -53,11 +66,6 @@ void WaveManager::Update(Store& store)
         return;
     }
 
-    // 已经在出怪了
-    if (IsFinished()) {
-        return;   // 没有更多的波次了
-    }
-
     // 出掉还在等待的怪
     while (pending_enemies.size() > 0 && pending_enemies.top().spawn_time <= current_wave_time) {
         const auto& pending_enemy    = pending_enemies.top();
@@ -65,6 +73,8 @@ void WaveManager::Update(Store& store)
         new_enemy->path_info.path_id = pending_enemy.path_id;
         new_enemy->path_info.subpath_id  = pending_enemy.subpath_id;
         new_enemy->path_info.waypoint_id = 0;
+        new_enemy->position = store.path_manager.GetPathPoint(pending_enemy.path_id,
+                                                            pending_enemy.subpath_id, 0);
         store.QueueEnemy(new_enemy);
         pending_enemies.pop();
     }
@@ -75,6 +85,7 @@ void WaveManager::Update(Store& store)
         current_wave_time     = 0;
         preparing             = true;
         current_subwave_index = 0;
+        return;
     }
 
     // 检查当前波次的子波是否需要触发

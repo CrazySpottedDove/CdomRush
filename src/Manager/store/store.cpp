@@ -59,10 +59,7 @@ void Store::UpdateEnemies(sf::RenderWindow& window)
         if (calc::enemy_reached_defence_point(*this, *enemy)) {
             life -= enemy->life_cost;
             gold += enemy->gold;
-            enemy->Remove(*this);
-            ui_manager.DeQueueEnemyUI(enemy);
-            delete enemy;
-            it = enemies.erase(it);
+            it = DequeueEnemy(it);
             continue;
         }
         enemy->Update(*this);
@@ -155,19 +152,25 @@ void Store::Game(sf::RenderWindow& window)
     while (true) {
         switch (game_state) {
         case GameState::Begin:
+            window.clear();
             ui_manager.RenderMap(window, "map_background");
             window.display();
             ExecuteEvents();
+            DEBUG_CODE(game_state = GameState::Loading;)
             break;
         case GameState::GameStart:
+            window.clear();
             ui_manager.RenderMap(window, level_manager.GetCurrentLevelName());
             Update(window);
             window.display();
             time += FRAME_LENGTH;
             ExecuteEvents();
+            DEBUG_CODE(game_state = GameState::GamePlaying;)
             break;
         case GameState::GamePlaying:
             wave_manager.Update(*this);
+            window.clear();
+            ui_manager.RenderMap(window, level_manager.GetCurrentLevelName());
             Update(window);
             time += FRAME_LENGTH;
             window.display();
@@ -179,6 +182,7 @@ void Store::Game(sf::RenderWindow& window)
             break;
         case GameState::Loading:
             // AnimationPlayer::DrawLoading();
+            DEBUG_CODE(callback::SelectLevel(*this, "acaroth");)
             level_manager.LoadLevelResource(*this);
             game_state = GameState::GameStart;
             time       = 0.0;
@@ -192,4 +196,132 @@ Store::Store()
 {
     ui_manager.store_            = this;
     ui_manager.animation_player_ = std::make_unique<AnimationPlayer>(animation_manager);
+}
+void Store::QueueSoldier(Soldier* soldier)
+{
+    soldiers[next_id++] = soldier;
+    soldier->Insert(*this);
+    ui_manager.QueueSoldierUI(soldier);
+}
+std::unordered_map<ID, Enemy*>::iterator Store::DequeueEnemy(
+    std::unordered_map<ID, Enemy*>::iterator& it)
+{
+    Enemy* enemy = it->second;
+    enemy->Remove(*this);
+    ui_manager.DeQueueEnemyUI(enemy);
+    delete enemy;
+    return enemies.erase(it);
+};
+std::unordered_map<ID, Tower*>::iterator Store::DequeueTower(
+    std::unordered_map<ID, Tower*>::iterator& it)
+{
+    Tower* tower = it->second;
+    tower->Remove(*this);
+    ui_manager.DeQueueTowerUI(tower);
+    delete tower;
+    return towers.erase(it);
+};
+std::unordered_map<ID, Bullet*>::iterator Store::DequeueBullet(
+    std::unordered_map<ID, Bullet*>::iterator& it)
+{
+    Bullet* bullet = it->second;
+    bullet->Remove(*this);
+    ui_manager.DeQueueBulletUI(bullet);
+    delete bullet;
+    return bullets.erase(it);
+};
+std::unordered_map<ID, Soldier*>::iterator Store::DequeueSoldier(
+    std::unordered_map<ID, Soldier*>::iterator& it)
+{
+    Soldier* soldier = it->second;
+    soldier->Remove(*this);
+    ui_manager.DeQueueSoldierUI(soldier);
+    delete soldier;
+    return soldiers.erase(it);
+};
+void Store::DequeueEnemy(const ID id)
+{
+    auto it = enemies.find(id);
+    DEBUG_CODE(if (it == enemies.end()) {
+        throw std::runtime_error("Attempted to dequeue a non-existent enemy.");
+    })
+    Enemy* enemy = it->second;
+    enemy->Remove(*this);
+    ui_manager.DeQueueEnemyUI(enemy);
+    delete enemy;
+    enemies.erase(it);
+}
+void Store::DequeueTower(const ID id)
+{
+    auto it = towers.find(id);
+    DEBUG_CODE(if (it == towers.end()) {
+        throw std::runtime_error("Attempted to dequeue a non-existent tower.");
+    })
+    Tower* tower = it->second;
+    tower->Remove(*this);
+    ui_manager.DeQueueTowerUI(tower);
+    delete tower;
+    towers.erase(it);
+}
+void Store::DequeueBullet(const ID id)
+{
+    auto it = bullets.find(id);
+    DEBUG_CODE(if (it == bullets.end()) {
+        throw std::runtime_error("Attempted to dequeue a non-existent bullet.");
+    })
+    Bullet* bullet = it->second;
+    bullet->Remove(*this);
+    ui_manager.DeQueueBulletUI(bullet);
+    delete bullet;
+    bullets.erase(it);
+}
+void Store::DequeueSoldier(const ID id)
+{
+    auto it = soldiers.find(id);
+    DEBUG_CODE(if (it == soldiers.end()) {
+        throw std::runtime_error("Attempted to dequeue a non-existent soldier.");
+    })
+    Soldier* soldier = it->second;
+    soldier->Remove(*this);
+    ui_manager.DeQueueSoldierUI(soldier);
+    delete soldier;
+    soldiers.erase(it);
+}
+Enemy* Store::GetEnemy(const ID id) const
+{
+    auto it = enemies.find(id);
+    return it != enemies.end() ? it->second : nullptr;
+}
+Tower* Store::GetTower(const ID id) const
+{
+    auto it = towers.find(id);
+    return it != towers.end() ? it->second : nullptr;
+}
+Bullet* Store::GetBullet(const ID id) const
+{
+    auto it = bullets.find(id);
+    return it != bullets.end() ? it->second : nullptr;
+}
+Soldier* Store::GetSoldier(const ID id) const
+{
+    auto it = soldiers.find(id);
+    return it != soldiers.end() ? it->second : nullptr;
+}
+void Store::QueueEnemy(Enemy* enemy)
+{
+    enemies[next_id++] = enemy;
+    enemy->Insert(*this);
+    ui_manager.QueueEnemyUI(enemy);
+}
+void Store::QueueTower(Tower* tower)
+{
+    towers[next_id++] = tower;
+    tower->Insert(*this);
+    ui_manager.QueueTowerUI(tower);
+}
+void Store::QueueBullet(Bullet* bullet)
+{
+    bullets[next_id++] = bullet;
+    bullet->Insert(*this);
+    ui_manager.QueueBulletUI(bullet);
 }

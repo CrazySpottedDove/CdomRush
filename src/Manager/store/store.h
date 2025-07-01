@@ -8,6 +8,7 @@
 #include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
 #include "View/ui/UIManager.h"
+#include "utils/macros.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <memory>
 #include <queue>
@@ -35,7 +36,7 @@ public:
     double                                time       = 0.0;
     double                                gold       = 0.0;
     int                                   life       = 20;
-    GameState                             game_state = GameState::GameStart;
+    GameState                             game_state = GameState::Begin;
     const std::unordered_map<ID, Enemy*>& GetEnemies() const { return enemies; }
 
     const std::unordered_map<ID, Tower*>& GetTowers() const { return towers; }
@@ -44,29 +45,33 @@ public:
 
     const std::unordered_map<ID, Soldier*>& GetSoldiers() const { return soldiers; }
 
-    void QueueEnemy(Enemy* enemy)
-    {
-        enemies[next_id++] = enemy;
-        enemy->Insert(*this);
-    }
+    void QueueEnemy(Enemy* enemy);
 
-    void QueueTower(Tower* tower)
-    {
-        towers[next_id++] = tower;
-        tower->Insert(*this);
-    }
+    void QueueTower(Tower* tower);
 
-    void QueueBullet(Bullet* bullet)
-    {
-        bullets[next_id++] = bullet;
-        bullet->Insert(*this);
-    }
+    void QueueBullet(Bullet* bullet);
 
-    void QueueSoldier(Soldier* soldier)
-    {
-        soldiers[next_id++] = soldier;
-        soldier->Insert(*this);
-    }
+    void QueueSoldier(Soldier* soldier);
+
+    std::unordered_map<ID, Enemy*>::iterator DequeueEnemy(
+        std::unordered_map<ID, Enemy*>::iterator& it);
+
+    std::unordered_map<ID, Tower*>::iterator DequeueTower(
+        std::unordered_map<ID, Tower*>::iterator& it);
+
+    std::unordered_map<ID, Bullet*>::iterator DequeueBullet(
+        std::unordered_map<ID, Bullet*>::iterator& it);
+
+    std::unordered_map<ID, Soldier*>::iterator DequeueSoldier(
+        std::unordered_map<ID, Soldier*>::iterator& it);
+
+    void DequeueEnemy(const ID id);
+
+    void DequeueTower(const ID id);
+
+    void DequeueBullet(const ID id);
+
+    void DequeueSoldier(const ID id);
 
     void QueueDamageEvent(DamageEvent&& event) { damage_events.push_back(std::move(event)); }
 
@@ -76,29 +81,13 @@ public:
 
     void QueueEvent(Event&& event) { event_queue.push(std::move(event)); }
 
-    Enemy* GetEnemy(const ID id) const
-    {
-        auto it = enemies.find(id);
-        return it != enemies.end() ? it->second : nullptr;
-    }
+    Enemy* GetEnemy(const ID id) const;
 
-    Tower* GetTower(const ID id) const
-    {
-        auto it = towers.find(id);
-        return it != towers.end() ? it->second : nullptr;
-    }
+    Tower* GetTower(const ID id) const;
 
-    Bullet* GetBullet(const ID id) const
-    {
-        auto it = bullets.find(id);
-        return it != bullets.end() ? it->second : nullptr;
-    }
+    Bullet* GetBullet(const ID id) const;
 
-    Soldier* GetSoldier(const ID id) const
-    {
-        auto it = soldiers.find(id);
-        return it != soldiers.end() ? it->second : nullptr;
-    }
+    Soldier* GetSoldier(const ID id) const;
 
     AnimationManager animation_manager;
     PathManager      path_manager;

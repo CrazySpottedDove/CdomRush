@@ -47,7 +47,7 @@ bool Bullet::Insert(Store& store)
     return false;   // 如果源和目标都不存在，则返回 false
 }
 
-void Arrow::Update(Store& store)
+void Arrow::update(Store& store)
 {
     // 更新箭矢位置和动画
     if(animation.state == State::Hit) return ;   // 如果已经击中，则不再更新
@@ -73,7 +73,7 @@ void Arrow::Update(Store& store)
     return ;
 }
 
-void Bolt::Update(Store& store)
+void Bolt::update(Store& store)
 {
     // 更新法球位置和动画
     if(animation.state == State::Hit) return ;   // 如果已经击中，则不再更新
@@ -93,7 +93,7 @@ void Bolt::Update(Store& store)
     return;
 }
 
-void Bomb::Update(Store& store)
+void Bomb::update(Store& store)
 {
     // 更新炸弹位置和动画
     if(animation.state == State::Hit) return ;   // 如果已经击中，则不再更新

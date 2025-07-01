@@ -60,7 +60,7 @@ public:
     }
     virtual void layer_update() = 0; // 每个 Tower 都需要实现自己的图层更新逻辑
     
-    void Update(Store& store) override;
+    void update(Store& store) override;
 
     Tower(const Tower&) = default; // 拷贝构造函数
     Tower() = default; // 默认构造函数

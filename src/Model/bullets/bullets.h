@@ -73,7 +73,7 @@ public:
         return mid;
     }
 
-    void Update(Store& store) override;
+    void update(Store& store) override;
 };
 
 // TODO: 法球
@@ -92,7 +92,7 @@ public:
     }
     Bolt(const Bolt & other) = default; // 拷贝构造函数
 
-    void Update(Store& store) override;
+    void update(Store& store) override;
 };
 
 // TODO: 炸弹
@@ -126,5 +126,5 @@ public:
         return mid;
     }
 
-    void Update(Store& store) override ;
+    void update(Store& store) override ;
 };

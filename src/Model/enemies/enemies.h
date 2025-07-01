@@ -55,7 +55,7 @@ public:
         type = EnemyInnerType::PassiveEnemy;    // 设置敌人类型为无害敌人
         slot = sf::Vector2f(0.0f, 0.0f);   // 初始化近战偏移
     }
-    void Update(Store& store) override;
+    void update(Store& store) override;
 
     Enemy* Clone() const override{
         return new PassiveEnemy(*this);   // 返回一个新的PassiveEnemy对象
@@ -74,7 +74,7 @@ public:
     ID blocker = INVALID_ID;   // 用于阻挡敌人前进的单位
     Melee    melee;               // 近战攻击组件
 
-    void Update(Store& store) override;
+    void update(Store& store) override;
     Enemy* Clone() const override{
         return new ActiveEnemyMelee(*this);   // 返回一个新的ActiveEnemyMelee对象
     }

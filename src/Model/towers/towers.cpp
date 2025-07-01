@@ -5,7 +5,7 @@
 #include "Manager/store/store.h"
 
 
-void Tower::Update(Store& store){
+void Tower::update(Store& store){
     if(animation.state == State::Idle){
         for(auto& attack : ranged.attacks){
             if(attack.IsReady(store)) {

@@ -7,6 +7,8 @@ if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "未设置构建类型，使用默认配置")
 endif()
 
+message(STATUS "${CMAKE_TOOLCHAIN_FILE}")
+
 # 设置C++标准
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

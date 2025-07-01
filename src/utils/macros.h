@@ -9,6 +9,13 @@
 #define DEFAULT_SCREEN_WIDTH 1920
 #define DEFAULT_SCREEN_HEIGHT 1080
 #define DEFAULT_WINDOW_TITLE "CdomRush"
+
+#ifdef DEBUG
+    #define DEBUG_CODE(debug_code) { debug_code }
+#else
+    #define DEBUG_CODE(debug_code) {}
+#endif
+
 constexpr double FRAME_LENGTH = 1.0 / FPS;
 
 #define INVALID_ID -1

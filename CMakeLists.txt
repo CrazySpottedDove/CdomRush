@@ -1,13 +1,28 @@
 cmake_minimum_required(VERSION 3.20)
 project(CdomRush)
 
+# 显示当前构建类型
+message(STATUS "构建类型: ${CMAKE_BUILD_TYPE}")
+if(NOT CMAKE_BUILD_TYPE)
+    message(STATUS "未设置构建类型，使用默认配置")
+endif()
+
 # 设置C++标准
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# 根据构建类型添加调试宏
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DDEBUG)
+    message(STATUS "启用调试模式宏")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DNDEBUG)
+    message(STATUS "启用发布模式宏")
+endif()
+
 # 查找SFML包 - 需要指定组件
 find_package(SFML COMPONENTS System Network Graphics Audio Window CONFIG REQUIRED)
-# find_package(sol2 CONFIG REQUIRED)
+
 find_package(lua REQUIRED)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")

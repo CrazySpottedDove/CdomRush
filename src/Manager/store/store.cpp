@@ -151,8 +151,6 @@ void Store::Game(sf::RenderWindow& window)
     while (true) {
         switch (game_state) {
         case GameState::Begin:
-            // AnimationPlayer::DrawTotalMap();
-            // AnimationPlayer::
             ui_manager.RenderMap(window, "map_background");
             window.display();
             break;

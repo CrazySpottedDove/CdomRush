@@ -15,6 +15,6 @@ public:
 private:
     std::unordered_map<BulletType, Bullet*> bullet_map;
     std::unordered_map<TowerType, Tower*>   tower_map;
-    std::unordered_map<EnemyType, Enemy*>   enemy_map;
+    std::unordered_map<EnemyInnerType, Enemy*>   enemy_map;
 
 };

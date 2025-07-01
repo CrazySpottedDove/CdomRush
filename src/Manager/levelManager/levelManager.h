@@ -23,7 +23,9 @@ public:
     void SetCurrentLevelName(const std::string& level_name){
         current_level_name = level_name;
     }
-
+    const std::string& GetCurrentLevelName() const {
+        return current_level_name;
+    }
     /**
      * @brief 加载 current_level_name 对应的关卡资源，包括纹理和路径
      *

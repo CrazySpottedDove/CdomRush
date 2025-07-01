@@ -160,8 +160,9 @@ void Store::Game(sf::RenderWindow& window)
             ExecuteEvents();
             break;
         case GameState::GameStart:
-            time = 0.0;
+            ui_manager.RenderMap(window, level_manager.GetCurrentLevelName());
             Update(window);
+            window.display();
             time += FRAME_LENGTH;
             ExecuteEvents();
             break;
@@ -180,6 +181,7 @@ void Store::Game(sf::RenderWindow& window)
             // AnimationPlayer::DrawLoading();
             level_manager.LoadLevelResource(*this);
             game_state = GameState::GameStart;
+            time       = 0.0;
             break;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));

@@ -55,25 +55,25 @@ void UIManager::DeQueueTowerUI(Tower* tower){
     tower_uis_.erase(it);
 }
 
-void UIManager::RenderEnemyUI(sf::RenderWindow&window, Enemy* enemy, const sf::Vector2f& scale){
-    const auto it = enemy_uis_.find(enemy);
-    it->second->Render(window, scale);
-}
+// void UIManager::RenderEnemyUI(sf::RenderWindow&window, Enemy* enemy, const sf::Vector2f& scale){
+//     const auto it = enemy_uis_.find(enemy);
+//     it->second->Render(window, it->second.position,it->second.animation,scale);
+// }
 
-void UIManager::RenderSoldierUI(sf::RenderWindow&window, Soldier* soldier, const sf::Vector2f& scale){
-    const auto it = soldier_uis_.find(soldier);
-    it->second->Render(window, scale);
-}
+// void UIManager::RenderSoldierUI(sf::RenderWindow&window, Soldier* soldier, const sf::Vector2f& scale){
+//     const auto it = soldier_uis_.find(soldier);
+//     it->second->Render(window, scale);
+// }
 
-void UIManager::RenderBulletUI(sf::RenderWindow&window, Bullet* bullet, const sf::Vector2f& scale){
-    const auto it = bullet_uis_.find(bullet);
-    it->second->Render(window, scale);
-}
+// void UIManager::RenderBulletUI(sf::RenderWindow&window, Bullet* bullet, const sf::Vector2f& scale){
+//     const auto it = bullet_uis_.find(bullet);
+//     it->second->Render(window, scale);
+// }
 
-void UIManager::RenderTowerUI(sf::RenderWindow&window, Tower* tower, const sf::Vector2f& scale){
-    const auto it = tower_uis_.find(tower);
-    it->second->Render(window, scale);
-}
+// void UIManager::RenderTowerUI(sf::RenderWindow&window, Tower* tower, const sf::Vector2f& scale){
+//     const auto it = tower_uis_.find(tower);
+//     it->second->Render(window, scale);
+// }
 
 // /**
 //  * @brief 更新UI管理器
@@ -90,50 +90,50 @@ void UIManager::RenderTowerUI(sf::RenderWindow&window, Tower* tower, const sf::V
 /**
  * @brief 渲染所有UI
  */
-void UIManager::RenderAll(sf::RenderWindow& window, const sf::Vector2f& scale)
-{
-    // 根据当前地图状态决定是否渲染地图
-    if (HasCurrentMap()) {
-        RenderMap(window, current_map_prefix_, current_map_position_, current_map_scale_);
-    }
+// void UIManager::RenderAll(sf::RenderWindow& window, const sf::Vector2f& scale)
+// {
+//     // 根据当前地图状态决定是否渲染地图
+//     if (HasCurrentMap()) {
+//         RenderMap(window, current_map_prefix_, current_map_position_, current_map_scale_);
+//     }
 
-    // 渲染关卡选择旗子（在实体之前渲染，作为地图的一部分）
-    for (auto& [level_id, flag_ui] : flag_uis_) {
-        if (flag_ui) {
-            flag_ui->Render(window, scale);
-        }
-    }
+//     // 渲染关卡选择旗子（在实体之前渲染，作为地图的一部分）
+//     // for (auto& [level_id, flag_ui] : flag_uis_) {
+//     //     if (flag_ui) {
+//     //         flag_ui->Render(window, scale);
+//     //     }
+//     // }
 
-    // 然后按层次渲染实体：Tower -> Enemy -> Soldier -> Bullet
+//     // 然后按层次渲染实体：Tower -> Enemy -> Soldier -> Bullet
 
-    // 1. 渲染Tower（最底层）
-    for (auto& [tower_ptr, tower_ui] : tower_uis_) {
-        if (tower_ui) {
-            tower_ui->Render(window, scale);
-        }
-    }
+//     // 1. 渲染Tower（最底层）
+//     for (auto& [tower_ptr, tower_ui] : tower_uis_) {
+//         if (tower_ui) {
+//             tower_ui->Render(window, scale);
+//         }
+//     }
 
-    // 2. 渲染Enemy（敌人层）
-    for (auto& [enemy_ptr, enemy_ui] : enemy_uis_) {
-        if (enemy_ui) {
-            enemy_ui->Render(window, scale);
-        }
-    }
+//     // 2. 渲染Enemy（敌人层）
+//     for (auto& [enemy_ptr, enemy_ui] : enemy_uis_) {
+//         if (enemy_ui) {
+//             enemy_ui->Render(window, scale);
+//         }
+//     }
 
-    // 3. 渲染Soldier（士兵层）
-    for (auto& [soldier_ptr, soldier_ui] : soldier_uis_) {
-        if (soldier_ui) {
-            soldier_ui->Render(window, scale);
-        }
-    }
+//     // 3. 渲染Soldier（士兵层）
+//     for (auto& [soldier_ptr, soldier_ui] : soldier_uis_) {
+//         if (soldier_ui) {
+//             soldier_ui->Render(window, scale);
+//         }
+//     }
 
-    // 4. 渲染Bullet（子弹层，最顶层）
-    for (auto& [bullet_ptr, bullet_ui] : bullet_uis_) {
-        if (bullet_ui) {
-            bullet_ui->Render(window, scale);
-        }
-    }
-}
+//     // 4. 渲染Bullet（子弹层，最顶层）
+//     for (auto& [bullet_ptr, bullet_ui] : bullet_uis_) {
+//         if (bullet_ui) {
+//             bullet_ui->Render(window, scale);
+//         }
+//     }
+// }
 
 /**
  * @brief 单独渲染地图
@@ -303,97 +303,110 @@ void UIManager::ClearCurrentMap()
 /**
  * @brief 处理鼠标事件
  */
-bool UIManager::HandleMouseEvent(const sf::Event& event, const sf::RenderWindow& window)
-{
-    // 将鼠标像素坐标转换为世界坐标
-    sf::Vector2f mouse_world_pos;
-    if (event.is<sf::Event::MouseMoved>()) {
-        const auto& mouse_pos = event.getIf<sf::Event::MouseMoved>()->position;
-        mouse_world_pos =
-            window.mapPixelToCoords(mouse_pos);
-    } else if (event.is<sf::Event::MouseButtonPressed>()){
-        const auto& mouse_pos = event.getIf<sf::Event::MouseButtonPressed>()->position;
-        mouse_world_pos =
-            window.mapPixelToCoords(mouse_pos);
-    } else if (event.is<sf::Event::MouseButtonReleased>()) {
-        const auto& mouse_pos = event.getIf<sf::Event::MouseButtonReleased>()->position;
-        mouse_world_pos =
-            window.mapPixelToCoords(mouse_pos);
-    }
+// bool UIManager::HandleMouseEvent(const sf::Event& event, const sf::RenderWindow& window)
+// {
+//     // 将鼠标像素坐标转换为世界坐标
+//     sf::Vector2f mouse_world_pos;
+//     if (event.is<sf::Event::MouseMoved>()) {
+//         const auto& mouse_pos = event.getIf<sf::Event::MouseMoved>()->position;
+//         mouse_world_pos =
+//             window.mapPixelToCoords(mouse_pos);
+//     } else if (event.is<sf::Event::MouseButtonPressed>()){
+//         const auto& mouse_pos = event.getIf<sf::Event::MouseButtonPressed>()->position;
+//         mouse_world_pos =
+//             window.mapPixelToCoords(mouse_pos);
+//     } else if (event.is<sf::Event::MouseButtonReleased>()) {
+//         const auto& mouse_pos = event.getIf<sf::Event::MouseButtonReleased>()->position;
+//         mouse_world_pos =
+//             window.mapPixelToCoords(mouse_pos);
+//     }
 
-    // 遍历所有旗子，让它们处理鼠标事件
-    for (auto& [level_id, flag_ui] : flag_uis_) {
-        if (flag_ui && flag_ui->HandleMouseEvent(event, mouse_world_pos)) {
-            return true;  // 事件被某个旗子处理
-        }
-    }
+//     // 遍历所有旗子，让它们处理鼠标事件
+//     for (auto& [level_id, flag_ui] : flag_uis_) {
+//         if (flag_ui && flag_ui->HandleMouseEvent(event, mouse_world_pos)) {
+//             return true;  // 事件被某个旗子处理
+//         }
+//     }
 
-    return false;  // 没有旗子处理这个事件
-}
+//     return false;  // 没有旗子处理这个事件
+// }
 
 /**
  * @brief 设置全局关卡选择回调函数
  */
-void UIManager::SetGlobalLevelSelectionCallback(std::function<void(int)> callback)
-{
-    global_level_selection_callback_ = callback;
+// void UIManager::SetGlobalLevelSelectionCallback(std::function<void(int)> callback)
+// {
+//     global_level_selection_callback_ = callback;
 
-    // 同时设置给所有现有的旗子
-    for (auto& [level_id, flag_ui] : flag_uis_) {
-        if (flag_ui) {
-            flag_ui->SetClickCallback([this](int level_id) {
-                OnFlagClicked(level_id);
-            });
-        }
-    }
+//     // 同时设置给所有现有的旗子
+//     for (auto& [level_id, flag_ui] : flag_uis_) {
+//         if (flag_ui) {
+//             flag_ui->SetClickCallback([this](int level_id) {
+//                 OnFlagClicked(level_id);
+//             });
+//         }
+//     }
 
-    DEBUG_CODE(std::cout << "UIManager: Global level selection callback set for "
-              << flag_uis_.size() << " flags" << std::endl;)
-}
+//     DEBUG_CODE(std::cout << "UIManager: Global level selection callback set for "
+//               << flag_uis_.size() << " flags" << std::endl;)
+// }
 
 /**
  * @brief 清除所有旗子的选中状态
  */
-void UIManager::ClearAllFlagSelections()
-{
-    for (auto& [level_id, flag_ui] : flag_uis_) {
-        if (flag_ui && flag_ui->GetLevelStatus() == LevelStatus::Selected) {
-            // 恢复到之前的状态（Available或Completed）
-            LevelStatus new_status = LevelStatus::Available;
-            // 这里可以根据实际的关卡进度来设置
-            // 例如：如果某个关卡已完成，应该恢复为Completed状态
-            flag_ui->SetLevelStatus(new_status);
-        }
-    }
+// void UIManager::ClearAllFlagSelections()
+// {
+//     for (auto& [level_id, flag_ui] : flag_uis_) {
+//         if (flag_ui && flag_ui->GetLevelStatus() == LevelStatus::Selected) {
+//             // 恢复到之前的状态（Available或Completed）
+//             LevelStatus new_status = LevelStatus::Available;
+//             // 这里可以根据实际的关卡进度来设置
+//             // 例如：如果某个关卡已完成，应该恢复为Completed状态
+//             flag_ui->SetLevelStatus(new_status);
+//         }
+//     }
 
-    selected_level_id_ = -1;
-    DEBUG_CODE(std::cout << "UIManager: Cleared all flag selections" << std::endl;)
-}
+//     selected_level_id_ = -1;
+//     DEBUG_CODE(std::cout << "UIManager: Cleared all flag selections" << std::endl;)
+// }
 
 /**
  * @brief 处理旗子点击事件
  */
-void UIManager::OnFlagClicked(int level_id)
+// void UIManager::OnFlagClicked(int level_id)
+// {
+//     DEBUG_CODE(std::cout << "UIManager: Flag clicked for level " << level_id << std::endl;)
+
+//     // 清除所有旗子的选中状态
+//     ClearAllFlagSelections();
+
+//     // 设置新的选中状态
+//     selected_level_id_ = level_id;
+//     auto it = flag_uis_.find(level_id);
+//     if (it != flag_uis_.end() && it->second) {
+//         it->second->SetSelected(true);
+//         DEBUG_CODE(std::cout << "UIManager: Level " << level_id << " flag set to selected" << std::endl;)
+//     }
+
+//     // 调用全局回调函数（如果设置了）
+//     if (global_level_selection_callback_) {
+//         global_level_selection_callback_(level_id);
+//         DEBUG_CODE(std::cout << "UIManager: Global callback invoked for level " << level_id << std::endl;)
+//     }
+// }
+
+// ===============================
+// 通用渲染接口实现
+// ===============================
+void UIManager::RenderAnimationAtPosition(sf::RenderWindow& window, const Position& position, 
+                                         Animation& animation, AnimationContext& context,
+                                         const sf::Vector2f& scale)
 {
-    DEBUG_CODE(std::cout << "UIManager: Flag clicked for level " << level_id << std::endl;)
-
-    // 检查旗子是否存在且可点击
-    auto it = flag_uis_.find(level_id);
-    if (it == flag_uis_.end() || !it->second || !it->second->IsClickable()) {
-        DEBUG_CODE(std::cout << "UIManager: Level " << level_id << " is not clickable" << std::endl;)
-        return;
-    }
-
-    // 清除之前的选中状态
-    ClearAllFlagSelections();
-
-    // 设置新的选中状态
-    it->second->SetLevelStatus(LevelStatus::Selected);
-    selected_level_id_ = level_id;
-
-    // 调用全局回调函数
-    if (global_level_selection_callback_) {
-        global_level_selection_callback_(level_id);
-        DEBUG_CODE(std::cout << "UIManager: Level " << level_id << " selection notified to global callback" << std::endl;)
+    if (animation_player_) {
+        // 更新动画到下一帧
+        animation_player_->UpdateAnimation(animation, context);
+        
+        // 直接使用AnimationPlayer的统一渲染接口
+        animation_player_->RenderAnimation(window, position, animation, context, scale);
     }
 }

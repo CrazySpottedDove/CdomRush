@@ -121,6 +121,18 @@ public:
     void RenderSoldierUI(sf::RenderWindow& window, Soldier* soldier, const sf::Vector2f& scale = {1.0f, 1.0f});
     void RenderBulletUI(sf::RenderWindow& window, Bullet* bullet, const sf::Vector2f& scale = {1.0f, 1.0f});
     void RenderTowerUI(sf::RenderWindow& window, Tower* tower, const sf::Vector2f& scale = {1.0f, 1.0f});
+    
+    /**
+     * @brief 通用渲染接口 - 接受Position和Animation(实际上与各个UI中的逻辑一样？)
+     * @param window 渲染窗口
+     * @param position 渲染位置
+     * @param animation 动画数据（会被修改）
+     * @param context 动画上下文（调用者管理）
+     * @param scale 缩放比例
+     */
+    void RenderAnimationAtPosition(sf::RenderWindow& window, const Position& position, 
+                                  Animation& animation, AnimationContext& context,
+                                  const sf::Vector2f& scale = {1.0f, 1.0f});
 
     // ===============================
     // 关卡选择功能
@@ -152,7 +164,7 @@ public:
      */
     int GetSelectedLevelId() const { return selected_level_id_; }
 
-    // 五个映射容器：实体指针 -> UI对象（组长设计：public直接访问）
+    // 五个映射容器：实体指针 -> UI对象
     std::unordered_map<Enemy*, std::unique_ptr<EnemyUI>>     enemy_uis_;     ///< Enemy映射
     std::unordered_map<Soldier*, std::unique_ptr<SoldierUI>> soldier_uis_;   ///< Soldier映射
     std::unordered_map<Bullet*, std::unique_ptr<BulletUI>>   bullet_uis_;    ///< Bullet映射
@@ -162,6 +174,14 @@ public:
     Store*                                                   store_;         ///< Store指针
     std::unique_ptr<AnimationPlayer>                         animation_player_;   ///< AnimationPlayer实例
     // const AnimationManager&                                  animation_manager_;  ///< AnimationManager引用（用于FlagUI自渲染）
+
+    // ===============================
+    // 通用渲染用的UI实例
+    // ===============================
+    // std::unique_ptr<EnemyUI>   universal_enemy_ui_;      ///< 通用Enemy渲染用的UI实例
+    // std::unique_ptr<SoldierUI> universal_soldier_ui_;    ///< 通用Soldier渲染用的UI实例
+    // std::unique_ptr<BulletUI>  universal_bullet_ui_;     ///< 通用Bullet渲染用的UI实例
+    // std::unique_ptr<TowerUI>   universal_tower_ui_;      ///< 通用Tower渲染用的UI实例
 
 private:
 
@@ -183,6 +203,11 @@ private:
      * @param level_id 被点击的关卡ID
      */
     void OnFlagClicked(int level_id);
+    
+    /**
+     * @brief 确保通用UI实例已初始化（内部使用）
+     */
+    void EnsureUniversalUIInstancesInitialized();
 
     // /**
     //  * @brief 同步Enemy列表（内部使用）

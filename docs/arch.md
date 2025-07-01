@@ -71,6 +71,7 @@ DeQueueEnemyUI(Enemy*)
 
 ```cpp
     State       state;
+    State       last_state;
     double      rotation = 0.0;    // 旋转角度
     bool        pending  = true;   // 动画正在进行
     bool        flip     = false;

@@ -76,10 +76,10 @@ public:
 
 class Archer : public Tower {
 public:
+    bool shooter = 1;
     Archer() = default; // 显式声明为public
     void layer_update() override;
 };
-
 class Archer1 : public Archer {
 public:
     Archer1(Position position = sf::Vector2f(0,0), int total_price = 0);
@@ -87,7 +87,6 @@ public:
         return new Archer1(*this);
     }
 };
-
 class Archer2 : public Archer {
 public:
     Archer2(Position position = sf::Vector2f(0,0), int total_price = 0);
@@ -95,11 +94,23 @@ public:
         return new Archer2(*this);
     }
 };
-
 class Archer3 : public Archer {
 public:
     Archer3(Position position = sf::Vector2f(0,0), int total_price = 0);
     Tower* Clone() override {
         return new Archer3(*this);
+    }
+};
+
+class Engineer : public Tower {
+public:
+    Engineer() = default; // 显式声明为public
+    void layer_update() override;
+};
+class Engineer1 : public Engineer {
+public:
+    Engineer1(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Engineer1(*this);
     }
 };

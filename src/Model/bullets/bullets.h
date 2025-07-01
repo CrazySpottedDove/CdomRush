@@ -17,6 +17,7 @@ enum class BulletType
 class Bullet: public Entity
 {
 public:
+    Position bullet_offset = {0.0f, 0.0f}; // 子弹起始偏移位置
     double radius = 0.0; // 爆炸半径
     double initial_time = 0.0; // 初始时间
     double totalDuration_ = 0.0; // 总持续时间

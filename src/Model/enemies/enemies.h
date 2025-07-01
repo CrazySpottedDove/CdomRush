@@ -43,6 +43,8 @@ public:
     {
         return true;   // 返回 true 表示移除成功
     }
+
+    virtual Enemy* Clone() const = 0;   // 纯虚函数，用于克隆敌人对象
 };
 
 class PassiveEnemy : public Enemy
@@ -54,6 +56,10 @@ public:
         slot = sf::Vector2f(0.0f, 0.0f);   // 初始化近战偏移
     }
     void Update(Store& store) override;
+
+    Enemy* Clone() const override{
+        return new PassiveEnemy(*this);   // 返回一个新的PassiveEnemy对象
+    }
 
 };
 
@@ -69,11 +75,13 @@ public:
     Melee    melee;               // 近战攻击组件
 
     void Update(Store& store) override;
-
+    Enemy* Clone() const override{
+        return new ActiveEnemyMelee(*this);   // 返回一个新的ActiveEnemyMelee对象
+    }
 };
 
 class ForestTroll : public ActiveEnemyMelee
 {
 public:
-    ForestTroll(Position position_);
+    ForestTroll(Position position_ = sf::Vector2f(0,0));
 };

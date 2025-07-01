@@ -44,7 +44,7 @@ public:
 class Arrow : public Bullet
 {
 public:
-    Arrow(ID sourceID, ID targetID){
+    Arrow(ID sourceID = INVALID_ID, ID targetID = INVALID_ID){
         bullet_type = BulletType::Arrow; // 设置弹道类型为箭矢
         damage_event = DamageEvent(DamageData(0, DamageType::Physical, 0, 0), sourceID, targetID);
         totalDuration_ = 1.0; // 设置总持续时间
@@ -80,7 +80,7 @@ public:
 class Bolt : public Bullet
 {
 public:
-    Bolt(ID sourceID, ID targetID){
+    Bolt(ID sourceID = INVALID_ID, ID targetID = INVALID_ID){
         bullet_type = BulletType::Bolt; // 设置弹道类型为法球
         damage_event = DamageEvent(DamageData(0.0, DamageType::Magical, 0, 0), sourceID, targetID);
         totalDuration_ = 0.5; // 设置总持续时间
@@ -100,7 +100,7 @@ public:
 class Bomb : public Bullet
 {
 public:
-    Bomb(ID sourceID, ID targetID){
+    Bomb(ID sourceID = INVALID_ID, ID targetID = INVALID_ID){
         bullet_type = BulletType::Bomb; // 设置弹道类型为炸弹
         damage_event = DamageEvent(DamageData(0, DamageType::Explosion, 0, 0), sourceID, targetID);
         totalDuration_ = 1.5; // 设置总持续时间

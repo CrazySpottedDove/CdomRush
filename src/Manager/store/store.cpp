@@ -2,6 +2,7 @@
 #include "Function/calc/damage.h"
 #include "Function/calc/hp.h"
 #include "Function/calc/motion.h"
+#include "Function/events/events.h"
 #include "Manager/resourceManager/animationManager.h"
 #include "Model/bullets/bullets.h"
 #include "Model/components/damage.h"
@@ -18,22 +19,6 @@
 #include <memory>
 #include <thread>
 
-// Bullet* Store::CreateBullet(const BulletType type){
-//     Bullet* new_bullet = template_manager.bullet_map[type]->Clone();
-//     new_bullet.id = next_bullet_id++;
-//     return new_bullet;
-// }
-
-
-// 核心：指针要么有效，要么为 nullptr，不可以有悬垂引用
-
-// 在每一次 Update 周期中，首先，执行所有的 Update 事件。其中，生命周期结束的变量进入
-// entities_to_delete 集合中，并不立刻删除。因此，此时它们的指针依旧有效。
-
-// 在所有的 Update 事件结束后，我们遍历所有的实体，将其中持有的所有存在于 entities_to_delete
-// 集合中的指针置为 nullptr。
-
-// 最后，我们遍历 entities_to_delete 集合，删除其中的所有实体。
 
 /**
  * @brief 首先考虑结算所有可以结算的伤害事件，尽快完成生命值的更新
@@ -49,7 +34,7 @@ void Store::UpdateDamageEvents(sf::RenderWindow& window)
                 return true;
             }
 
-            if(damage_event.data.apply_delay > 0){
+            if (damage_event.data.apply_delay > 0) {
                 --damage_event.data.apply_delay;
                 return false;
             }
@@ -60,18 +45,18 @@ void Store::UpdateDamageEvents(sf::RenderWindow& window)
     damage_events.erase(new_damage_event_end, damage_events.end());
 }
 
-void Store::UpdateEnemies(sf::RenderWindow& window){
-    wave_manager.Update(*this);
+void Store::UpdateEnemies(sf::RenderWindow& window)
+{
     auto it = enemies.begin();
-    while(it != enemies.end()){
+    while (it != enemies.end()) {
         Enemy* enemy = it->second;
-        if(calc::is_dead(*enemy) && calc::should_remove(*this, *enemy)){
+        if (calc::is_dead(*enemy) && calc::should_remove(*this, *enemy)) {
             ui_manager.DeQueueEnemyUI(enemy);
             delete enemy;
             it = enemies.erase(it);
             continue;
         }
-        if(calc::enemy_reached_defence_point(*this, *enemy)){
+        if (calc::enemy_reached_defence_point(*this, *enemy)) {
             life -= enemy->life_cost;
             gold += enemy->gold;
             enemy->Remove(*this);
@@ -86,11 +71,15 @@ void Store::UpdateEnemies(sf::RenderWindow& window){
     }
 }
 
-void Store::UpdateBullets(sf::RenderWindow& window){
+void Store::UpdateBullets(sf::RenderWindow& window)
+{
     auto it = bullets.begin();
-    while(it != bullets.end()){
+    while (it != bullets.end()) {
         Bullet* bullet = it->second;
-        if(bullet->animation.state == State::Hit && animation_manager.RequireAnimationGroup(bullet->animation.prefix,bullet->animation.state).to <= bullet->animation.frame_id){
+        if (bullet->animation.state == State::Hit &&
+            animation_manager
+                    .RequireAnimationGroup(bullet->animation.prefix, bullet->animation.state)
+                    .to <= bullet->animation.frame_id) {
             bullet->Remove(*this);
             ui_manager.DeQueueBulletUI(bullet);
             delete bullet;
@@ -106,9 +95,9 @@ void Store::UpdateBullets(sf::RenderWindow& window){
 void Store::UpdateSoldiers(sf::RenderWindow& window)
 {
     auto it = soldiers.begin();
-    while(it != soldiers.end()){
+    while (it != soldiers.end()) {
         Soldier* soldier = it->second;
-        if(calc::is_dead(*soldier) && calc::should_remove(*this, *soldier)){
+        if (calc::is_dead(*soldier) && calc::should_remove(*this, *soldier)) {
             soldier->Remove(*this);
             ui_manager.DeQueueSoldierUI(soldier);
             delete soldier;
@@ -129,11 +118,25 @@ void Store::UpdateSoldiers(sf::RenderWindow& window)
 void Store::UpdateTowers(sf::RenderWindow& window)
 {
     auto it = towers.begin();
-    while(it != towers.end()){
+    while (it != towers.end()) {
         Tower* tower = it->second;
         tower->Update(*this);
         ui_manager.RenderTowerUI(window, tower);
         ++it;
+    }
+}
+
+void Store::ExecuteEvents()
+{
+    while (!event_queue.empty()) {
+        const Event event = std::move(event_queue.front());
+        event_queue.pop();
+        switch (event.type) {
+        case EventType::SelectLevel:
+            callback::SelectLevel(*this, std::get<std::string>(event.data.prop1));
+            game_state = GameState::Loading;
+            break;
+        }
     }
 }
 
@@ -154,26 +157,29 @@ void Store::Game(sf::RenderWindow& window)
         case GameState::Begin:
             ui_manager.RenderMap(window, "map_background");
             window.display();
+            ExecuteEvents();
             break;
         case GameState::GameStart:
             time = 0.0;
-            while (true) {
-                Update(window);
-                time += FRAME_LENGTH;
-            }
+            Update(window);
+            time += FRAME_LENGTH;
+            ExecuteEvents();
             break;
         case GameState::GamePlaying:
-            while (true) {
-                Update(window);
-                time += FRAME_LENGTH;
-                window.display();
-                break;
-            }
+            wave_manager.Update(*this);
+            Update(window);
+            time += FRAME_LENGTH;
+            window.display();
+            ExecuteEvents();
+            break;
         case GameState::GameOver:
             // AnimationPlayer::DrawGameOver();
+            ExecuteEvents();
             break;
         case GameState::Loading:
             // AnimationPlayer::DrawLoading();
+            level_manager.LoadLevelResource(*this);
+            game_state = GameState::GameStart;
             break;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));

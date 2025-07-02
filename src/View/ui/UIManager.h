@@ -11,8 +11,9 @@ class Store;
 #include "SoldierUI.h"
 #include "BulletUI.h"
 #include "TowerUI.h"
-#include "FlagUI.h"
-
+// #include "FlagUI.h"
+#include "FxUI.h"
+class Fx;
 /**
  * @brief UIManager类 - 顶层UI管理器
  *
@@ -113,15 +114,17 @@ public:
     void QueueSoldierUI(Soldier* soldier);
     void QueueBulletUI(Bullet* bullet);
     void QueueTowerUI(Tower* tower);
+    void QueueFxUI(Fx* fx);
     void DeQueueEnemyUI(Enemy* enemy);
     void DeQueueSoldierUI(Soldier* soldier);
     void DeQueueBulletUI(Bullet* bullet);
     void DeQueueTowerUI(Tower* tower);
+    void DeQueueFxUI(Fx* fx);
     void RenderEnemyUI(sf::RenderWindow& window, Enemy* enemy, const sf::Vector2f& scale = {1.0f, 1.0f});
     void RenderSoldierUI(sf::RenderWindow& window, Soldier* soldier, const sf::Vector2f& scale = {1.0f, 1.0f});
     void RenderBulletUI(sf::RenderWindow& window, Bullet* bullet, const sf::Vector2f& scale = {1.0f, 1.0f});
     void RenderTowerUI(sf::RenderWindow& window, Tower* tower, const sf::Vector2f& scale = {1.0f, 1.0f});
-    
+    void RenderFxUI(sf::RenderWindow& window, Fx* fx, const sf::Vector2f& scale = {1.0f, 1.0f});
     /**
      * @brief 通用渲染接口 - 接受Position和Animation(实际上与各个UI中的逻辑一样？)
      * @param window 渲染窗口
@@ -130,7 +133,7 @@ public:
      * @param context 动画上下文（调用者管理）
      * @param scale 缩放比例
      */
-    void RenderAnimationAtPosition(sf::RenderWindow& window, const Position& position, 
+    void RenderAnimationAtPosition(sf::RenderWindow& window, const Position& position,
                                   Animation& animation, AnimationContext& context,
                                   const sf::Vector2f& scale = {1.0f, 1.0f});
 
@@ -169,7 +172,7 @@ public:
     std::unordered_map<Soldier*, std::unique_ptr<SoldierUI>> soldier_uis_;   ///< Soldier映射
     std::unordered_map<Bullet*, std::unique_ptr<BulletUI>>   bullet_uis_;    ///< Bullet映射
     std::unordered_map<Tower*, std::unique_ptr<TowerUI>>     tower_uis_;     ///< Tower映射
-    std::unordered_map<int, std::unique_ptr<FlagUI>>         flag_uis_;      ///< 关卡旗子映射（level_id -> FlagUI）
+    std::unordered_map<Fx*, std::unique_ptr<FxUI>>         fx_uis_;      ///< 关卡旗子映射（level_id -> FlagUI）
 
     Store*                                                   store_;         ///< Store指针
     std::unique_ptr<AnimationPlayer>                         animation_player_;   ///< AnimationPlayer实例
@@ -203,7 +206,7 @@ private:
      * @param level_id 被点击的关卡ID
      */
     void OnFlagClicked(int level_id);
-    
+
     /**
      * @brief 确保通用UI实例已初始化（内部使用）
      */

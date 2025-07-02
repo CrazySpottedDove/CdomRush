@@ -1,4 +1,4 @@
-return{
+return {
     forest_troll = {
         attack = {
             to = 103,
@@ -68,5 +68,12 @@ return{
             to = 1,
             from = 1
         } -- 阿卡洛斯遗迹的地图
+    },
+    -- 草皮
+    build_terrain_0001 = {
+        idle = {
+            to = 1,
+            from = 1
+        }
     }
 }

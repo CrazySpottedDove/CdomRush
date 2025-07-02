@@ -2,6 +2,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <SFML/Graphics/Sprite.hpp>
+#include "Model/components/animation.h"
 #include "utils/macros.h"
 
 /**
@@ -34,8 +35,8 @@ void AnimationPlayer::RenderAnimation(sf::RenderWindow& window, const sf::Vector
     // 设置原点到图像中心
     sprite.setOrigin(sf::Vector2f(static_cast<float>(frame_data.frameRect.size.x) / 2.0f,
                                   static_cast<float>(frame_data.frameRect.size.y) / 2.0f));
-    
-    //处理翻转（基于flip）                              
+
+    //处理翻转（基于flip）
     sf::Vector2f final_scale = scale;
     if(animation.flip)
     {
@@ -51,6 +52,9 @@ void AnimationPlayer::RenderAnimation(sf::RenderWindow& window, const sf::Vector
     // 加上图像中心的偏移(因为原点设为了图像中心)
     final_position.x += static_cast<float>(frame_data.frameRect.size.x) / 2.0f * scale.x;
     final_position.y += static_cast<float>(frame_data.frameRect.size.y) / 2.0f * scale.y;
+
+    final_position.x -= 43.0f;
+    final_position.y -= 60.0f; // 调整位置偏移
     sprite.setPosition(final_position);
 
     window.draw(sprite);
@@ -84,7 +88,7 @@ void AnimationPlayer::UpdateAnimation(Animation& animation, AnimationContext& co
 
     try{
         std::size_t total_frames = GetAnimationFrameCount(animation.prefix, animation.state);
-        
+
         if (total_frames == 0) {
             std::cerr << "Warning: Animation has 0 frames for prefix: " << animation.prefix << std::endl;
             animation.pending = false;
@@ -401,6 +405,27 @@ bool AnimationPlayer::IsValidFrameId(const std::string& prefix, State state, std
 
 //     DEBUG_CODE(std::cout << "Entity animation reset to frame 0 for prefix: " << entity.animation.prefix << std::endl;)
 // }
+
+/**
+ * @brief 检查动画是否播放完成（Entity版本）
+ */
+bool AnimationPlayer::IsAnimationFinished(Animation& animation,
+                                          const AnimationContext& context) const
+{
+    if (context.loop_enabled || animation.pending) {
+        return false;
+    }
+
+    try {
+        std::size_t total_frames =
+            GetAnimationFrameCount(animation.prefix, animation.state);
+        return animation.frame_id >= total_frames - 1;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error checking Entity animation finish status: " << e.what() << std::endl;
+        return true;
+    }
+}
 
 // /**
 //  * @brief 检查动画是否播放完成（Entity版本）

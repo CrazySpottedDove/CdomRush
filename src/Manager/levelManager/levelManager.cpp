@@ -52,8 +52,8 @@ void LevelManager::LoadTowerPositions(Store& store)
         const sol::table tower_position_table = value.as<sol::table>();
         const TowerType type = tower_type_map.at(tower_position_table["type"].get<std::string>());
         Tower* tower = store.template_manager.CreateTower(type);
-        tower->position.x = tower_position_table["position"]["x"].get<float>();
-        tower->position.y = tower_position_table["position"]["y"].get<float>();
+        tower->position.x = tower_position_table["pos"]["x"].get<float>();
+        tower->position.y = tower_position_table["pos"]["y"].get<float>();
         tower->rally_point.x = tower_position_table["rally_point"]["x"].get<float>();
         tower->rally_point.y = tower_position_table["rally_point"]["y"].get<float>();
         store.QueueTower(tower);

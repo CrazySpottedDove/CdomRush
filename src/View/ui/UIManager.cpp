@@ -55,25 +55,44 @@ void UIManager::DeQueueTowerUI(Tower* tower){
     tower_uis_.erase(it);
 }
 
-// void UIManager::RenderEnemyUI(sf::RenderWindow&window, Enemy* enemy, const sf::Vector2f& scale){
-//     const auto it = enemy_uis_.find(enemy);
-//     it->second->Render(window, it->second.position,it->second.animation,scale);
-// }
+void UIManager::QueueFxUI(Fx* fx){
+    fx_uis_[fx] = std::make_unique<FxUI>(fx, *animation_player_);
+    DEBUG_CODE(std::cout << "UIManager: Queued FxUI for Fx at (" << fx->position.x << "," << fx->position.y << ")" << std::endl;)
+}
 
-// void UIManager::RenderSoldierUI(sf::RenderWindow&window, Soldier* soldier, const sf::Vector2f& scale){
-//     const auto it = soldier_uis_.find(soldier);
-//     it->second->Render(window, scale);
-// }
+void UIManager::DeQueueFxUI(Fx* fx){
+    auto it = fx_uis_.find(fx);
+    fx_uis_.erase(it);
+}
 
-// void UIManager::RenderBulletUI(sf::RenderWindow&window, Bullet* bullet, const sf::Vector2f& scale){
-//     const auto it = bullet_uis_.find(bullet);
-//     it->second->Render(window, scale);
-// }
+void UIManager::RenderEnemyUI(sf::RenderWindow&window, Enemy* enemy, const sf::Vector2f& scale){
+    const auto it = enemy_uis_.find(enemy);
+    it->second->Render(window, it->second->GetEnemy()->position,it->second->GetEnemy()->animation,scale);
+}
 
-// void UIManager::RenderTowerUI(sf::RenderWindow&window, Tower* tower, const sf::Vector2f& scale){
-//     const auto it = tower_uis_.find(tower);
-//     it->second->Render(window, scale);
-// }
+void UIManager::RenderSoldierUI(sf::RenderWindow&window, Soldier* soldier, const sf::Vector2f& scale){
+    const auto it = soldier_uis_.find(soldier);
+    it->second->Render(window,it->second->GetSoldier()->position,it->second->GetSoldier()->animation, scale);
+}
+
+void UIManager::RenderBulletUI(sf::RenderWindow&window, Bullet* bullet, const sf::Vector2f& scale){
+    const auto it = bullet_uis_.find(bullet);
+    it->second->Render(window,it->second->GetBullet()->position,it->second->GetBullet()->animation, scale);
+}
+
+void UIManager::RenderTowerUI(sf::RenderWindow&window, Tower* tower, const sf::Vector2f& scale){
+    const auto it = tower_uis_.find(tower);
+    it->second->Render(window,it->second->GetTower()->position,it->second->GetTower()->animation, scale);
+}
+
+void UIManager::RenderFxUI(sf::RenderWindow&window, Fx* fx, const sf::Vector2f& scale){
+    const auto it = fx_uis_.find(fx);
+    if(it != fx_uis_.end()){
+        it->second->Render(window,it->second->GetFx()->position,it->second->GetFx()->animation, scale);
+    }else{
+        std::cerr << "UIManager: FxUI not found for Fx at (" << fx->position.x << "," << fx->position.y << ")" << std::endl;
+    }
+}
 
 // /**
 //  * @brief 更新UI管理器
@@ -156,7 +175,7 @@ UIManager::UIStats UIManager::GetStats() const
         soldier_uis_.size(),
         bullet_uis_.size(),
         tower_uis_.size(),
-        flag_uis_.size()
+        fx_uis_.size()
     };
 }
 
@@ -398,14 +417,14 @@ void UIManager::ClearCurrentMap()
 // ===============================
 // 通用渲染接口实现
 // ===============================
-void UIManager::RenderAnimationAtPosition(sf::RenderWindow& window, const Position& position, 
+void UIManager::RenderAnimationAtPosition(sf::RenderWindow& window, const Position& position,
                                          Animation& animation, AnimationContext& context,
                                          const sf::Vector2f& scale)
 {
     if (animation_player_) {
         // 更新动画到下一帧
         animation_player_->UpdateAnimation(animation, context);
-        
+
         // 直接使用AnimationPlayer的统一渲染接口
         animation_player_->RenderAnimation(window, position, animation, context, scale);
     }

@@ -33,10 +33,11 @@ class Store
 {
 public:
     Store();
-    double                                time       = 0.0;
-    double                                gold       = 0.0;
-    int                                   life       = 20;
-    GameState                             game_state = GameState::Begin;
+    double                                time                        = 0.0;
+    double                                gold                        = 0.0;
+    int                                   life                        = 20;
+    GameState                             game_state                  = GameState::Begin;
+    bool                                  come_into_level_select_view = true;
     const std::unordered_map<ID, Enemy*>& GetEnemies() const { return enemies; }
 
     const std::unordered_map<ID, Tower*>& GetTowers() const { return towers; }
@@ -65,6 +66,8 @@ public:
     std::unordered_map<ID, Soldier*>::iterator DequeueSoldier(
         std::unordered_map<ID, Soldier*>::iterator& it);
 
+    std::unordered_map<ID, Fx*>::iterator DequeueFx(std::unordered_map<ID, Fx*>::iterator& it);
+
     void DequeueEnemy(const ID id);
 
     void DequeueTower(const ID id);
@@ -72,6 +75,8 @@ public:
     void DequeueBullet(const ID id);
 
     void DequeueSoldier(const ID id);
+
+    void DequeueFx(const ID id);
 
     void QueueDamageEvent(DamageEvent&& event) { damage_events.push_back(std::move(event)); }
 
@@ -81,6 +86,8 @@ public:
 
     void QueueEvent(Event&& event) { event_queue.push(std::move(event)); }
 
+    void QueueFx(Fx* fx);
+
     Enemy* GetEnemy(const ID id) const;
 
     Tower* GetTower(const ID id) const;
@@ -88,6 +95,8 @@ public:
     Bullet* GetBullet(const ID id) const;
 
     Soldier* GetSoldier(const ID id) const;
+
+    Fx* GetFx(const ID id) const;
 
     AnimationManager animation_manager;
     PathManager      path_manager;
@@ -114,6 +123,9 @@ private:
     void                     UpdateBullets(sf::RenderWindow& window);
     void                     UpdateTowers(sf::RenderWindow& window);
     void                     UpdateSoldiers(sf::RenderWindow& window);
+
+    void                     UpdateFx(sf::RenderWindow& window);
+
     void                     ExecuteEvents();
     void                     Update(sf::RenderWindow& window);
 };

@@ -119,6 +119,22 @@ void Store::UpdateTowers(sf::RenderWindow& window)
         Tower* tower = it->second;
         tower->Update(*this);
         ui_manager.RenderTowerUI(window, tower);
+        DEBUG_CODE(
+            std::cout << "Tower ID: " << tower->id << ", Position: (" << tower->position.x
+                      << ", " << tower->position.y << "), State: " << static_cast<int>(tower->animation.state)
+                      << std::endl;
+        )
+        ++it;
+    }
+}
+
+void Store::UpdateFx(sf::RenderWindow& window)
+{
+    auto it = fxs.begin();
+    while (it != fxs.end()) {
+        Fx* fx = it->second;
+        fx->Update(*this);
+        ui_manager.RenderFxUI(window, fx);
         ++it;
     }
 }
@@ -152,8 +168,21 @@ void Store::Game(sf::RenderWindow& window)
     while (true) {
         switch (game_state) {
         case GameState::Begin:
+            if (come_into_level_select_view) {
+                for (const auto& level : level_manager.levels) {
+                    Fx* fx       = template_manager.CreateFx(FxType::LevelFlag);
+                    fx->position = level.second;
+                    fx->animation.state = State::Idle;
+                    QueueFx(fx);
+                    ui_manager.QueueFxUI(fx);
+                }
+                come_into_level_select_view = false;
+            }
+
             window.clear();
             ui_manager.RenderMap(window, "map_background");
+            UpdateFx(window);
+
             window.display();
             ExecuteEvents();
             DEBUG_CODE(game_state = GameState::Loading;)
@@ -197,12 +226,7 @@ Store::Store()
     ui_manager.store_            = this;
     ui_manager.animation_player_ = std::make_unique<AnimationPlayer>(animation_manager);
 }
-void Store::QueueSoldier(Soldier* soldier)
-{
-    soldiers[next_id++] = soldier;
-    soldier->Insert(*this);
-    ui_manager.QueueSoldierUI(soldier);
-}
+
 std::unordered_map<ID, Enemy*>::iterator Store::DequeueEnemy(
     std::unordered_map<ID, Enemy*>::iterator& it)
 {
@@ -239,6 +263,16 @@ std::unordered_map<ID, Soldier*>::iterator Store::DequeueSoldier(
     delete soldier;
     return soldiers.erase(it);
 };
+
+std::unordered_map<ID, Fx*>::iterator Store::DequeueFx(std::unordered_map<ID, Fx*>::iterator& it)
+{
+    Fx* fx = it->second;
+    fx->Remove(*this);
+    // ui_manager.DeQueueFxUI(fx);
+    delete fx;
+    return fxs.erase(it);
+}
+
 void Store::DequeueEnemy(const ID id)
 {
     auto it = enemies.find(id);
@@ -287,6 +321,20 @@ void Store::DequeueSoldier(const ID id)
     delete soldier;
     soldiers.erase(it);
 }
+
+void Store::DequeueFx(const ID id)
+{
+    auto it = fxs.find(id);
+    DEBUG_CODE(if (it == fxs.end()) {
+        throw std::runtime_error("Attempted to dequeue a non-existent fx.");
+    })
+    Fx* fx = it->second;
+    fx->Remove(*this);
+    ui_manager.DeQueueFxUI(fx);
+    delete fx;
+    fxs.erase(it);
+}
+
 Enemy* Store::GetEnemy(const ID id) const
 {
     auto it = enemies.find(id);
@@ -307,21 +355,47 @@ Soldier* Store::GetSoldier(const ID id) const
     auto it = soldiers.find(id);
     return it != soldiers.end() ? it->second : nullptr;
 }
+
+Fx* Store::GetFx(const ID id) const
+{
+    auto it = fxs.find(id);
+    return it != fxs.end() ? it->second : nullptr;
+}
+
 void Store::QueueEnemy(Enemy* enemy)
 {
-    enemies[next_id++] = enemy;
+    enemy->id = next_id++;
+    enemies[next_id] = enemy;
     enemy->Insert(*this);
     ui_manager.QueueEnemyUI(enemy);
 }
 void Store::QueueTower(Tower* tower)
 {
-    towers[next_id++] = tower;
+    tower->id = next_id++;
+    towers[next_id] = tower;
     tower->Insert(*this);
     ui_manager.QueueTowerUI(tower);
 }
 void Store::QueueBullet(Bullet* bullet)
 {
-    bullets[next_id++] = bullet;
+    bullet->id = next_id++;
+    bullets[next_id] = bullet;
     bullet->Insert(*this);
     ui_manager.QueueBulletUI(bullet);
+}
+
+void Store::QueueSoldier(Soldier* soldier)
+{
+    soldier->id = next_id++;
+    soldiers[next_id] = soldier;
+    soldier->Insert(*this);
+    ui_manager.QueueSoldierUI(soldier);
+}
+
+void Store::QueueFx(Fx* fx)
+{
+    fx->id = next_id++;
+    fxs[next_id] = fx;
+    fx->Insert(*this);
+    ui_manager.QueueFxUI(fx);
 }

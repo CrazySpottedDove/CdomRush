@@ -79,3 +79,4 @@ ForestTroll::ForestTroll(Position position_)
     this->animation.prefix = "forest_troll";
     this->animation.state = State::Idle;   // 设置动画状态为闲置
 }
+

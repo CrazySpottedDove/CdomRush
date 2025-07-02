@@ -24,7 +24,7 @@ public:
         ,prefix(prefix_){};
 
 
-    void Apply(Store& store, ID source, ID target, Position bullet_start_offset) noexcept;
+    void Apply(Store& store, ID source, ID target, Position bullet_start_offset, SourceType source_type) noexcept;
 };
 
 class Ranged

@@ -15,5 +15,6 @@ enum class State
     Flying,
     Hit,
     ShootingUp,
-    ShootingDown
+    ShootingDown,
+    None
 };

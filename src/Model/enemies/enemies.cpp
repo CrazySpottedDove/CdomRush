@@ -77,14 +77,22 @@ void ActiveEnemyRange::Update(Store& store)
         heading = Heading::Right;   // 设置方向为向右
         Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位
         if (Blocker == nullptr) {
+            bool target_in_range = 0;//是否有目标要射击
             for(int i = 0; i < this->ranged.attacks.size(); ++i) {
+                ID target_soldier = calc::find_nearest_soldier(store,position,ranged.attacks[i].range);
+                Soldier* target_soldier_ptr = store.GetSoldier(target_soldier);
+                if(target_soldier == INVALID_ID) continue;
+                if(target_soldier_ptr == nullptr) continue;
+
+                target_in_range = 1;
                 if (this->ranged.attacks[i].IsReady(store)) {
-                    ranged.attacks[i].Apply(store,id,blocker,bullet_offset);   // 执行远程攻击
+                    ranged.attacks[i].Apply(store,id,target_soldier,bullet_offset,SourceType::Enemy);   // 执行远程攻击
                     this->animation.state = State::Shoot;   // 设置状态为射击
                     return;
                 }
             }
-            this->animation.state = walkjudge();   // 如果没有阻挡单位，设置状态为行走
+            if(target_in_range) return ;
+            this->animation.state = walkjudge();   // 如果没有阻挡单位，也没有射击目标，那就设置状态为行走
             return;
         }
         if (Blocker->animation.state == State::Death) {

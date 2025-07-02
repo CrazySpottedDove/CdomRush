@@ -13,7 +13,7 @@ struct Animation
         , frame_id(frame_id)
         , prefix(prefix), anchor_x(anchor_x),anchor_y(anchor_y) {};
     State       state;
-    State       last_state = State::Idle;   // 上一个状态
+    State       last_state = State::None;   // 上一个状态
     double      rotation   = 0.0;           // 旋转角度
     bool        pending    = true;          // 动画正在进行
     bool        flip       = false;

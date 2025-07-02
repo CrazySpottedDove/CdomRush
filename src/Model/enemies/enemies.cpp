@@ -141,7 +141,7 @@ orc_armored::orc_armored(Position position_)
     this->melee[0]->damage_event.source = id;
     this->slot     = sf::Vector2f(18.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
-    this->animation.prefix = "enemy_orc_armored";
+    this->animation.prefix = "orc_armored";
     this->animation.state = State::Idle;   // 设置动画状态为闲置
     this->Hit_offset = sf::Vector2f(0.0f,14.0f);   // 设置受击偏移位置
 }

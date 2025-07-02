@@ -25,6 +25,32 @@ return{
             from = 26
         }
     },
+    enemy_orc_armored = {
+        attack = {
+            to = 77,
+            from = 67
+        },
+        death = {
+            to = 115,
+            from = 102
+        },
+        idle = {
+            to = 67,
+            from = 67
+        },
+        walkingDown = {
+            to = 66,
+            from = 45
+        },
+        walkingLeftRight = {
+            to = 22,
+            from = 1
+        },
+        walkingUp = {
+            to = 44,
+            from = 23
+        }
+    },
     map_background = {
         idle = {
             to = 1,

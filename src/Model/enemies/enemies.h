@@ -99,6 +99,8 @@ public:
     Position bullet_offset;
 
     void Update(Store& store) override;
+
+    bool shoot_judge(Store& store);
 };
 
 class ForestTroll : public ActiveEnemyMelee

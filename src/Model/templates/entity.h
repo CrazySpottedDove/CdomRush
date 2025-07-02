@@ -19,10 +19,10 @@ public:
     Animation animation;
     virtual ~Entity() = default;
     virtual bool Insert(Store& store) = 0;
-    virtual void update(Store& store) = 0;
-    virtual void Update(Store& store){
-        animation.last_state = animation.state;
-        update(store);
-    };
+    virtual void Update(Store& store) = 0;
+    // virtual void Update(Store& store){
+    //     animation.last_state = animation.state;
+    //     update(store);
+    // };
     virtual bool Remove(Store& store) = 0;
 };

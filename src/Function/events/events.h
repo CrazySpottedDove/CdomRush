@@ -18,7 +18,7 @@ enum class EventType
 struct EventData
 {
     std::variant<std::string, ID> prop1;
-    std::variant<TowerType, ID> prop2;
+    std::variant<TowerType, ID, Position> prop2;
     std::variant<int, ID> prop3;
 };
 
@@ -47,4 +47,13 @@ namespace callback {
      * @param cost [in] 升级所需的费用
      */
     void UpgradeTower(Store& store, const ID tower_id, const TowerType tower_type, const int cost);
+
+    /**
+     * @brief 改变塔的集结点
+     *
+     * @param store
+     * @param tower_id
+     * @param position
+     */
+    void ChangeRallyPoint(Store& store, const ID tower_id, const Position& position);
 }

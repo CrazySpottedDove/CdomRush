@@ -1,7 +1,7 @@
 #include "enemies.h"
 #include "Manager/store/store.h"
 
-void PassiveEnemy::update(Store& store)
+void PassiveEnemy::Update(Store& store)
 {
     if (animation.state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
     if (this->health.hp <= 0) {
@@ -16,7 +16,7 @@ void PassiveEnemy::update(Store& store)
     return;
 }
 
-void ActiveEnemyMelee::update(Store& store)
+void ActiveEnemyMelee::Update(Store& store)
 {
     if (animation.state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
     if (calc::is_dead(*this)) {

@@ -85,3 +85,9 @@ class ForestTroll : public ActiveEnemyMelee
 public:
     ForestTroll(Position position_ = sf::Vector2f(0,0));
 };
+
+class orc_armored : public ActiveEnemyMelee
+{
+public:
+    orc_armored(Position position_ = sf::Vector2f(0,0));
+};

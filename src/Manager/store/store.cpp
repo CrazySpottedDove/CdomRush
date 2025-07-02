@@ -203,6 +203,13 @@ void Store::Game(sf::RenderWindow& window)
             time += FRAME_LENGTH;
             window.display();
             ExecuteEvents();
+            DEBUG_CODE(
+                if (time > 20){
+                    for (auto &[id,enemy ] : enemies) {
+                        enemy->animation.state = State::Death;
+                    }
+                }
+            )
             break;
         case GameState::GameOver:
             // AnimationPlayer::DrawGameOver();

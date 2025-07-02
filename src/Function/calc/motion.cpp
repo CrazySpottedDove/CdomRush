@@ -94,8 +94,8 @@ void calc::map_position(Position& pos){
     const float origin_screen_height = 768.0;
     pos.x = default_screen_width * pos.x / origin_screen_width;
     pos.y = default_screen_height - (default_screen_height * pos.y / origin_screen_height);
-    pos.x += 200.0f;
-    pos.y -= 20.0f;
+    pos.x += 225.0f;
+    pos.y -= 35.0f;
     // pos.y = DEFAULT_SCREEN_HEIGHT - pos.y; // Adjust y-coordinate to match screen origin
     // pos.x += 150.0f;
     // pos.y -= 30.0f;

@@ -104,7 +104,7 @@ private:
     std::unordered_map<ID, Tower*>   towers;
     std::unordered_map<ID, Bullet*>  bullets;
     std::unordered_map<ID, Soldier*> soldiers;
-    std::unordered_map<ID, fx*>      fxs;
+    std::unordered_map<ID, Fx*>      fxs;
     std::queue<Event>                event_queue;
     ID                               next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象

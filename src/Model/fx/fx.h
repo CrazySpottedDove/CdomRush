@@ -1,7 +1,7 @@
 #pragma once
 #include "Model/templates/entity.h"
 
-class fx : public Entity
+class Fx : public Entity
 {
 public:
     bool Insert(Store& store) override { return true; }

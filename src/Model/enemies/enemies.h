@@ -91,3 +91,9 @@ class orc_armored : public ActiveEnemyMelee
 public:
     orc_armored(Position position_ = sf::Vector2f(0,0));
 };
+
+class orc_wolf_rider : public ActiveEnemyMelee
+{
+public:
+    orc_wolf_rider(Position position_ = sf::Vector2f(0,0));
+};

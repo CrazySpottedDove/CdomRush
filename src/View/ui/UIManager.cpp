@@ -1,7 +1,6 @@
 #include "UIManager.h"
 #include <SFML/Window/Event.hpp>
 #include <iostream>
-#include <algorithm>
 #include "utils/macros.h"
 
 /**

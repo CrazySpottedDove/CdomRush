@@ -107,7 +107,7 @@ ID calc::find_foremost_enemy(const Store& store, const Position& position, const
     return foremost_enemy_id;
 }
 
-ID find_nearest_soldier(const Store& store, const Position& position, const double range)
+ID calc::find_nearest_soldier(const Store& store, const Position& position, const double range)
 {
     const std::unordered_map<ID, Soldier*>& soldiers = store.GetSoldiers();
     if (soldiers.empty()) {

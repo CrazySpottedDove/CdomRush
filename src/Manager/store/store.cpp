@@ -51,9 +51,14 @@ void Store::UpdateEnemies(sf::RenderWindow& window)
     while (it != enemies.end()) {
         Enemy* enemy = it->second;
         if (calc::is_dead(*enemy) && calc::should_remove(*this, *enemy)) {
-            ui_manager.DeQueueEnemyUI(enemy);
-            delete enemy;
-            it = enemies.erase(it);
+            DEBUG_CODE(
+                std::cout << "Removing enemy with ID: " << enemy->id << std::endl;
+                std::cout << enemy->health.dead_lifetime << std::endl;
+                std::cout << enemy->health.death_time << std::endl;
+                std::cout << time << std::endl;
+                break;
+            )
+            it = DequeueEnemy(it);
             continue;
         }
         if (calc::enemy_reached_defence_point(*this, *enemy)) {
@@ -203,13 +208,19 @@ void Store::Game(sf::RenderWindow& window)
             time += FRAME_LENGTH;
             window.display();
             ExecuteEvents();
-            DEBUG_CODE(
-                if (time > 10){
-                    for (auto &[id,enemy ] : enemies) {
-                        enemy->animation.state = State::Death;
-                    }
-                }
-            )
+            // DEBUG_CODE(
+            //     bool changed = false;
+            //     if (time > 10){
+            //         for (auto &[id,enemy ] : enemies) {
+            //             if(!changed){
+            //                 enemy->animation.state   = State::Death;
+            //                 enemy->health.death_time = time;
+            //                 std::cout << enemy->health.dead_lifetime << std::endl;
+            //                 changed = true;
+            //             }
+            //         }
+            //     }
+            // )
             break;
         case GameState::GameOver:
             // AnimationPlayer::DrawGameOver();

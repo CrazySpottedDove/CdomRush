@@ -6,7 +6,6 @@
 
 class Store;
 #include "View/animation/animationPlayer.h"
-#include "Manager/resourceManager/animationManager.h"
 #include "EnemyUI.h"
 #include "SoldierUI.h"
 #include "BulletUI.h"

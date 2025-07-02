@@ -1,6 +1,6 @@
 #include "enemies.h"
 #include "Manager/store/store.h"
-
+#include "Function/calc/damage.h"
 void PassiveEnemy::Update(Store& store)
 {
     if (animation.state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
@@ -102,7 +102,7 @@ void ActiveEnemyRange::Update(Store& store)
 
         if (Blocker->slot + slot + position != Blocker->position) return;
 
-        
+
         return;
     }
     Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位

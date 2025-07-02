@@ -5,7 +5,7 @@
 #include "Manager/store/store.h"
 
 
-void Tower::update(Store& store){
+void Tower::Update(Store& store){
     if(animation.state == State::Idle){
         for(auto& attack : ranged.attacks){
             if(attack.IsReady(store)) {
@@ -13,7 +13,7 @@ void Tower::update(Store& store){
                 Enemy* target_enemy_ptr = store.GetEnemy(target_enemy);
 
                 if(target_enemy == INVALID_ID) continue; // 如果没有找到目标敌人，跳过
-                if(target_enemy_ptr == nullptr) continue; 
+                if(target_enemy_ptr == nullptr) continue;
 
                 animation.state = State::Shoot; // 设置状态为射击
                 if(target_enemy_ptr->position.y < position.y) heading = tower_heading::Up; // 如果目标敌人在塔的上方，设置塔的朝向为 Up
@@ -145,7 +145,7 @@ void Engineer::layer_update(){
     if(animation.state == State::Idle){
         Layers[2].animation.state = State::Idle; // 设置工程师的闲置
         Layers[3].animation.state = State::Idle; // 设置工程师的闲置
-        Layers[4].animation.state = State::Idle; // 设置工程师的闲置 
+        Layers[4].animation.state = State::Idle; // 设置工程师的闲置
         Layers[5].animation.state = State::Idle; // 设置工程师的闲置
         Layers[6].animation.state = State::Idle; // 设置工程师的闲置
         Layers[7].animation.state = State::Idle; // 设置工程师的闲置
@@ -171,7 +171,7 @@ Engineer1::Engineer1(Position position_, int total_price_) {
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
     ranged.attacks.push_back(RangedAttack(3.0, 160.0, BulletType::Bomb, 62.4, 13.0, 1.0)); // 添加攻击
-    
+
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_artillery_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer1"},Position{0.0f, 41.0f}};
     Layer layer3{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer2"},Position{0.0f, 41.0f}};
@@ -196,7 +196,7 @@ Engineer2::Engineer2(Position position_, int total_price_) {
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
     ranged.attacks.push_back(RangedAttack(3, 160.0, BulletType::Bomb, 62.4, 33.0, 1.0)); // 添加攻击
-    
+
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_artillery_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl2_layer1"},Position{0.0f, 42.0f}};
     Layer layer3{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl2_layer2"},Position{0.0f, 42.0f}};
@@ -219,7 +219,7 @@ Engineer3::Engineer3(Position position_, int total_price_) {
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
     ranged.attacks.push_back(RangedAttack(2.5, 180.0, BulletType::Bomb, 67.2, 50.0, 1.0)); // 添加攻击
-    
+
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_artillery_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl3_layer1"},Position{0.0f, 43.0f}};
     Layer layer3{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl3_layer2"},Position{0.0f, 43.0f}};
@@ -265,7 +265,7 @@ Mage1::Mage1(Position position_, int total_price_) {
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_mage_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towermagelvl1"},Position{0.0f, 30.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shootermage"},Position{1.0f, 57.0f}};
-    
+
     animation.state = State::Idle; // 设置初始状态为闲置
     heading = tower_heading::Down; // 默认塔的朝向为 Down
 }

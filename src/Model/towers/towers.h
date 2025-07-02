@@ -51,7 +51,7 @@ public:
     std::vector <std::pair<TowerAction, std::pair<TowerType, int>>> tower_actions;
     // 每个 Tower 的图层列表:
     std::vector<Layer> Layers;
-    
+
     bool Insert(Store& store) override {
         return true;
     }
@@ -59,8 +59,8 @@ public:
         return true;
     }
     virtual void layer_update() = 0; // 每个 Tower 都需要实现自己的图层更新逻辑
-    
-    void update(Store& store) override;
+
+    void Update(Store& store) override;
 
     Tower(const Tower&) = default; // 拷贝构造函数
     Tower() = default; // 默认构造函数

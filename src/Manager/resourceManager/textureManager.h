@@ -2,15 +2,10 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <string>
 #include <unordered_map>
-
+#include "Common/animation.h"
 // TextureManager 结构：
 // 文件名->纹理资源
 
-enum class TextureLevel
-{
-    Common,
-    Specific
-};
 class TextureManager
 {
 public:
@@ -43,6 +38,6 @@ public:
     void UnloadSpecificTextures();
 
 private:
-    std::unordered_map<std::string, sf::Texture>  textures;
+    TextureMap  textures;
     std::unordered_map<std::string, TextureLevel> texture_levels;
 };

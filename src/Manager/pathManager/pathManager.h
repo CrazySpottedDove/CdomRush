@@ -1,12 +1,10 @@
 #pragma once
-#include "utils/macros.h"
+#include "Common/macros.h"
 #include <cstddef>
 #include <string>
 #include <vector>
 #include "Model/components/path.h"
-typedef std::vector<Position> SubPath;
-typedef std::vector<SubPath>  Path;
-typedef std::vector<Path> Paths;
+
 class PathManager
 {
 public:

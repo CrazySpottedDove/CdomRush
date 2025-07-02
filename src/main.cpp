@@ -1,5 +1,5 @@
 #include "Manager/store/store.h"
-#include "utils/macros.h"
+#include "Common/macros.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>

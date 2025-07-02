@@ -1,7 +1,7 @@
 #include "waveManager.h"
 #include "Manager/store/store.h"
 #include "Model/enemies/enemies.h"
-#include "utils/macros.h"
+#include "Common/macros.h"
 #include "utils/readLua.h"
 #include <sol/table.hpp>
 #include <string>

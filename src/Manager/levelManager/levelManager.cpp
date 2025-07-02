@@ -3,7 +3,7 @@
 #include "Manager/resourceManager/textureManager.h"
 #include "Manager/store/store.h"
 #include "Model/towers/towers.h"
-#include "utils/macros.h"
+#include "Common/macros.h"
 #include "utils/readLua.h"
 #include <sol/table.hpp>
 #include <string>
@@ -20,7 +20,7 @@ LevelManager::LevelManager()
     }
 }
 
-void LevelManager::ReadLevelDataFile(LevelData& level_data)
+void LevelManager::ReadLevelDataFile(LevelAsset& level_data)
 {
     const std::string file_path      = std::string(LEVEL_DATA_PATH) + current_level_name + ".lua";
     const sol::table  level_data_map = ReadLua(file_path);
@@ -65,7 +65,7 @@ void LevelManager::LoadTowerPositions(Store& store)
 
 void LevelManager::LoadLevelResource(Store& store)
 {
-    LevelData level_data;
+    LevelAsset level_data;
     ReadLevelDataFile(level_data);
     // 加载纹理 （和音频）
     for (const std::string& texture_lua_path : level_data.required_textures) {

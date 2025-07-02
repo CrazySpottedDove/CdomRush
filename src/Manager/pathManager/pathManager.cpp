@@ -1,6 +1,6 @@
 #include "Manager/pathManager/pathManager.h"
 #include "Function/calc/motion.h"
-#include "utils/macros.h"
+#include "Common/macros.h"
 #include "utils/readLua.h"
 #include <iostream>
 #include <sol/state.hpp>

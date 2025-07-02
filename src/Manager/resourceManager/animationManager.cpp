@@ -1,7 +1,6 @@
 #include "animationManager.h"
-#include "Model/components/state.h"
 #include "textureManager.h"
-#include "utils/macros.h"
+#include "Common/macros.h"
 #include "utils/readLua.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp>

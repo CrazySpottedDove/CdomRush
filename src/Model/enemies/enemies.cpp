@@ -41,8 +41,8 @@ void ActiveEnemyMelee::Update(Store& store)
         if (Blocker->slot + slot + position != Blocker->position) return;
 
         for (int i = 0; i < this->melee.attacks.size(); ++i) {
-            if (this->melee.attacks[i]->IsReady(store)) {
-                melee.attacks[i]->Apply(store,id,blocker,SourceType::Enemy);   // 执行近战攻击
+            if (this->melee.attacks[i].IsReady(store)) {
+                melee.attacks[i].Apply(store,id,blocker,SourceType::Enemy);   // 执行近战攻击
                 this->animation.state = State::Attack;   // 设置状态为攻击
                 return;
             }
@@ -77,13 +77,13 @@ void ActiveEnemyRange::Update(Store& store)
         heading = Heading::Right;   // 设置方向为向右
         Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位
         if (Blocker == nullptr) {
-            // for(int i = 0; i < this->ranged.attacks.size(); ++i) {
-            //     if (this->ranged.attacks[i].IsReady(store)) {
-            //         ranged.attacks[i].Apply(store,id,blocker,SourceType::Enemy);   // 执行远程攻击
-            //         this->animation.state = State::Shoot;   // 设置状态为射击
-            //         return;
-            //     }
-            // }
+            for(int i = 0; i < this->ranged.attacks.size(); ++i) {
+                if (this->ranged.attacks[i].IsReady(store)) {
+                    ranged.attacks[i].Apply(store,id,blocker,bullet_offset);   // 执行远程攻击
+                    this->animation.state = State::Shoot;   // 设置状态为射击
+                    return;
+                }
+            }
             this->animation.state = walkjudge();   // 如果没有阻挡单位，设置状态为行走
             return;
         }
@@ -118,14 +118,12 @@ ForestTroll::ForestTroll(Position position_)
     this->gold            = 200;                  // 设置击杀奖励
     this->life_cost       = 5;                    // 设置生命损失
     this->animation.state = State::Idle;          // 设置初始状态
-    this->melee.attacks.push_back(
-        new MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
-    this->melee[0]->damage_event.source = id;
+    this->melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
+    this->melee[0].damage_event.source = id;
     this->slot     = sf::Vector2f(35.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
     this->animation.prefix = "forest_troll";
     this->animation.state = State::Idle;   // 设置动画状态为闲置
-    this->animation.anchor_y = 0.21f;
     this->Hit_offset = sf::Vector2f(30.0f,0.0f);   // 设置受击偏移位置
 }
 
@@ -137,13 +135,11 @@ orc_armored::orc_armored(Position position_)
     this->gold            = 30;                  // 设置击杀奖励
     this->life_cost       = 5;                    // 设置生命损失
     this->animation.state = State::Idle;          // 设置初始状态
-    this->melee.attacks.push_back(
-        new MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 6), 0.0, 1.0, 1.0));
-    this->melee[0]->damage_event.source = id;
+    this->melee.attacks.push_back(MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 6), 0.0, 1.0, 1.0));
+    this->melee[0].damage_event.source = id;
     this->slot     = sf::Vector2f(18.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
     this->animation.prefix = "orc_armored";
-    this->animation.anchor_y = 0.14f;
     this->animation.state = State::Idle;   // 设置动画状态为闲置
     this->Hit_offset = sf::Vector2f(0.0f,14.0f);   // 设置受击偏移位置
 }
@@ -156,9 +152,8 @@ orc_wolf_rider::orc_wolf_rider(Position position_)
     this->gold            = 25;                  // 设置击杀奖励
     this->life_cost       = 2;                    // 设置生命损失
     this->animation.state = State::Idle;          // 设置初始状态
-    this->melee.attacks.push_back(
-        new MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 9), 0.0, 1.0, 1.5));
-    this->melee[0]->damage_event.source = id;
+    this->melee.attacks.push_back(MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 9), 0.0, 1.0, 1.5));
+    this->melee[0].damage_event.source = id;
     this->slot     = sf::Vector2f(30.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
     this->animation.prefix = "orc_wolf_rider";

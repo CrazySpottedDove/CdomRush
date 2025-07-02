@@ -96,6 +96,7 @@ public:
     ID blocker = INVALID_ID;   // 用于阻挡敌人前进的单位
     Ranged ranged;             // 远程攻击组件
     Melee melee;               // 近战攻击组件
+    Position bullet_offset;
 
     void Update(Store& store) override;
 };

@@ -67,8 +67,6 @@ public:
 
     virtual Tower* Clone() = 0;
 
-    virtual std::string return_prefix() const = 0;
-
     virtual Position return_offset() const {
         return sf::Vector2f(0, 0); // 默认偏移位置为 (0, 0)
     }
@@ -80,9 +78,6 @@ public:
     void layer_update() override{};
     Tower* Clone() override {
         return new None(*this);
-    }
-    std::string return_prefix() const override {
-        return "build_terrain_0001";
     }
 };
 
@@ -98,9 +93,6 @@ public:
     Tower* Clone() override {
         return new Archer1(*this);
     }
-    std::string return_prefix() const override {
-        return "arrow";
-    }
     Position return_offset() const override {
         if(shooter) return sf::Vector2f(-10, 50); // 特定偏移位置
         else return sf::Vector2f(10, 50); // 特定偏移位置
@@ -112,9 +104,6 @@ public:
     Tower* Clone() override {
         return new Archer2(*this);
     }
-    std::string return_prefix() const override {
-        return "arrow";
-    }
     Position return_offset() const override {
         if(shooter) return sf::Vector2f(-10, 50); // 特定偏移位置
         else return sf::Vector2f(10, 50); // 特定偏移位置
@@ -125,9 +114,6 @@ public:
     Archer3(Position position = sf::Vector2f(0,0), int total_price = 0);
     Tower* Clone() override {
         return new Archer3(*this);
-    }
-    std::string return_prefix() const override {
-        return "arrow";
     }
     Position return_offset() const override {
         if(shooter) return sf::Vector2f(-10, 50); // 特定偏移位置
@@ -146,9 +132,6 @@ public:
     Tower* Clone() override {
         return new Engineer1(*this);
     }
-    std::string return_prefix() const override {
-        return "engineer_tower_0001";
-    }
     Position return_offset() const override {
         return sf::Vector2f(0, 50); // 特定偏移位置
     }
@@ -159,9 +142,6 @@ public:
     Tower* Clone() override {
         return new Engineer2(*this);
     }
-    std::string return_prefix() const override {
-        return "bombs_0002";
-    }
     Position return_offset() const override {
         return sf::Vector2f(0,53); // 特定偏移位置
     }
@@ -171,9 +151,6 @@ public:
     Engineer3(Position position = sf::Vector2f(0,0), int total_price = 0);
     Tower* Clone() override {
         return new Engineer3(*this);
-    }
-    std::string return_prefix() const override {
-        return "bombs_0003";
     }
     Position return_offset() const override {
         return sf::Vector2f(0,57); // 特定偏移位置
@@ -191,9 +168,6 @@ public:
     Tower* Clone() override {
         return new Mage1(*this);
     }
-    std::string return_prefix() const override {
-        return "bolt_1";
-    }
     Position return_offset() const override {
         if(heading == tower_heading::Up) return sf::Vector2f(8, 66); // 特定偏移位置
         else return sf::Vector2f(-5, 62); // 特定偏移位置
@@ -205,9 +179,6 @@ public:
     Tower* Clone() override {
         return new Mage2(*this);
     }
-    std::string return_prefix() const override {
-        return "bolt_2";
-    }
     Position return_offset() const override {
         if(heading == tower_heading::Up) return sf::Vector2f(8, 66); // 特定偏移位置
         else return sf::Vector2f(-5, 64); // 特定偏移位置
@@ -218,9 +189,6 @@ public:
     Mage3(Position position = sf::Vector2f(0,0), int total_price = 0);
     Tower* Clone() override {
         return new Mage3(*this);
-    }
-    std::string return_prefix() const override {
-        return "bolt_3";
     }
     Position return_offset() const override {
         if(heading == tower_heading::Up) return sf::Vector2f(8, 70); // 特定偏移位置

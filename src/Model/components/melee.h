@@ -18,8 +18,8 @@ public:
 
 class Melee{
 public:
-    std::vector<MeleeAttack*> attacks;
-    MeleeAttack*& operator[](const std::size_t id){
+    std::vector<MeleeAttack> attacks;
+    MeleeAttack& operator[](const std::size_t id){
         return attacks[id];
     }
 };

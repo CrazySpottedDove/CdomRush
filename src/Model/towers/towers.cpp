@@ -18,7 +18,7 @@ void Tower::Update(Store& store){
                 animation.state = State::Shoot; // 设置状态为射击
                 if(target_enemy_ptr->position.y < position.y) heading = tower_heading::Up; // 如果目标敌人在塔的上方，设置塔的朝向为 Up
                 else heading = tower_heading::Down; // 如果目标敌人在塔的下方，设置塔的朝向为 Down
-                attack.Apply(store, this->id, target_enemy,return_prefix(), return_offset()); // 应用攻击
+                attack.Apply(store, this->id, target_enemy, return_offset()); // 应用攻击
                 layer_update();
                 return ;
             }
@@ -89,7 +89,7 @@ Archer1::Archer1(Position position_, int total_price_) {
         {TowerAction::Upgrade, {TowerType::Archer2, 110}}, // 70,110,160
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(0.8, 140.0, BulletType::Arrow, 0.0, 5.5, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(0.8, 140.0, BulletType::Arrow, 0.0, 5.5, "arrow", 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_archer_%04i"},Position{0.0f, 12.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "archer_tower_0001"},Position{0.0f, 37.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shooterarcherlvl1"},Position{-9.0f, 51.0f}};
@@ -108,7 +108,7 @@ Archer2::Archer2(Position position_, int total_price_) {
         {TowerAction::Upgrade, {TowerType::Archer3, 160}}, // 70,110,160
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(0.6, 160.0, BulletType::Arrow, 0.0, 10.0, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(0.6, 160.0, BulletType::Arrow, 0.0, 10.0, "arrow", 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_archer_%04i"},Position{0.0f, 12.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "archer_tower_0002"},Position{0.0f, 37.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shooterarcherlvl2"},Position{-9.0f, 52.0f}};
@@ -126,7 +126,7 @@ Archer3::Archer3(Position position_, int total_price_) {
     tower_actions = {
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(0.5, 180.0, BulletType::Arrow, 0.0, 15.0, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(0.5, 180.0, BulletType::Arrow, 0.0, 15.0, "arrow", 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_archer_%04i"},Position{0.0f, 12.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "archer_tower_0003"},Position{0.0f, 37.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shooterarcherlvl3"},Position{-9.0f, 52.0f}};
@@ -170,7 +170,7 @@ Engineer1::Engineer1(Position position_, int total_price_) {
         {TowerAction::Upgrade, {TowerType::Engineer2, 220}}, // 125,220,320
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(3.0, 160.0, BulletType::Bomb, 62.4, 13.0, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(3.0, 160.0, BulletType::Bomb, 62.4, 13.0, "bombs_0001", 1.0)); // 添加攻击
 
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_artillery_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl1_layer1"},Position{0.0f, 41.0f}};
@@ -195,7 +195,7 @@ Engineer2::Engineer2(Position position_, int total_price_) {
         {TowerAction::Upgrade, {TowerType::Engineer3, 320}}, // 125,220,320
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(3, 160.0, BulletType::Bomb, 62.4, 33.0, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(3, 160.0, BulletType::Bomb, 62.4, 33.0, "bombs_0002", 1.0)); // 添加攻击
 
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_artillery_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl2_layer1"},Position{0.0f, 42.0f}};
@@ -218,7 +218,7 @@ Engineer3::Engineer3(Position position_, int total_price_) {
     tower_actions = {
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(2.5, 180.0, BulletType::Bomb, 67.2, 50.0, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(2.5, 180.0, BulletType::Bomb, 67.2, 50.0, "bombs_0002", 1.0)); // 添加攻击
 
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_artillery_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towerengineerlvl3_layer1"},Position{0.0f, 43.0f}};
@@ -261,7 +261,7 @@ Mage1::Mage1(Position position_, int total_price_) {
         {TowerAction::Upgrade, {TowerType::Mage2, 160}}, // 100,160,240
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(1.5, 140.0, BulletType::Bolt, 0.0, 15, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(1.5, 140.0, BulletType::Bolt, 0.0, 15, "bolt_1", 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_mage_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towermagelvl1"},Position{0.0f, 30.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shootermage"},Position{1.0f, 57.0f}};
@@ -277,7 +277,7 @@ Mage2::Mage2(Position position_, int total_price_) {
         {TowerAction::Upgrade, {TowerType::Mage3, 240}}, // 100,160,240
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(1.5, 160.0, BulletType::Bolt, 0.0, 36, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(1.5, 160.0, BulletType::Bolt, 0.0, 36, "bolt_2", 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_mage_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towermagelvl2"},Position{0.0f, 30.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shootermage"},Position{1.0f, 57.0f}};
@@ -292,7 +292,7 @@ Mage3::Mage3(Position position_, int total_price_) {
     tower_actions = {
         {TowerAction::Sell, {TowerType::None, -total_price }},
     };
-    ranged.attacks.push_back(RangedAttack(1.5, 180.0, BulletType::Bolt, 0.0, 63, 1.0)); // 添加攻击
+    ranged.attacks.push_back(RangedAttack(1.5, 180.0, BulletType::Bolt, 0.0, 63, "bolt_3", 1.0)); // 添加攻击
     Layer layer1{Animation{State::Idle, 0.0, true, 0, "terrain_mage_%04i"},Position{0.0f, 15.0f}};
     Layer layer2{Animation{State::Idle, 0.0, true, 0, "towermagelvl3"},Position{0.0f, 30.0f}};
     Layer layer3{Animation{State::IdleDown, 0.0, true, 0, "shootermage"},Position{1.0f, 62.0f}};

@@ -76,8 +76,7 @@ public:
 
 class None : public Tower {
 public:
-    None(Position position);
-    None() = delete;
+    None(Position position = sf::Vector2f(0,0));
     void layer_update() override{};
     Tower* Clone() override {
         return new None(*this);

@@ -6,6 +6,7 @@ void PassiveEnemy::Update(Store& store)
     if (animation.state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
     if (this->health.hp <= 0) {
         this->animation.state = State::Death;   // 如果生命值为0，进入死亡状态
+        death_action();   // 执行死亡行为
         store.gold += gold;                     // 增加金币
         return;
     }
@@ -19,8 +20,9 @@ void PassiveEnemy::Update(Store& store)
 void ActiveEnemyMelee::Update(Store& store)
 {
     if (animation.state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
-    if (calc::is_dead(*this)) {
+    if (this->health.hp <= 0) {
         this->animation.state = State::Death;   // 如果生命值为0，进入死亡状态
+        death_action();   // 执行死亡行为
         store.gold += gold;                     // 增加金币
         return;
     }
@@ -62,6 +64,19 @@ void ActiveEnemyMelee::Update(Store& store)
     return;
 }
 
+void ActiveEnemyRange::Update(Store& store)
+{
+    if (animation.state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
+    if (this->health.hp <= 0) {
+        this->animation.state = State::Death;   // 如果生命值为0，进入死亡状态
+        death_action();   // 执行死亡行为
+        store.gold += gold;                     // 增加金币
+        return;
+    }
+    if(blocker)
+    animation.state = walkjudge();   // 根据当前方向设置状态
+    return;
+}
 
 ForestTroll::ForestTroll(Position position_)
 {

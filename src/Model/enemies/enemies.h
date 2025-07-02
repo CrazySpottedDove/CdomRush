@@ -44,6 +44,7 @@ public:
         return true;   // 返回 true 表示移除成功
     }
 
+    virtual void death_action() = 0;   // 纯虚函数，用于处理敌人死亡后的行为
     virtual Enemy* Clone() const = 0;   // 纯虚函数，用于克隆敌人对象
 };
 
@@ -56,7 +57,7 @@ public:
         slot = sf::Vector2f(0.0f, 0.0f);   // 初始化近战偏移
     }
     void Update(Store& store) override;
-
+    void death_action() override {}   // 无害敌人死亡时不执行任何操作
     Enemy* Clone() const override{
         return new PassiveEnemy(*this);   // 返回一个新的PassiveEnemy对象
     }
@@ -78,6 +79,22 @@ public:
     Enemy* Clone() const override{
         return new ActiveEnemyMelee(*this);   // 返回一个新的ActiveEnemyMelee对象
     }
+    void death_action() override{}
+};
+
+class ActiveEnemyRange : public Enemy
+{
+public:
+    ActiveEnemyRange()
+    {
+        type = EnemyInnerType::ActiveEnemyRange;   // 设置敌人类型为远程敌人
+        slot = sf::Vector2f(0.0f, 0.0f);       // 初始化近战偏移
+    }
+    ID blocker = INVALID_ID;   // 用于阻挡敌人前进的单位
+    Ranged ranged;             // 远程攻击组件
+    Melee melee;               // 近战攻击组件
+
+    void Update(Store& store) override;
 };
 
 class ForestTroll : public ActiveEnemyMelee

@@ -88,6 +88,15 @@ bool calc::enemy_reached_defence_point(const Store& store, const Enemy& self)
 }
 
 void calc::map_position(Position& pos){
-    pos.x = DEFAULT_SCREEN_WIDTH * pos.x / ORIGIN_SCREEN_WIDTH;
-    pos.y = DEFAULT_SCREEN_HEIGHT - (DEFAULT_SCREEN_HEIGHT * pos.y / ORIGIN_SCREEN_HEIGHT);
+    const float default_screen_width = 1920.0;
+    const float default_screen_height = 1080.0;
+    const float origin_screen_width = 1024.0 * 8.4 / 6.4;
+    const float origin_screen_height = 768.0;
+    pos.x = default_screen_width * pos.x / origin_screen_width;
+    pos.y = default_screen_height - (default_screen_height * pos.y / origin_screen_height);
+    pos.x += 200.0f;
+    pos.y -= 20.0f;
+    // pos.y = DEFAULT_SCREEN_HEIGHT - pos.y; // Adjust y-coordinate to match screen origin
+    // pos.x += 150.0f;
+    // pos.y -= 30.0f;
 }

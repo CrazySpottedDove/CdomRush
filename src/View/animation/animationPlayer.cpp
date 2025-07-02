@@ -33,8 +33,8 @@ void AnimationPlayer::RenderAnimation(sf::RenderWindow& window, const sf::Vector
     // 设置纹理裁剪区域（实际图像内容）
     sprite.setTextureRect(frame_data.frameRect);
     // 设置原点到图像中心
-    sprite.setOrigin(sf::Vector2f(static_cast<float>(frame_data.frameRect.size.x) / 2.0f,
-                                  static_cast<float>(frame_data.frameRect.size.y) / 2.0f));
+    sprite.setOrigin(sf::Vector2f(static_cast<float>(frame_data.frameRect.size.x) * animation.anchor_x,
+                                  static_cast<float>(frame_data.frameRect.size.y) * animation.anchor_y));
 
     //处理翻转（基于flip）
     sf::Vector2f final_scale = scale;
@@ -49,12 +49,13 @@ void AnimationPlayer::RenderAnimation(sf::RenderWindow& window, const sf::Vector
     sf::Vector2f final_position = position;
     final_position.x += static_cast<float>(frame_data.trim_left) * scale.x;
     final_position.y += static_cast<float>(frame_data.trim_top) * scale.y;
-    // 加上图像中心的偏移(因为原点设为了图像中心)
-    final_position.x += static_cast<float>(frame_data.frameRect.size.x) / 2.0f * scale.x;
-    final_position.y += static_cast<float>(frame_data.frameRect.size.y) / 2.0f * scale.y;
 
-    final_position.x -= 43.0f;
-    final_position.y -= 60.0f; // 调整位置偏移
+    // 加上图像中心的偏移(因为原点设为了图像中心)
+    // final_position.x += static_cast<float>(frame_data.frameRect.size.x) / 2.0f * scale.x;
+    // final_position.y += static_cast<float>(frame_data.frameRect.size.y) / 2.0f * scale.y;
+
+    // final_position.x -= 43.0f;
+    // final_position.y -= 60.0f; // 调整位置偏移
     sprite.setPosition(final_position);
 
     window.draw(sprite);

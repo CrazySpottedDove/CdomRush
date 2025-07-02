@@ -16,7 +16,10 @@ TemplateManager::TemplateManager()
         {TowerType::None, new None(sf::Vector2f(0, 0))},
     };
     enemy_map = {
-        {EnemyType::ForestTroll, new ForestTroll()}
+        {EnemyType::ForestTroll, new ForestTroll()
+        },{
+            EnemyType::orc_armored, new orc_armored()
+        }
     };
     fx_map = {
         {FxType::LevelFlag, new LevelFlag()},

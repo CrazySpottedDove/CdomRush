@@ -1,4 +1,5 @@
 #include "Manager/levelManager/levelManager.h"
+#include "Function/calc/motion.h"
 #include "Manager/resourceManager/textureManager.h"
 #include "Manager/store/store.h"
 #include "Model/towers/towers.h"
@@ -54,8 +55,10 @@ void LevelManager::LoadTowerPositions(Store& store)
         Tower* tower = store.template_manager.CreateTower(type);
         tower->position.x = tower_position_table["pos"]["x"].get<float>();
         tower->position.y = tower_position_table["pos"]["y"].get<float>();
+        calc::map_position(tower->position);
         tower->rally_point.x = tower_position_table["rally_point"]["x"].get<float>();
         tower->rally_point.y = tower_position_table["rally_point"]["y"].get<float>();
+        calc::map_position(tower->rally_point);
         store.QueueTower(tower);
     }
 }

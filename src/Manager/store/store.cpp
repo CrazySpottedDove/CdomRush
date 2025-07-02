@@ -156,10 +156,10 @@ void Store::ExecuteEvents()
 void Store::Update(sf::RenderWindow& window)
 {
     UpdateDamageEvents(window);
-    UpdateEnemies(window);
-    UpdateBullets(window);
-    UpdateSoldiers(window);
     UpdateTowers(window);
+    UpdateEnemies(window);
+    UpdateSoldiers(window);
+    UpdateBullets(window);
 }
 
 void Store::Game(sf::RenderWindow& window)
@@ -172,7 +172,6 @@ void Store::Game(sf::RenderWindow& window)
                 for (const auto& level : level_manager.levels) {
                     Fx* fx       = template_manager.CreateFx(FxType::LevelFlag);
                     fx->position = level.second;
-                    fx->animation.state = State::Idle;
                     QueueFx(fx);
                     ui_manager.QueueFxUI(fx);
                 }

@@ -9,7 +9,7 @@ return {
                 subpath_id = 0,
                 count = 1,
                 gap = 2,
-                enemy_type = "ForestTroll"
+                enemy_type = "OrcArmored"
             },
             [1] = {
                 time = 3,
@@ -51,6 +51,14 @@ return {
                 gap = 2,
                 enemy_type = "ForestTroll"
             },
+            [6] = {
+                time = 15,
+                path_id = 0,
+                subpath_id = 0,
+                count = 2,
+                gap = 2,
+                enemy_type = "OrcArmored"
+            }
         }
     }
 }

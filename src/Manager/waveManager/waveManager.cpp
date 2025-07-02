@@ -16,7 +16,8 @@ SubWave::SubWave(const double time, const std::size_t path_id, const std::size_t
     , gap(gap)
 {
     static const std::unordered_map<std::string, EnemyType> enemy_type_map = {
-        {"ForestTroll", EnemyType::ForestTroll}};
+        {"ForestTroll", EnemyType::ForestTroll},
+    {"OrcArmored", EnemyType::orc_armored}};
     auto it = enemy_type_map.find(enemy_type);
     this->enemy_type = it->second;
     DEBUG_CODE(

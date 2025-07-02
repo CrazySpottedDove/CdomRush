@@ -25,7 +25,7 @@ return {
             from = 26
         }
     },
-    enemy_orc_armored = {
+    orc_armored = {
         attack = {
             to = 77,
             from = 67

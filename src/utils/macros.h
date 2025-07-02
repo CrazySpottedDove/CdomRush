@@ -11,8 +11,8 @@
 #define DEFAULT_SCREEN_WIDTH 1920
 #define DEFAULT_SCREEN_HEIGHT 1080
 #define DEFAULT_WINDOW_TITLE "CdomRush"
-#define ORIGIN_SCREEN_WIDTH 1280
-#define ORIGIN_SCREEN_HEIGHT 800
+#define ORIGIN_SCREEN_WIDTH 1024
+#define ORIGIN_SCREEN_HEIGHT 768
 #ifdef DEBUG
 #    include <iostream>
 #    define DEBUG_CODE(debug_code) {debug_code}

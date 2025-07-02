@@ -5,7 +5,10 @@
 void MeleeAttack::Apply(Store& store, ID source, ID target, SourceType type) noexcept
 {
     std::vector<ID> targets;
-    if(type == SourceType::Enemy){
+    if(radius <=0.01){
+        targets.push_back(target); // 只攻击目标本身
+    }
+    else if(type == SourceType::Enemy){
         if(store.GetSoldier(target) == nullptr) return; // 如果目标已经不在了，直接返回
         targets = calc::find_soldiers_in_range(store, store.GetSoldier(target)->position, radius);
     }

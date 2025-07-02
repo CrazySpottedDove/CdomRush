@@ -7,6 +7,7 @@ void PassiveEnemy::Update(Store& store)
     if (this->health.hp <= 0) {
         this->animation.state = State::Death;   // 如果生命值为0，进入死亡状态
         death_action();   // 执行死亡行为
+        health.death_time = store.time;
         store.gold += gold;                     // 增加金币
         return;
     }
@@ -23,6 +24,7 @@ void ActiveEnemyMelee::Update(Store& store)
     if (this->health.hp <= 0) {
         this->animation.state = State::Death;   // 如果生命值为0，进入死亡状态
         death_action();   // 执行死亡行为
+        health.death_time = store.time;
         store.gold += gold;                     // 增加金币
         return;
     }
@@ -86,6 +88,7 @@ void ActiveEnemyRange::Update(Store& store)
     if (this->health.hp <= 0) {
         this->animation.state = State::Death;   // 如果生命值为0，进入死亡状态
         death_action();   // 执行死亡行为
+        health.death_time = store.time;
         store.gold += gold;                     // 增加金币
         return;
     }

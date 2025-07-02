@@ -51,17 +51,33 @@ void ActiveEnemyMelee::Update(Store& store)
     }
     if (is_moving()) {                         // 如果敌人正在移动
         calc::enemy_move_tick(store, *this);   // 调用运动函数更新位置
-        animation.state = walkjudge();         // 根据当前方向设置状态
-        if (blocker != INVALID_ID)
-            animation.state = State::Idle;   // 如果有阻挡单位，设置状态为闲置
+        if (blocker != INVALID_ID) animation.state = State::Idle;   // 如果有阻挡单位，设置状态为闲置
+        else animation.state = walkjudge();         // 根据当前方向设置状态
         return;
     }
     else if (this->animation.state == State::Attack) {
-        if (animation.pending == false) animation.state = State::Idle;
+        if(animation.pending == true) return ;
+        animation.state = State::Idle;
         animation.pending = true;   // 设置动画为进行中
         return;
     }
     return;
+}
+
+bool ActiveEnemyRange::shoot_judge(Store& store){
+    bool target_in_range = 0;//是否有目标要射击
+    for(int i = 0; i < this->ranged.attacks.size(); ++i) {
+        ID target_soldier = calc::find_nearest_soldier(store,position,ranged.attacks[i].range);
+        Soldier* target_soldier_ptr = store.GetSoldier(target_soldier);
+        if(target_soldier == INVALID_ID) continue;
+        if(target_soldier_ptr == nullptr) continue;
+        target_in_range = 1;
+        if (this->ranged.attacks[i].IsReady(store)) {
+            ranged.attacks[i].Apply(store,id,target_soldier,bullet_offset,SourceType::Enemy);   // 执行远程攻击
+            this->animation.state = State::Shoot;   // 设置状态为射击
+            return;
+        }
+    }
 }
 
 void ActiveEnemyRange::Update(Store& store)
@@ -73,43 +89,55 @@ void ActiveEnemyRange::Update(Store& store)
         store.gold += gold;                     // 增加金币
         return;
     }
-    if(this->animation.state == State::Idle) {
+
+    if(animation.state == State::Idle) {
         heading = Heading::Right;   // 设置方向为向右
         Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位
-        if (Blocker == nullptr) {
-            bool target_in_range = 0;//是否有目标要射击
-            for(int i = 0; i < this->ranged.attacks.size(); ++i) {
-                ID target_soldier = calc::find_nearest_soldier(store,position,ranged.attacks[i].range);
-                Soldier* target_soldier_ptr = store.GetSoldier(target_soldier);
-                if(target_soldier == INVALID_ID) continue;
-                if(target_soldier_ptr == nullptr) continue;
 
-                target_in_range = 1;
-                if (this->ranged.attacks[i].IsReady(store)) {
-                    ranged.attacks[i].Apply(store,id,target_soldier,bullet_offset,SourceType::Enemy);   // 执行远程攻击
-                    this->animation.state = State::Shoot;   // 设置状态为射击
+        if(Blocker != nullptr && Blocker->slot + slot + position == Blocker->position){
+            //走近战路线
+            for (int i = 0; i < this->melee.attacks.size(); ++i) {
+                if (this->melee.attacks[i].IsReady(store)) {
+                    melee.attacks[i].Apply(store,id,blocker,SourceType::Enemy);   // 执行近战攻击
+                    this->animation.state = State::Attack;   // 设置状态为攻击
                     return;
                 }
             }
-            if(target_in_range) return ;
+            return ;
+        }
+        if(Blocker == nullptr){
+            if(shoot_judge(store)) return ;
             this->animation.state = walkjudge();   // 如果没有阻挡单位，也没有射击目标，那就设置状态为行走
-            return;
+            return ;
         }
-        if (Blocker->animation.state == State::Death) {
-            blocker = INVALID_ID;   // 如果阻挡单位死亡，清除阻挡单位
-            return;
+        if(Blocker->animation.state == State::Death){
+            blocker = INVALID_ID;
+            return ;
         }
+    }
 
-        if (Blocker->slot + slot + position != Blocker->position) return;
+    else if(is_moving()){
+        calc::enemy_move_tick(store,*this);
+        if(blocker!=INVALID_ID) animation.state = State::Idle;
+        else if(!shoot_judge(store)) animation.state = walkjudge();
+        return ;
+    }
 
-        
+    else if (this->animation.state == State::Attack) {
+        if(animation.pending == true) return ;
+        animation.state = State::Idle;
+        animation.pending = true;   // 设置动画为进行中
         return;
     }
-    Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位
-    if (Blocker == nullptr) {
-        this->animation.state = walkjudge();   // 如果没有阻挡单位，设置状态为行走
+
+    else if (this->animation.state == State::Shoot) {
+        if(animation.pending == true) return ;
+        animation.state = State::Idle;
+        animation.pending = true;   // 设置动画为进行中
         return;
     }
+
+    return ;
 }
 
 ForestTroll::ForestTroll(Position position_)

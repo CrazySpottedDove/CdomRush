@@ -4,6 +4,7 @@
 #include "Function/calc/motion.h"
 #include "Model/components/melee.h"
 #include "Model/components/path.h"
+#include "Model/components/ranged.h"
 #include "Model/soldiers/soldiers.h"
 #include "Model/templates/unit.h"
 #include <algorithm>

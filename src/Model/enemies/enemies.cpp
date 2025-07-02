@@ -73,9 +73,41 @@ void ActiveEnemyRange::Update(Store& store)
         store.gold += gold;                     // 增加金币
         return;
     }
-    if(blocker)
-    animation.state = walkjudge();   // 根据当前方向设置状态
-    return;
+    if(this->animation.state == State::Idle) {
+        heading = Heading::Right;   // 设置方向为向右
+        Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位
+        if (Blocker == nullptr) {
+            // for(int i = 0; i < this->ranged.attacks.size(); ++i) {
+            //     if (this->ranged.attacks[i].IsReady(store)) {
+            //         ranged.attacks[i].Apply(store,id,blocker,SourceType::Enemy);   // 执行远程攻击
+            //         this->animation.state = State::Shoot;   // 设置状态为射击
+            //         return;
+            //     }
+            // }
+            this->animation.state = walkjudge();   // 如果没有阻挡单位，设置状态为行走
+            return;
+        }
+        if (Blocker->animation.state == State::Death) {
+            blocker = INVALID_ID;   // 如果阻挡单位死亡，清除阻挡单位
+            return;
+        }
+
+        if (Blocker->slot + slot + position != Blocker->position) return;
+
+        for (int i = 0; i < this->ranged.attacks.size(); ++i) {
+            // if (this->ranged.attacks[i].IsReady(store)) {
+            //     ranged.attacks[i].Apply(store,id,blocker,SourceType::Enemy);   // 执行远程攻击
+            //     this->animation.state = State::Shoot;   // 设置状态为射击
+            //     return;
+            // }
+        }
+        return;
+    }
+    Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位
+    if (Blocker == nullptr) {
+        this->animation.state = walkjudge();   // 如果没有阻挡单位，设置状态为行走
+        return;
+    }
 }
 
 ForestTroll::ForestTroll(Position position_)

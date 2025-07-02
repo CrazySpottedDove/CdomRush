@@ -102,13 +102,7 @@ void ActiveEnemyRange::Update(Store& store)
 
         if (Blocker->slot + slot + position != Blocker->position) return;
 
-        for (int i = 0; i < this->ranged.attacks.size(); ++i) {
-            // if (this->ranged.attacks[i].IsReady(store)) {
-            //     ranged.attacks[i].Apply(store,id,blocker,SourceType::Enemy);   // 执行远程攻击
-            //     this->animation.state = State::Shoot;   // 设置状态为射击
-            //     return;
-            // }
-        }
+        
         return;
     }
     Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位

@@ -9,15 +9,11 @@
 class FxUI : public BaseUI
 {
 public:
-    explicit FxUI(Fx* fx, AnimationPlayer& animation_player);
+    explicit FxUI(Fx* fx):fx_(fx){}
 
-    void Render(sf::RenderWindow& window, const Position& position, Animation& animation,
-                const sf::Vector2f& scale = {1.0f, 1.0f}) override;
-
+    void OnClick(Store& store, sf::RenderWindow& window) override;
     Fx* GetFx() const { return fx_; }
 
 private:
     Fx*              fx_;
-    AnimationPlayer& animation_player_;
-    AnimationContext animation_context_;
 };

@@ -204,7 +204,7 @@ void Store::Game(sf::RenderWindow& window)
             window.display();
             ExecuteEvents();
             DEBUG_CODE(
-                if (time > 20){
+                if (time > 10){
                     for (auto &[id,enemy ] : enemies) {
                         enemy->animation.state = State::Death;
                     }

@@ -20,7 +20,7 @@ UIManager::UIManager()
 }
 
 void UIManager::QueueBulletUI(Bullet* bullet){
-    bullet_uis_[bullet] = std::make_unique<BulletUI>(bullet, *animation_player_);
+    bullet_uis_[bullet] = std::make_unique<BulletUI>(bullet);
 }
 
 void UIManager::DeQueueBulletUI(Bullet* bullet){
@@ -29,7 +29,7 @@ void UIManager::DeQueueBulletUI(Bullet* bullet){
 }
 
 void UIManager::QueueEnemyUI(Enemy* enemy){
-    enemy_uis_[enemy] = std::make_unique<EnemyUI>(enemy, *animation_player_);
+    enemy_uis_[enemy] = std::make_unique<EnemyUI>(enemy);
 }
 
 void UIManager::DeQueueEnemyUI(Enemy* enemy){
@@ -38,7 +38,7 @@ void UIManager::DeQueueEnemyUI(Enemy* enemy){
 }
 
 void UIManager::QueueSoldierUI(Soldier* soldier){
-    soldier_uis_[soldier] = std::make_unique<SoldierUI>(soldier, *animation_player_);
+    soldier_uis_[soldier] = std::make_unique<SoldierUI>(soldier);
 }
 
 void UIManager::DeQueueSoldierUI(Soldier* soldier){
@@ -47,7 +47,7 @@ void UIManager::DeQueueSoldierUI(Soldier* soldier){
 }
 
 void UIManager::QueueTowerUI(Tower* tower){
-    tower_uis_[tower] = std::make_unique<TowerUI>(tower, *animation_player_);
+    tower_uis_[tower] = std::make_unique<TowerUI>(tower);
 }
 
 void UIManager::DeQueueTowerUI(Tower* tower){
@@ -56,7 +56,7 @@ void UIManager::DeQueueTowerUI(Tower* tower){
 }
 
 void UIManager::QueueFxUI(Fx* fx){
-    fx_uis_[fx] = std::make_unique<FxUI>(fx, *animation_player_);
+    fx_uis_[fx] = std::make_unique<FxUI>(fx);
     DEBUG_CODE(std::cout << "UIManager: Queued FxUI for Fx at (" << fx->position.x << "," << fx->position.y << ")" << std::endl;)
 }
 
@@ -67,92 +67,32 @@ void UIManager::DeQueueFxUI(Fx* fx){
 
 void UIManager::RenderEnemyUI(sf::RenderWindow&window, Enemy* enemy, const sf::Vector2f& scale){
     const auto it = enemy_uis_.find(enemy);
-    it->second->Render(window, it->second->GetEnemy()->position,it->second->GetEnemy()->animation,scale);
+    it->second->Render(animation_player_.get(), window, it->second->GetEnemy()->position,it->second->GetEnemy()->animation,scale);
 }
 
 void UIManager::RenderSoldierUI(sf::RenderWindow&window, Soldier* soldier, const sf::Vector2f& scale){
     const auto it = soldier_uis_.find(soldier);
-    it->second->Render(window,it->second->GetSoldier()->position,it->second->GetSoldier()->animation, scale);
+    it->second->Render(animation_player_.get(),window,it->second->GetSoldier()->position,it->second->GetSoldier()->animation, scale);
 }
 
 void UIManager::RenderBulletUI(sf::RenderWindow&window, Bullet* bullet, const sf::Vector2f& scale){
     const auto it = bullet_uis_.find(bullet);
-    it->second->Render(window,it->second->GetBullet()->position,it->second->GetBullet()->animation, scale);
+    it->second->Render(animation_player_.get(),window,it->second->GetBullet()->position,it->second->GetBullet()->animation, scale);
 }
 
 void UIManager::RenderTowerUI(sf::RenderWindow&window, Tower* tower, const sf::Vector2f& scale){
     const auto it = tower_uis_.find(tower);
-    it->second->Render(window,it->second->GetTower()->position,it->second->GetTower()->animation, scale);
+    it->second->Render(animation_player_.get(),window,it->second->GetTower()->position,it->second->GetTower()->animation, scale);
 }
 
 void UIManager::RenderFxUI(sf::RenderWindow&window, Fx* fx, const sf::Vector2f& scale){
     const auto it = fx_uis_.find(fx);
     if(it != fx_uis_.end()){
-        it->second->Render(window,it->second->GetFx()->position,it->second->GetFx()->animation, scale);
+        it->second->Render(animation_player_.get(),window,it->second->GetFx()->position,it->second->GetFx()->animation, scale);
     }else{
         std::cerr << "UIManager: FxUI not found for Fx at (" << fx->position.x << "," << fx->position.y << ")" << std::endl;
     }
 }
-
-// /**
-//  * @brief 更新UI管理器
-//  */
-// void UIManager::Update()
-// {
-//     // 同步所有实体的UI对象
-//     SyncEnemyUIs();
-//     SyncSoldierUIs();
-//     SyncBulletUIs();
-//     SyncTowerUIs();
-// }
-
-/**
- * @brief 渲染所有UI
- */
-// void UIManager::RenderAll(sf::RenderWindow& window, const sf::Vector2f& scale)
-// {
-//     // 根据当前地图状态决定是否渲染地图
-//     if (HasCurrentMap()) {
-//         RenderMap(window, current_map_prefix_, current_map_position_, current_map_scale_);
-//     }
-
-//     // 渲染关卡选择旗子（在实体之前渲染，作为地图的一部分）
-//     // for (auto& [level_id, flag_ui] : flag_uis_) {
-//     //     if (flag_ui) {
-//     //         flag_ui->Render(window, scale);
-//     //     }
-//     // }
-
-//     // 然后按层次渲染实体：Tower -> Enemy -> Soldier -> Bullet
-
-//     // 1. 渲染Tower（最底层）
-//     for (auto& [tower_ptr, tower_ui] : tower_uis_) {
-//         if (tower_ui) {
-//             tower_ui->Render(window, scale);
-//         }
-//     }
-
-//     // 2. 渲染Enemy（敌人层）
-//     for (auto& [enemy_ptr, enemy_ui] : enemy_uis_) {
-//         if (enemy_ui) {
-//             enemy_ui->Render(window, scale);
-//         }
-//     }
-
-//     // 3. 渲染Soldier（士兵层）
-//     for (auto& [soldier_ptr, soldier_ui] : soldier_uis_) {
-//         if (soldier_ui) {
-//             soldier_ui->Render(window, scale);
-//         }
-//     }
-
-//     // 4. 渲染Bullet（子弹层，最顶层）
-//     for (auto& [bullet_ptr, bullet_ui] : bullet_uis_) {
-//         if (bullet_ui) {
-//             bullet_ui->Render(window, scale);
-//         }
-//     }
-// }
 
 /**
  * @brief 单独渲染地图
@@ -417,15 +357,15 @@ void UIManager::ClearCurrentMap()
 // ===============================
 // 通用渲染接口实现
 // ===============================
-void UIManager::RenderAnimationAtPosition(sf::RenderWindow& window, const Position& position,
-                                         Animation& animation, AnimationContext& context,
-                                         const sf::Vector2f& scale)
-{
-    if (animation_player_) {
-        // 更新动画到下一帧
-        animation_player_->UpdateAnimation(animation, context);
+// void UIManager::RenderAnimationAtPosition(sf::RenderWindow& window, const Position& position,
+//                                          Animation& animation, AnimationContext& context,
+//                                          const sf::Vector2f& scale)
+// {
+//     if (animation_player_) {
+//         // 更新动画到下一帧
+//         animation_player_->UpdateAnimation(animation, context);
 
-        // 直接使用AnimationPlayer的统一渲染接口
-        animation_player_->RenderAnimation(window, position, animation, context, scale);
-    }
-}
+//         // 直接使用AnimationPlayer的统一渲染接口
+//         animation_player_->RenderAnimation(window, position, animation, context, scale);
+//     }
+// }

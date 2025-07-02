@@ -19,6 +19,6 @@ struct Animation
     bool        flip       = false;
     float       anchor_x   = 0.5;
     float       anchor_y   = 0.5;
-    std::size_t frame_id   = 0;   // 动画进行到第几帧
+    std::size_t frame_id   = 1;   // 动画进行到第几帧
     std::string prefix;           // 动画的前缀名
 };

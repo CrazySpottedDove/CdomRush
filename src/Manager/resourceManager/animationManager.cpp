@@ -172,6 +172,7 @@ void AnimationManager::LoadAnimationGroupsFromLua()
 std::pair<const SpriteFrameData&, const sf::Texture&> AnimationManager::RequireFrameData(
     const std::string& prefix, const std::size_t frame_index) const
 {
+    DEBUG_CODE(std::cerr << "Require SpriteFrameData of frame" << frame_index <<", prefix " << prefix << std::endl;)
     auto it = common_sprite_frame_data_map.find(prefix);
     if (it != common_sprite_frame_data_map.end()) {
         const auto& frame_data = it->second[frame_index - 1];
@@ -179,7 +180,7 @@ std::pair<const SpriteFrameData&, const sf::Texture&> AnimationManager::RequireF
     }
     else if (specific_sprite_frame_data_map.find(prefix) != specific_sprite_frame_data_map.end()) {
         const auto& frame_data = specific_sprite_frame_data_map.at(prefix)[frame_index - 1];
-        return {frame_data, texture_manager.getTexture(IMAGES_PATH+ frame_data.textureName)};
+        return {frame_data, texture_manager.getTexture(IMAGES_PATH + frame_data.textureName)};
     }
     else {
         throw std::runtime_error("SpriteFrameData not found for prefix: " + prefix);

@@ -4,6 +4,7 @@
 #include "Model/components/animation.h"
 #include "Model/templates/entity.h"
 #include "View/animation/animationPlayer.h"
+#include "utils/macros.h"
 
 class Store;
 /**
@@ -27,5 +28,4 @@ public:
     ) {
         animation_player->RenderAnimation(window, position, animation, scale);
     }
-    //virtual void Render(sf::RenderWindow& window, const sf::Vector2f& scale = {1.0f, 1.0f}) = 0;
 };

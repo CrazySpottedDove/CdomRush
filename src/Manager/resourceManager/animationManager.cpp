@@ -162,6 +162,23 @@ void AnimationManager::LoadAnimationGroupsFromLua()
     }
 }
 
+sf::IntRect AnimationManager::RequireClickRect(const Animation& animation, const Position& position)
+{
+    DEBUG_CODE(std::cerr << "Require click rect of animation with prefix: " << animation.prefix
+                         << std::endl;)
+    SpriteFrameData frame_data_ptr;
+    auto            it = common_sprite_frame_data_map.find(animation.prefix);
+    if (it == common_sprite_frame_data_map.end()) {
+        it = specific_sprite_frame_data_map.find(animation.prefix);
+    }
+    frame_data_ptr = it->second[animation.frame_id - 1];
+    return sf::IntRect(
+        sf::Vector2i(position.x - frame_data_ptr.displaySize.x * animation.anchor_x,
+                     position.y - frame_data_ptr.displaySize.y * (1.0 - animation.anchor_y)),
+        frame_data_ptr.displaySize);
+}
+
+
 /**
  * @brief 根据 prefix 和帧序数，返回对应的 SpriteFrameData 和纹理
  *
@@ -172,7 +189,8 @@ void AnimationManager::LoadAnimationGroupsFromLua()
 std::pair<const SpriteFrameData&, const sf::Texture&> AnimationManager::RequireFrameData(
     const std::string& prefix, const std::size_t frame_index) const
 {
-    DEBUG_CODE(std::cerr << "Require SpriteFrameData of frame" << frame_index <<", prefix " << prefix << std::endl;)
+    DEBUG_CODE(std::cerr << "Require SpriteFrameData of frame" << frame_index << ", prefix "
+                         << prefix << std::endl;)
     auto it = common_sprite_frame_data_map.find(prefix);
     if (it != common_sprite_frame_data_map.end()) {
         const auto& frame_data = it->second[frame_index - 1];

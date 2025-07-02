@@ -1,13 +1,16 @@
 #pragma once
+#include "Model/components/animation.h"
 #include "sol/state.hpp"
 #include "textureManager.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <cstddef>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 #include "Model/components/state.h"
+#include "utils/macros.h"
 
 // 一个 map 将 prefix 和 它对应的各帧纹理(string->SpriteFrameData) 对应起来
 
@@ -92,6 +95,15 @@ public:
      * @return const AnimationGroup&
      */
     const AnimationGroup& RequireAnimationGroup(const std::string& prefix, const State state) const;
+
+    /**
+     * @brief 根据动画和位置，返回点击区域的矩形
+     *
+     * @param animation
+     * @param position
+     * @return sf::IntRect
+     */
+    sf::IntRect RequireClickRect(const Animation& animation, const Position& position);
 
 private:
     TextureManager texture_manager;

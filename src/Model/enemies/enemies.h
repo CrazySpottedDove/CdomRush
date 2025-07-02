@@ -100,7 +100,7 @@ public:
 
     void Update(Store& store) override;
 
-    void shoot_judge(Store& store);
+    bool shoot_judge(Store& store);
 };
 
 class ForestTroll : public ActiveEnemyMelee

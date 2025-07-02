@@ -9,7 +9,7 @@
 class FxUI : public BaseUI
 {
 public:
-    explicit FxUI(Fx* fx):fx_(fx){}
+    explicit FxUI(Fx* fx);
 
     void OnClick(Store& store, sf::RenderWindow& window) override;
     Fx* GetFx() const { return fx_; }

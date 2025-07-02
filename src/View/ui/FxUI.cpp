@@ -5,6 +5,14 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
 
+FxUI::FxUI(Fx* fx): fx_(fx) {
+    
+}
+
+
+
+
+
 void FxUI::OnClick(Store& store, sf::RenderWindow& window){
     return;
 }

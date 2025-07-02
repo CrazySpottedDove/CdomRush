@@ -8,12 +8,12 @@ void Bullet::check_position(Store& store)
     if(source_type == SourceType::Tower || source_type == SourceType::Soldier){
         Enemy* target = store.GetEnemy(damage_event.target);   // 获取目标敌人
         if (target->animation.state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
-        else target_position = target->position;   // 更新目标位置
+        else target_position = target->position + target->Hit_offset;   // 更新目标位置
     }
     if(source_type == SourceType::Enemy){
         Soldier* target = store.GetSoldier(damage_event.target);   // 获取目标士兵
         if (target->animation.state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
-        else target_position = target->position;   // 更新目标位置
+        else target_position = target->position + target->Hit_offset;   // 更新目标位置
     }
 }
 
@@ -24,7 +24,7 @@ bool Bullet::Insert(Store& store)
         Unit* target = store.GetSoldier(damage_event.target); // 获取目标单位
         source_type = SourceType::Enemy;   // 设置源类型为敌人
         source_position = source->position + bullet_offset; // 设置源位置
-        target_position = target->position; // 设置目标位置
+        target_position = target->position + target->Hit_offset; // 设置目标位置
         return true;
     }
     source = store.GetTower(damage_event.source);   // 获取源塔
@@ -32,7 +32,7 @@ bool Bullet::Insert(Store& store)
         Unit* target = store.GetEnemy(damage_event.target); // 获取目标敌人
         source_type = SourceType::Tower;   // 设置源类型为塔
         source_position = source->position + bullet_offset; // 设置源位置
-        target_position = target->position; // 设置目标位置
+        target_position = target->position + target->Hit_offset; // 设置目标位置
         return true;
     }
     source = store.GetSoldier(damage_event.source);   // 获取源士兵
@@ -40,7 +40,7 @@ bool Bullet::Insert(Store& store)
         Unit* target = store.GetEnemy(damage_event.target); // 获取目标敌人
         source_type = SourceType::Soldier;   // 设置源类型为士兵
         source_position = source->position;   // 设置源位置
-        target_position = target->position;   // 设置目标位置
+        target_position = target->position + target->Hit_offset; // 设置目标位置
         return true;
     }
 

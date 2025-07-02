@@ -30,6 +30,7 @@ public:
     Health       health;
     Armor        armor;
     double       speed;
+    Position Hit_offset = {0.0f, 0.0f}; // 受击偏移位置
     virtual bool OnDamage() { return true; };
     virtual ~Unit() = default;
     

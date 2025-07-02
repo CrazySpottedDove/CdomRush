@@ -80,3 +80,19 @@ ForestTroll::ForestTroll(Position position_)
     this->animation.state = State::Idle;   // 设置动画状态为闲置
 }
 
+orc_armored::orc_armored(Position position_)
+{
+    this->health          = Health(400, 400);   // 设置生命值
+    this->armor           = Armor(0.8, 0);          // 设置护甲
+    this->speed           = 24;                   // 设置速度
+    this->gold            = 30;                  // 设置击杀奖励
+    this->life_cost       = 5;                    // 设置生命损失
+    this->animation.state = State::Idle;          // 设置初始状态
+    this->melee.attacks.push_back(
+        new MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 0), 0.0, 1.0, 1.0));
+    this->melee[0]->damage_event.source = id;
+    this->slot     = sf::Vector2f(18.0f, 0.0f);   // 初始化近战偏移
+    this->position = position_;                   // 设置初始位置
+    this->animation.prefix = "enemy_orc_armored";
+    this->animation.state = State::Idle;   // 设置动画状态为闲置
+}

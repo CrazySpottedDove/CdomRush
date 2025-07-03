@@ -18,11 +18,12 @@ public:
      */
     ~UIManager() = default;
 
-    void QueueViewData(ViewData view_data);
-
     void RenderAll();
     void ClearViewData();
-
+    void SetViewData(std::multiset<ViewData, ViewDataComparator>& view_data_queue)
+    {
+        this->view_data_queue = &view_data_queue;
+    }   
     void SetWindow(sf::RenderWindow& window)
     {
         this->window = &window;
@@ -67,17 +68,17 @@ private:
      */
     bool IsClickHit(const ViewData& view_data, const sf::Vector2f& click_position) const;
 
-    struct ViewDataComparator
-    {
-        bool operator()(const ViewData& lhs, const ViewData& rhs) const
-        {
-            return lhs.position.y < rhs.position.y;
-        }
-    };
+    // struct ViewDataComparator
+    // {
+    //     bool operator()(const ViewData& lhs, const ViewData& rhs) const
+    //     {
+    //         return lhs.position.y < rhs.position.y;
+    //     }
+    // };
     sf::RenderWindow*                           window = nullptr;
     AnimationGroupMap*                          animation_group_map = nullptr;
     SpriteFrameDataMap*                         sprite_frame_data_map = nullptr;
     TextureMap*                                 texture_map = nullptr;
-    std::multiset<ViewData, ViewDataComparator> view_data_queue;
+    std::multiset<ViewData, ViewDataComparator>* view_data_queue;
     std::queue<Action>                          action_queue;
 };

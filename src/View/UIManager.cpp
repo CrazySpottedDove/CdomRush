@@ -66,25 +66,20 @@ void UIManager::Render(const ViewData& view_data)
             //case..
         }
 
-        animation.actions.erase(animation.actions.begin()); // 移除已处理的 Action
+        animation.actions.erase(animation.actions.begin()); // 已处理的 Action
     }
-}
-
-void UIManager::QueueViewData(ViewData view_data)
-{
-    view_data_queue.insert(view_data);
 }
 
 void UIManager::RenderAll()
 {
-    for (const auto& view_data : view_data_queue) {
+    for (const auto& view_data : *view_data_queue) {
         Render(view_data);
     }
 }
 
 void UIManager::ClearViewData()
 {
-    view_data_queue.clear();
+    view_data_queue->clear();
     window = nullptr;
     animation_group_map = nullptr;
     sprite_frame_data_map = nullptr;
@@ -105,19 +100,13 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     const auto& animation_group = animation_group_map->at(animation.prefix).at(animation.current_state);
     const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id);
     
-    // 实际渲染尺寸
-    float actual_width = sprite_frame_data.displaySize.x * std::abs(animation.scale_x);
-    float actual_height = sprite_frame_data.displaySize.y * animation.scale_y;
-    
-    // 计算锚点偏移
-    float anchor_offset_x = actual_width * animation.anchor_x;
-    float anchor_offset_y = actual_height * (1.0f - animation.anchor_y);
-    
-    // 计算边界矩形（世界坐标）
-    float left = view_data.position.x - anchor_offset_x;
-    float top = view_data.position.y - anchor_offset_y;
+    // 计算边界矩形...
+    //float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x * animation.anchor_x;
+    //float top = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y * (1.0f - animation.anchor_y);
 
-    sf::FloatRect bounds(sf::Vector2f(left, top),sf::Vector2f( actual_width, actual_height));
+    sf::FloatRect bounds(sf::Vector2f(view_data.position.x, view_data.position.y),
+    sf::Vector2f( sprite_frame_data.displaySize.x *animation.scale_x, sprite_frame_data.displaySize.y * animation.scale_y));
+    
     return bounds.contains(click_position);
 }
 
@@ -130,34 +119,20 @@ void UIManager::HandleClick(const sf::Event& event, const sf::RenderWindow& wind
         const auto& mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
         
         if (mouse_event.button == sf::Mouse::Button::Left) {
-            // 将鼠标屏幕坐标转换为世界坐标
-            sf::Vector2f world_position = window.mapPixelToCoords(mouse_event.position);
-            
-            INFO("Mouse clicked at screen (" + std::to_string(mouse_event.position.x) + 
-                 ", " + std::to_string(mouse_event.position.y) + 
-                 ") -> world (" + std::to_string(world_position.x) + 
-                 ", " + std::to_string(world_position.y) + ")");
             
             // 遍历所有ViewData，寻找被点击对象
-            // 注意：由于使用multiset且按y坐标排序，我们需要转换为可修改的容器
-            std::vector<ViewData> temp_view_data(view_data_queue.begin(), view_data_queue.end());
             bool hit_found = false;
             
-            for (auto it = temp_view_data.begin(); it != temp_view_data.end(); ++it) {
-                ViewData& view_data = *it;
+            for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
+                const ViewData& view_data = *it;
                 
                 if (IsClickHit(view_data, click_position)) {
-                    INFO("Hit detected on object at (" + std::to_string(view_data.position.x) + 
-                        ", " + std::to_string(view_data.position.y) + ")");
-                    
-                    // 标记为被点击
                     view_data.animation->clicked = true;
                     
                     // 如果有关联的actions，准备触发
                     if (!view_data.animation->actions.empty()) {
                         INFO("Object has " + std::to_string(view_data.animation->actions.size()) + " actions available");
                     }
-                    
                     hit_found = true;
                     break; 
                 }
@@ -165,12 +140,6 @@ void UIManager::HandleClick(const sf::Event& event, const sf::RenderWindow& wind
             
             if (!hit_found) {
                 INFO("No objects hit at click position");
-            }
-    
-            // 更新view_data_queue（由于我们修改了数据，需要重新构建）
-            view_data_queue.clear();
-            for (const auto& view_data : temp_view_data) {
-                view_data_queue.insert(view_data);
             }
         }
     }

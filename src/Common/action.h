@@ -8,6 +8,8 @@
 #include <string>
 #include <variant>
 
+struct Animation;
+
 enum class ActionType
 {
     UpgradeTower,
@@ -25,6 +27,7 @@ struct UpgradeTowerParams
     ID        tower_id;
     TowerType new_tower_type;
     int       cost;
+    Animation* animation;
 };
 
 struct SelectLevelParams

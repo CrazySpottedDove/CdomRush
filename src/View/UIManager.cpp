@@ -66,7 +66,11 @@ void UIManager::Render(const ViewData& view_data)
                 INFO("Selected level: " + params.level_name);
             }
             case ActionType::UpgradeTower:{
+                static int upgrade_cnt = 0;
                 const auto& params = std::get<UpgradeTowerParams>(action.param);
+                ViewData upgrade_view_data;
+                upgrade_view_data.animation = params.animation;
+                //upgrade_view_data.position
             }
         }
 
@@ -105,6 +109,8 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id);
 
     // 计算边界矩形...
+
+    //计算边界矩形...?
     //float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x * animation.anchor_x;
     //float top = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y * (1.0f - animation.anchor_y);
 

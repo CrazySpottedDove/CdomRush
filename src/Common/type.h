@@ -33,5 +33,14 @@ enum class BulletType
     Bomb     // 炸弹
 };
 
+enum class FxType
+{
+    Explosion,
+    LevelFlag,
+    Map,
+    None
+};
+
+
 extern const std::unordered_map<std::string, TowerType> tower_type_str_map;
 extern const std::unordered_map<std::string, EnemyType> enemy_type_str_map;

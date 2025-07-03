@@ -10,11 +10,11 @@ public:
     bool        Remove(Store& store) override { return true; }
 };
 
-enum class FxType
-{
-    Explosion,
-    LevelFlag,
-    None
+class Map : public Fx{
+    public:
+    Map();
+    Map(const std::string& prefix);
+    Fx* Clone() override { return new Map(*this); }
 };
 
 class LevelFlag : public Fx

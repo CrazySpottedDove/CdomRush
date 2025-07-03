@@ -1,5 +1,5 @@
 #pragma once
-#include "Model/components/buff.h"
+#include "ViewModel/GameViewModel/components/buff.h"
 class Unit;
 namespace calc {
     /**

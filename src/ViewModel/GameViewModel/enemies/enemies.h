@@ -1,15 +1,11 @@
 #pragma once
-#include "Function/calc/damage.h"
-#include "Function/calc/hp.h"
-#include "Function/calc/motion.h"
-#include "Model/components/melee.h"
-#include "Model/components/path.h"
-#include "Model/components/ranged.h"
-#include "Model/soldiers/soldiers.h"
-#include "Model/templates/unit.h"
-#include "Common/type.h"
-#include <algorithm>
-#include <vector>
+#include "ViewModel/GameViewModel/Function/calc/damage.h"
+#include "ViewModel/GameViewModel/Function/calc/hp.h"
+#include "ViewModel/GameViewModel/Function/calc/motion.h"
+#include "ViewModel/GameViewModel/components/melee.h"
+#include "ViewModel/GameViewModel/components/path.h"
+#include "ViewModel/GameViewModel/components/ranged.h"
+#include "ViewModel/GameViewModel/templates/unit.h"
 class Store;
 
 enum class EnemyInnerType

@@ -1,8 +1,8 @@
 #include "Manager/levelManager/levelManager.h"
-#include "Function/calc/motion.h"
+#include "ViewModel/GameViewModel/Function/calc/motion.h"
 #include "Manager/resourceManager/textureManager.h"
-#include "Manager/store/store.h"
-#include "Model/towers/towers.h"
+#include "ViewModel/GameViewModel/store/store.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
 #include "Common/macros.h"
 #include "utils/readLua.h"
 #include <sol/table.hpp>

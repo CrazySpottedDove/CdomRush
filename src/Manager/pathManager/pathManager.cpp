@@ -1,5 +1,5 @@
 #include "Manager/pathManager/pathManager.h"
-#include "Function/calc/motion.h"
+#include "ViewModel/GameViewModel/Function/calc/motion.h"
 #include "Common/macros.h"
 #include "utils/readLua.h"
 #include <iostream>

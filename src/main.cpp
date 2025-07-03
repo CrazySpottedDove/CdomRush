@@ -1,4 +1,4 @@
-#include "Manager/store/store.h"
+#include "ViewModel/GameViewModel/store/store.h"
 #include "Common/macros.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>

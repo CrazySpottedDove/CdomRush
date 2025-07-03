@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Model/bullets/bullets.h"
-#include "Model/enemies/enemies.h"
-#include "Model/towers/towers.h"
+#include "ViewModel/GameViewModel/bullets/bullets.h"
+#include "ViewModel/GameViewModel/enemies/enemies.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
 #include <unordered_map>
 
 class TemplateManager

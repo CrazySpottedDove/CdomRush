@@ -1,6 +1,6 @@
 #include "Function/events/events.h"
-#include "Manager/store/store.h"
-#include "Model/towers/towers.h"
+#include "ViewModel/GameViewModel/store/store.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
 #include "Common/macros.h"
 
 // 任何方法都不应当直接修改 Store 的状态。 Store 的状态只在它自身的成员函数中被修改。

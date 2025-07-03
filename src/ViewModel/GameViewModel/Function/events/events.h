@@ -1,11 +1,7 @@
 #pragma once
-#include "Model/towers/towers.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
 #include "Common/macros.h"
-#include <functional>
-#include <memory>
-#include <queue>
 #include <string>
-#include <unordered_map>
 #include <variant>
 class Store;
 

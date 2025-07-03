@@ -1,5 +1,5 @@
 #pragma once
-#include "Model/enemies/enemies.h"
+#include "ViewModel/GameViewModel/enemies/enemies.h"
 #include <cstddef>
 #include <functional>
 #include <queue>

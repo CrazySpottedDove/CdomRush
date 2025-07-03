@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <string>
 #include <vector>
-#include "Model/components/path.h"
+#include "ViewModel/GameViewModel/components/path.h"
 
 class PathManager
 {

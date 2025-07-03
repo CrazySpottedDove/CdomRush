@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Model/templates/activeEntity.h"
+#include "ViewModel/GameViewModel/templates/activeEntity.h"
 class Unit;
 /**
  * @brief 伤害类型
@@ -49,5 +49,5 @@ struct DamageEvent
         , source(source_)
         , target(target_)
         {};
-    
+
 };

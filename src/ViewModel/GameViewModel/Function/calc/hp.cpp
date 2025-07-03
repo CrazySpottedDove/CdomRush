@@ -1,7 +1,7 @@
-#include "Function/calc/hp.h"
-#include "Model/components/state.h"
-#include "Model/templates/unit.h"
-#include "Manager/store/store.h"
+#include "ViewModel/GameViewModel/Function/calc/hp.h"
+#include "ViewModel/GameViewModel/components/state.h"
+#include "ViewModel/GameViewModel/templates/unit.h"
+#include "ViewModel/GameViewModel/store/store.h"
 
 void calc::heal(Unit& target, const double amount){
     auto& health = target.health;

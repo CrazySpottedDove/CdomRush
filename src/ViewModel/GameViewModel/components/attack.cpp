@@ -1,5 +1,5 @@
-#include "Model/components/attack.h"
-#include "Manager/store/store.h"
+#include "ViewModel/GameViewModel/components/attack.h"
+#include "ViewModel/GameViewModel/store/store.h"
 
 bool Attack::IsReady(const Store& store) const noexcept{
     return (store.time - last_time) >= cooldown;

@@ -1,6 +1,6 @@
 #include "waveManager.h"
-#include "Manager/store/store.h"
-#include "Model/enemies/enemies.h"
+#include "ViewModel/GameViewModel/store/store.h"
+#include "ViewModel/GameViewModel/enemies/enemies.h"
 #include "Common/macros.h"
 #include "utils/readLua.h"
 #include <sol/table.hpp>

@@ -1,6 +1,6 @@
 #include "enemies.h"
-#include "Manager/store/store.h"
-#include "Function/calc/damage.h"
+#include "ViewModel/GameViewModel/store/store.h"
+#include "ViewModel/GameViewModel/Function/calc/damage.h"
 void PassiveEnemy::Update(Store& store)
 {
     if (animation.current_state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新

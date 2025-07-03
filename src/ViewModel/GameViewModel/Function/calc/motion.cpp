@@ -1,8 +1,8 @@
-#include "Function/calc/motion.h"
+#include "ViewModel/GameViewModel/Function/calc/motion.h"
 #include "Manager/pathManager/pathManager.h"
-#include "Manager/store/store.h"
-#include "Model/enemies/enemies.h"
-#include "Model/templates/unit.h"
+#include "ViewModel/GameViewModel/store/store.h"
+#include "ViewModel/GameViewModel/enemies/enemies.h"
+#include "ViewModel/GameViewModel/templates/unit.h"
 #include "Common/macros.h"
 #include <SFML/System/Vector2.hpp>
 #include <iostream>

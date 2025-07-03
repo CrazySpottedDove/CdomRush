@@ -1,5 +1,5 @@
 #pragma once
-#include "Model/components/health.h"
+#include "ViewModel/GameViewModel/components/health.h"
 class Unit;
 class Store;
 namespace calc {

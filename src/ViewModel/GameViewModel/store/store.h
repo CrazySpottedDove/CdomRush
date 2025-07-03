@@ -1,19 +1,18 @@
 #pragma once
-#include "Function/events/events.h"
-#include "Manager/levelManager/levelManager.h"
-#include "Manager/pathManager/pathManager.h"
-#include "Manager/resourceManager/animationManager.h"
-#include "Manager/templateManager/templateManager.h"
-#include "Manager/waveManager/waveManager.h"
-#include "Model/bullets/bullets.h"
-#include "Model/components/damage.h"
-#include "View/ui/UIManager.h"
+// #include "Function/events/events.h"
+// #include "Manager/levelManager/levelManager.h"
+// #include "Manager/pathManager/pathManager.h"
+// #include "Manager/resourceManager/animationManager.h"
+// #include "Manager/templateManager/templateManager.h"
+// #include "Manager/waveManager/waveManager.h"
+
+#include "ViewModel/GameViewModel/bullets/bullets.h"
+#include "ViewModel/GameViewModel/components/damage.h"
 #include "Common/macros.h"
+#include "ViewModel/SpiritViewModel/ResourceManager.h"
+#include "ViewModel/GameViewModel/templateManager/templateManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <memory>
-#include <queue>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 class Bullet;
 class Tower;
@@ -36,8 +35,8 @@ public:
     double                                time                        = 0.0;
     double                                gold                        = 0.0;
     int                                   life                        = 20;
-    GameState                             game_state                  = GameState::Begin;
-    bool                                  come_into_level_select_view = true;
+    // GameState                             game_state                  = GameState::Begin;
+    // bool                                  come_into_level_select_view = true;
     const std::unordered_map<ID, Enemy*>& GetEnemies() const { return enemies; }
 
     const std::unordered_map<ID, Tower*>& GetTowers() const { return towers; }
@@ -82,9 +81,9 @@ public:
 
     void QueueDamageEvent(const DamageEvent& event) { damage_events.push_back(event); }
 
-    void QueueEvent(const Event& event) { event_queue.push(event); }
+    // void QueueEvent(const Event& event) { event_queue.push(event); }
 
-    void QueueEvent(Event&& event) { event_queue.push(std::move(event)); }
+    // void QueueEvent(Event&& event) { event_queue.push(std::move(event)); }
 
     void QueueFx(Fx* fx);
 
@@ -98,15 +97,10 @@ public:
 
     Fx* GetFx(const ID id) const;
 
-    AnimationManager animation_manager;
-    PathManager      path_manager;
     TemplateManager  template_manager;
-    LevelManager     level_manager;
-    UIManager        ui_manager;
-    WaveManager      wave_manager;
-
+    ResourceManager resource_manager;
     // 游戏进行的主函数
-    void Game(sf::RenderWindow& window);
+    // void Game(sf::RenderWindow& window);
 
 private:
     std::unordered_map<ID, Enemy*>   enemies;
@@ -114,18 +108,18 @@ private:
     std::unordered_map<ID, Bullet*>  bullets;
     std::unordered_map<ID, Soldier*> soldiers;
     std::unordered_map<ID, Fx*>      fxs;
-    std::queue<Event>                event_queue;
+    // std::queue<Event>                event_queue;
     ID                               next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象
     std::vector<DamageEvent> damage_events;
-    void                     UpdateDamageEvents(sf::RenderWindow& window);
-    void                     UpdateEnemies(sf::RenderWindow& window);
-    void                     UpdateBullets(sf::RenderWindow& window);
-    void                     UpdateTowers(sf::RenderWindow& window);
-    void                     UpdateSoldiers(sf::RenderWindow& window);
+    // void                     UpdateDamageEvents(sf::RenderWindow& window);
+    // void                     UpdateEnemies(sf::RenderWindow& window);
+    // void                     UpdateBullets(sf::RenderWindow& window);
+    // void                     UpdateTowers(sf::RenderWindow& window);
+    // void                     UpdateSoldiers(sf::RenderWindow& window);
 
-    void                     UpdateFx(sf::RenderWindow& window);
+    // void                     UpdateFx(sf::RenderWindow& window);
 
-    void                     ExecuteEvents();
-    void                     Update(sf::RenderWindow& window);
+    // void                     ExecuteEvents();
+    // void                     Update(sf::RenderWindow& window);
 };

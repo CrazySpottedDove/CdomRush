@@ -1,5 +1,5 @@
-#include "Model/components/ranged.h"
-#include "Manager/store/store.h"
+#include "ViewModel/GameViewModel/components/ranged.h"
+#include "ViewModel/GameViewModel/store/store.h"
 
 void RangedAttack::Apply(Store& store, ID source, ID target, Position bullet_start_offset, SourceType source_type) noexcept
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "Model/templates/unit.h"
+#include "ViewModel/GameViewModel/templates/unit.h"
 #include "Common/macros.h"
 
 class Soldier: public Unit{

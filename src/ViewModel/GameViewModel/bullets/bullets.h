@@ -1,9 +1,9 @@
 #pragma once
-#include "Model/components/damage.h"
-#include "Model/templates/entity.h"
+#include "ViewModel/GameViewModel/components/damage.h"
+#include "ViewModel/GameViewModel/templates/entity.h"
 #include "Common/macros.h"
-#include "Model/fx/fx.h"
-#include "Function/calc/damage.h"
+#include "ViewModel/GameViewModel/fx/fx.h"
+#include "ViewModel/GameViewModel/Function/calc/damage.h"
 #include "Common/type.h"
 
 class Store;

@@ -1,9 +1,8 @@
 #pragma once
-#include "../components/armor.h"
-#include "../components/buff.h"
-#include "../components/health.h"
-#include "../components/state.h"
-#include "Model/templates/activeEntity.h"
+#include "ViewModel/GameViewModel/components/armor.h"
+#include "ViewModel/GameViewModel/components/health.h"
+#include "Common/state.h"
+#include "ViewModel/GameViewModel/templates/activeEntity.h"
 #include "Common/macros.h"
 
 // 拥有生命的实体

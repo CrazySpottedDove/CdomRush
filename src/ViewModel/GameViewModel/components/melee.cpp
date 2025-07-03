@@ -1,5 +1,5 @@
-#include "Model/components/melee.h"
-#include "Manager/store/store.h"
+#include "ViewModel/GameViewModel/components/melee.h"
+#include "ViewModel/GameViewModel/store/store.h"
 
 
 void MeleeAttack::Apply(Store& store, ID source, ID target, SourceType type) noexcept
@@ -16,7 +16,7 @@ void MeleeAttack::Apply(Store& store, ID source, ID target, SourceType type) noe
         if(store.GetEnemy(target) == nullptr) return; // 如果目标已经不在了，直接返回
         targets = calc::find_enemies_in_range(store, store.GetEnemy(target)->position, radius);
     }
-    
+
     // 设置伤害事件
     for(auto id : targets) {
         DamageEvent new_event(damage_event);

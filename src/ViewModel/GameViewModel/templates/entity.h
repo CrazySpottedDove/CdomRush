@@ -1,5 +1,5 @@
 #pragma once
-#include "Model/components/animation.h"
+#include "Common/animation.h"
 #include "Common/macros.h"
 
 class Store;

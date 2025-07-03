@@ -1,5 +1,5 @@
-#include "Function/calc/buff.h"
-#include "Model/templates/unit.h"
+#include "ViewModel/GameViewModel/Function/calc/buff.h"
+#include "ViewModel/GameViewModel/templates/unit.h"
 void calc::damage_inc(Unit& target, const double amount)
 {
     target.buff.damage_inc += amount;

@@ -1,22 +1,19 @@
-#include "Manager/store/store.h"
-#include "Function/calc/damage.h"
-#include "Function/calc/hp.h"
-#include "Function/calc/motion.h"
-#include "Function/events/events.h"
-#include "Manager/resourceManager/animationManager.h"
-#include "Model/bullets/bullets.h"
-#include "Model/components/damage.h"
-#include "Model/components/state.h"
-#include "Model/enemies/enemies.h"
-#include "Model/soldiers/soldiers.h"
+#include "ViewModel/GameViewModel/store/store.h"
+#include "ViewModel/GameViewModel/Function/calc/damage.h"
+#include "ViewModel/GameViewModel/Function/calc/hp.h"
+#include "ViewModel/GameViewModel/Function/calc/motion.h"
+// #include "Function/events/events.h"
+#include "ViewModel/GameViewModel/bullets/bullets.h"
+#include "ViewModel/GameViewModel/components/damage.h"
+#include "ViewModel/GameViewModel/components/state.h"
+#include "ViewModel/GameViewModel/enemies/enemies.h"
+#include "ViewModel/GameViewModel/soldiers/soldiers.h"
 #include "View/animation/animationPlayer.h"
 #include "View/ui/EnemyUI.h"
 #include "View/ui/UIManager.h"
 #include "Common/macros.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <chrono>
-#include <memory>
 #include <thread>
 
 

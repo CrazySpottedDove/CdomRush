@@ -1,5 +1,5 @@
 #pragma once
-#include "Model/templates/entity.h"
+#include "ViewModel/GameViewModel/templates/entity.h"
 class Modifier: public Entity{
-    
+
 };

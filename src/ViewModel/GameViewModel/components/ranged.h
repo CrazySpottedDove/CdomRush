@@ -1,6 +1,6 @@
 #pragma once
-#include "Model/bullets/bullets.h"
-#include "Model/components/attack.h"
+#include "ViewModel/GameViewModel/bullets/bullets.h"
+#include "ViewModel/GameViewModel/components/attack.h"
 #include <cstddef>
 #include <vector>
 

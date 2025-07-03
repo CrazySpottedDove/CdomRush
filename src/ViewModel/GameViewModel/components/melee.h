@@ -1,6 +1,6 @@
 #pragma once
-#include "Model/components/attack.h"
-#include "Model/components/damage.h"
+#include "ViewModel/GameViewModel/components/attack.h"
+#include "ViewModel/GameViewModel/components/damage.h"
 #include <cstddef>
 #include <vector>
 // 范围攻击

@@ -1,5 +1,5 @@
-#include "Model/bullets/bullets.h"
-#include "Manager/store/store.h"
+#include "ViewModel/GameViewModel/bullets/bullets.h"
+#include "ViewModel/GameViewModel/store/store.h"
 #include <cmath>
 
 void Bullet::check_position(Store& store)

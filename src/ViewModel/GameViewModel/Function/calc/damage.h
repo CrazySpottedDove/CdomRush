@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "Model/components/buff.h"
-#include "Model/components/damage.h"
+#include "ViewModel/GameViewModel/components/buff.h"
+#include "ViewModel/GameViewModel/components/damage.h"
 #include "Common/macros.h"
 #include <utility>
 #include <vector>

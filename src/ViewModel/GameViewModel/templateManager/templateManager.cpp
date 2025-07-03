@@ -1,7 +1,7 @@
 #include "Manager/templateManager/templateManager.h"
-#include "Model/bullets/bullets.h"
-#include "Model/enemies/enemies.h"
-#include "Model/towers/towers.h"
+#include "ViewModel/GameViewModel/bullets/bullets.h"
+#include "ViewModel/GameViewModel/enemies/enemies.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
 #include "Common/macros.h"
 #include <SFML/System/Vector2.hpp>
 

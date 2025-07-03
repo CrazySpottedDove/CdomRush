@@ -1,26 +1,11 @@
 #pragma once
-#include "Model/templates/activeEntity.h"
+#include "ViewModel/GameViewModel/templates/activeEntity.h"
 #include "Common/macros.h"
-#include "Model/components/ranged.h"
+#include "ViewModel/GameViewModel/components/ranged.h"
 
 class Store;
 
 class Tower;
-enum class TowerType{
-    None,
-    Archer1,
-    Archer2,
-    Archer3,
-    Engineer1,
-    Engineer2,
-    Engineer3,
-    Mage1,
-    Mage2,
-    Mage3,
-    Barrack1,
-    Barrack2,
-    Barrack3
-};
 
 enum class TowerAction{
     Upgrade,

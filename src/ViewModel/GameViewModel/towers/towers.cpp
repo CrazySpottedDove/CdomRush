@@ -1,8 +1,8 @@
-#include "Model/towers/towers.h"
-#include "Model/components/ranged.h"
-#include "Model/enemies/enemies.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
+#include "ViewModel/GameViewModel/components/ranged.h"
+#include "ViewModel/GameViewModel/enemies/enemies.h"
 
-#include "Manager/store/store.h"
+#include "ViewModel/GameViewModel/store/store.h"
 
 
 void Tower::Update(Store& store){

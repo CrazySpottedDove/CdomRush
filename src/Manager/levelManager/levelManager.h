@@ -7,7 +7,7 @@
 class Store;
 // (关卡名称，关卡点的位置)
 typedef std::pair<std::string, Position> Level;
-struct LevelAsset
+struct LevelAssets
 {
     std::vector<std::string> required_textures;
     std::vector<std::string> required_sounds;
@@ -32,7 +32,7 @@ public:
     void LoadLevelResource(Store& store);
 
 private:
-    void        ReadLevelDataFile(LevelAsset& level_data);
+    void        ReadLevelDataFile(LevelAssets& level_data);
     void        LoadTowerPositions(Store& store);
     std::string current_level_name;
 };

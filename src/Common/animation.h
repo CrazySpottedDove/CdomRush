@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 enum class TextureLevel
@@ -15,9 +16,15 @@ enum class TextureLevel
     Specific
 };
 
+// TextureName -> Texture
 typedef std::unordered_map<std::string, sf::Texture> TextureMap;
 
-typedef std::unordered_map<std::string, TextureLevel> TextureLevelMap;
+// TextureLevel -> TextureName
+typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>> TextureLevelMap;
+
+// TextureLevel -> Prefix
+typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>>
+PrefixLevelMap;
 
 struct SpriteFrameData
 {
@@ -41,11 +48,11 @@ struct AnimationGroup
     {}
 };
 
-// prefix->(状态->动画组)
+// prefix->(State->AnimationGroup)
 typedef std::unordered_map<std::string, std::unordered_map<State, AnimationGroup>>
     AnimationGroupMap;
 
-// prefix->纹理文件名
+// prefix->(std::vector<SpriteFrameData>)
 typedef std::unordered_map<std::string, std::vector<SpriteFrameData>> SpriteFrameDataMap;
 
 struct Animation
@@ -53,6 +60,8 @@ struct Animation
     Animation() = default;   // 默认构造函数
 
     State               current_state;              // 当前状态
+    std::string         prefix;               // 动画的前缀名
+    std::vector<Action> actions;
     State               last_state = State::None;   // 上一个状态
     double              rotation   = 0.0;           // 旋转角度
     bool                pending    = true;          // 动画正在进行
@@ -63,6 +72,4 @@ struct Animation
     float               scale_y    = 1.0f;    // 垂直
     bool                clicked    = false;   // 是否处于被点击状态 (决定 actions UI 是否展开)
     std::size_t         frame_id   = 1;       // 动画进行到第几帧
-    std::string         prefix;               // 动画的前缀名
-    std::vector<Action> actions;
 };

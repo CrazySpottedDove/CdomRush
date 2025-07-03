@@ -1,10 +1,13 @@
 #include "UIManager.h"
+#include "Common/action.h"
 #include "Common/macros.h"
 #include "Common/viewData.h"
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <algorithm>
 
 /**
  * @brief 保证传入的 frame_id 合法！
@@ -40,6 +43,8 @@ void UIManager::Render(const ViewData& view_data)
 
     sprite.setPosition(view_data.position);
 
+    sprite.setRotation(sf::degrees(animation.rotation)); 
+
     window->draw(sprite);
 
     ++animation.frame_id;
@@ -49,31 +54,95 @@ void UIManager::Render(const ViewData& view_data)
     }
 
     // TODO: 处理 Action 绘画
+    if( animation.clicked && !animation.actions.empty()) {
+        Action action = animation.actions.front();
+
+        // 处理不同的 Action 类型
+        switch (action.type) {
+            case ActionType::SelectLevel: {
+                animation.clicked = false; // 对于选关卡，点击后UI不再处于点击状态
+                const auto& params = std::get<SelectLevelParams>(action.param);
+                action_queue.push(action);
+                INFO("Selected level: " + params.level_name);
+            }
+            //case..
+        }
+
+        animation.actions.erase(animation.actions.begin()); // 已处理的 Action
+    }
 }
 
-void UIManager::QueueViewData(ViewData view_data)
+void UIManager::RenderAll()
 {
-    view_data_queue.insert(view_data);
-}
-
-void UIManager::RenderAll(sf::RenderWindow& window, AnimationGroupMap& animation_group_map,
-                   SpriteFrameDataMap& sprite_frame_data_map, TextureMap& texture_map)
-{
-    this->window = &window;
-    this->animation_group_map = &animation_group_map;
-    this->sprite_frame_data_map = &sprite_frame_data_map;
-    this->texture_map = &texture_map;
-
-    for (const auto& view_data : view_data_queue) {
+    for (const auto& view_data : *view_data_queue) {
         Render(view_data);
     }
 }
 
 void UIManager::ClearViewData()
 {
-    view_data_queue.clear();
+    view_data_queue->clear();
     window = nullptr;
     animation_group_map = nullptr;
     sprite_frame_data_map = nullptr;
     texture_map = nullptr;
+}
+
+/**
+ * @brief 检查点击位置是否在ViewData检测边界内
+ */
+bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_position) const
+{
+    if (!animation_group_map || !sprite_frame_data_map) {
+        ERROR("Animation group map or sprite frame data map is not initialized.");
+    }
+
+    const Animation& animation = *view_data.animation;
+    
+    const auto& animation_group = animation_group_map->at(animation.prefix).at(animation.current_state);
+    const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id);
+    
+    // 计算边界矩形...
+    //float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x * animation.anchor_x;
+    //float top = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y * (1.0f - animation.anchor_y);
+
+    sf::FloatRect bounds(sf::Vector2f(view_data.position.x, view_data.position.y),
+    sf::Vector2f( sprite_frame_data.displaySize.x *animation.scale_x, sprite_frame_data.displaySize.y * animation.scale_y));
+    
+    return bounds.contains(click_position);
+}
+
+/**
+ * @brief 处理SFML鼠标点击
+ */
+void UIManager::HandleClick(const sf::Event& event, const sf::RenderWindow& window, const sf::Vector2f& click_position)
+{
+    if (event.is<sf::Event::MouseButtonPressed>()) {
+        const auto& mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
+        
+        if (mouse_event.button == sf::Mouse::Button::Left) {
+            
+            // 遍历所有ViewData，寻找被点击对象
+            bool hit_found = false;
+            
+            for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
+                const ViewData& view_data = *it;
+                
+                if (IsClickHit(view_data, click_position)) {
+                    view_data.animation->clicked = true;
+                    
+                    // 如果有关联的actions，准备触发
+                    if (!view_data.animation->actions.empty()) {
+                        INFO("Object has " + std::to_string(view_data.animation->actions.size()) + " actions available");
+                    }
+                    hit_found = true;
+                    break; 
+                }
+            }
+            
+            if (!hit_found) {
+                INFO("No objects hit at click position");
+            }
+        }
+    }
 }

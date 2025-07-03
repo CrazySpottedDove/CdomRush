@@ -1,16 +1,16 @@
-#include "Manager/templateManager/templateManager.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
 #include "ViewModel/GameViewModel/towers/towers.h"
+#include "templateManager.h"
 #include "Common/macros.h"
 #include <SFML/System/Vector2.hpp>
 
 TemplateManager::TemplateManager()
 {
     bullet_map = {
-        // {BulletType::Arrow, new Arrow()},
-        // {BulletType::Bolt, new Bolt()},
-        // {BulletType::Bomb, new Bomb()}
+        {BulletType::Arrow, new Arrow()},
+        {BulletType::Bolt, new Bolt()},
+        {BulletType::Bomb, new Bomb()}
     };
     tower_map = {
         {TowerType::None, new None(sf::Vector2f(0, 0))},

@@ -71,6 +71,15 @@ void calc::update_damage_value(const Buff& buff, double& value)
     value = (value + buff.damage_inc) * buff.damage_factor;
 }
 
+int GetPointsRemained (const Store&store, const PathInfo path_info){
+    const Paths* paths = store.resource_manager.GetPaths();
+    const Path* path = &((*paths)[path_info.path_id]);
+    const SubPath* subpath = &((*path)[path_info.subpath_id]);
+
+    int total = subpath->size();
+    return total-path_info.waypoint_id-1;
+}
+
 ID calc::find_foremost_enemy(const Store& store, const Position& position, const double range,
                                  const bool require_active)
 {
@@ -97,8 +106,8 @@ ID calc::find_foremost_enemy(const Store& store, const Position& position, const
         if (displacement.lengthSquared() > range * range) {
             continue;
         }
-
-        const int points_remained = store.path_manager.GetPointsRemained(enemy->path_info);
+        
+        const int points_remained = GetPointsRemained(store,enemy->path_info);
         if (points_remained < min_points_remained) {
             min_points_remained = points_remained;
             foremost_enemy_id = enemy_id;

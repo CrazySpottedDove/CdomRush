@@ -86,6 +86,9 @@ public:
         animation.prefix = "bolt"; // 设置动画前缀
     }
     Bolt(const Bolt & other) = default; // 拷贝构造函数
+    Bullet* Clone() const override {
+        return new Bolt(*this); // 返回一个新的Arrow对象
+    }
 
     void Update(Store& store) override;
 };
@@ -106,6 +109,9 @@ public:
         animation.prefix = "bombs_0001"; // 设置动画前缀
     }
     Bomb(const Bomb & other) = default; // 拷贝构造函数
+    Bullet* Clone() const override {
+        return new Bomb(*this); // 返回一个新的Arrow对象
+    }
 
     sf::Vector2f Bezier(float t,
                            const sf::Vector2f& p0,

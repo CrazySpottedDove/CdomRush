@@ -1,5 +1,5 @@
 #include "ViewModel/GameViewModel/Function/calc/hp.h"
-#include "ViewModel/GameViewModel/components/state.h"
+#include "Common/state.h"
 #include "ViewModel/GameViewModel/templates/unit.h"
 #include "ViewModel/GameViewModel/store/store.h"
 

@@ -16,7 +16,7 @@ public:
     TextureMap*         GetTextureMap() { return &texture_map; }
     SpriteFrameDataMap* GetSpriteFrameDataMap() { return &sprite_frame_data_map; }
     AnimationGroupMap*  GetAnimationGroupMap() { return &animation_group_map; }
-    Paths*              GetPaths() { return &paths; }
+    const Paths*              GetPaths() const { return &paths; }
     std::vector<LevelData>* GetLevels() { return &levels; }
     std::vector<Wave>*  GetWaves() { return &waves; }
     std::vector<TowerEssential>* GetTowerEssentials() { return &tower_essentials; }

@@ -33,8 +33,10 @@ void App::Run()
                     store.QueueFx(fx);
                 }
                 Fx* map_fx = store.template_manager.CreateFx(FxType::Map);
+
                 store.QueueFx(map_fx);
                 last_state = GameState::Begin;
+                INFO("State Changed to Begin");
             }
 
             window.clear();
@@ -47,9 +49,10 @@ void App::Run()
                 store.time = 0;
                 store.Clear();
                 Fx* fx               = store.template_manager.CreateFx(FxType::Map);
-                fx->animation.prefix = current_level_name;
+                fx->animation.prefix = store.current_level_name;
                 store.QueueFx(fx);
                 last_state = GameState::GameStart;
+                INFO("State Changed to GameStart");
             }
             window.clear();
             store.UpdateFxs();
@@ -63,7 +66,9 @@ void App::Run()
                 // Fx* fx = store.template_manager.CreateFx(FxType::Map);
                 // fx->animation.prefix = current_level_name;
                 // store.QueueFx(fx);
+                store.resource_manager.LoadLevelResources(store.current_level_name);
                 last_state = GameState::Loading;
+                INFO("State Changed to Loading");
             }
             window.clear();
             store.UpdateFxs();
@@ -73,6 +78,7 @@ void App::Run()
         case GameState::GamePlaying:
             if (last_state != GameState::GamePlaying) {
                 last_state = GameState::GamePlaying;
+                INFO("State Changed to GamePlaying");
             }
             window.clear();
             store.UpdateDamageEvents();
@@ -93,6 +99,7 @@ void App::Run()
             if(last_state != GameState::GameOver) {
                 store.Clear();
                 last_state = GameState::GameOver;
+                INFO("State Changed to GameOver");
             }
             window.clear();
             store.UpdateFxs();
@@ -101,5 +108,21 @@ void App::Run()
             break;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
+        auto& action_queue = *ui_manager.GetActionQueue();
+        while (!action_queue.empty()) {
+            Action action = action_queue.front();
+            action_queue.pop();
+            HandleAction(action);
+        }
+    }
+}
+
+void App::HandleAction(Action& action)
+{
+    switch (action.type) {
+    case ActionType::SelectLevel:
+        SelectLevelParams& params = std::get<SelectLevelParams>(action.param);
+        store.current_level_name        = params.level_name;
+        game_state = GameState::Loading;
     }
 }

@@ -1,5 +1,5 @@
 #include "ViewModel/GameViewModel/fx/fx.h"
-#include "ViewModel/GameViewModel/components/state.h"
+
 
 LevelFlag::LevelFlag(){
     animation.prefix = "map_flag";
@@ -13,6 +13,8 @@ Map::Map(){
     animation.current_state = State::Idle;
     animation.anchor_x = 0.0;
     animation.anchor_y = 0.0;
+    position.x = 0.0;
+    position.y = 0.0;
 }
 
 Map::Map(const std::string& prefix) {
@@ -20,4 +22,6 @@ Map::Map(const std::string& prefix) {
     animation.current_state = State::Idle;
     animation.anchor_x = 0.0;
     animation.anchor_y = 0.0;
+    position.x = 0.0;
+    position.y = 0.0;
 }

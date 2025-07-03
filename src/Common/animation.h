@@ -23,8 +23,7 @@ typedef std::unordered_map<std::string, sf::Texture> TextureMap;
 typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>> TextureLevelMap;
 
 // TextureLevel -> Prefix
-typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>>
-PrefixLevelMap;
+typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>> PrefixLevelMap;
 
 struct SpriteFrameData
 {
@@ -58,9 +57,12 @@ typedef std::unordered_map<std::string, std::vector<SpriteFrameData>> SpriteFram
 struct Animation
 {
     Animation() = default;   // 默认构造函数
-
-    State               current_state;              // 当前状态
-    std::string         prefix;               // 动画的前缀名
+    Animation(const State state, const std::string& prefix)
+        : current_state(state)
+        , prefix(prefix)
+    {}
+    State               current_state;   // 当前状态
+    std::string         prefix;          // 动画的前缀名
     std::vector<Action> actions;
     State               last_state = State::None;   // 上一个状态
     double              rotation   = 0.0;           // 旋转角度

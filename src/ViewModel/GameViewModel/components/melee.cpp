@@ -1,6 +1,6 @@
 #include "ViewModel/GameViewModel/components/melee.h"
 #include "ViewModel/GameViewModel/store/store.h"
-
+#include "ViewModel/GameViewModel/soldiers/soldiers.h"
 
 void MeleeAttack::Apply(Store& store, ID source, ID target, SourceType type) noexcept
 {

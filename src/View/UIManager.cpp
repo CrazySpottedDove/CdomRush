@@ -27,9 +27,9 @@ void UIManager::Render(const ViewData& view_data)
 
     animation.last_state = animation.current_state;
 
-    const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id);
+    const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
 
-    const sf::Texture& texture = texture_map->at(sprite_frame_data.textureName);
+    const sf::Texture& texture = texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
 
     sf::Sprite sprite(texture);
 
@@ -43,7 +43,7 @@ void UIManager::Render(const ViewData& view_data)
 
     sprite.setPosition(view_data.position);
 
-    sprite.setRotation(sf::degrees(animation.rotation)); 
+    sprite.setRotation(sf::degrees(animation.rotation));
 
     window->draw(sprite);
 
@@ -100,17 +100,17 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     }
 
     const Animation& animation = *view_data.animation;
-    
+
     const auto& animation_group = animation_group_map->at(animation.prefix).at(animation.current_state);
     const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id);
-    
+
     // 计算边界矩形...
     //float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x * animation.anchor_x;
     //float top = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y * (1.0f - animation.anchor_y);
 
     sf::FloatRect bounds(sf::Vector2f(view_data.position.x, view_data.position.y),
     sf::Vector2f( sprite_frame_data.displaySize.x *animation.scale_x, sprite_frame_data.displaySize.y * animation.scale_y));
-    
+
     return bounds.contains(click_position);
 }
 
@@ -121,27 +121,27 @@ void UIManager::HandleClick(const sf::Event& event, const sf::RenderWindow& wind
 {
     if (event.is<sf::Event::MouseButtonPressed>()) {
         const auto& mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
-        
+
         if (mouse_event.button == sf::Mouse::Button::Left) {
-            
+
             // 遍历所有ViewData，寻找被点击对象
             bool hit_found = false;
-            
+
             for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
                 const ViewData& view_data = *it;
-                
+
                 if (IsClickHit(view_data, click_position)) {
                     view_data.animation->clicked = true;
-                    
+
                     // 如果有关联的actions，准备触发
                     if (!view_data.animation->actions.empty()) {
                         INFO("Object has " + std::to_string(view_data.animation->actions.size()) + " actions available");
                     }
                     hit_found = true;
-                    break; 
+                    break;
                 }
             }
-            
+
             if (!hit_found) {
                 INFO("No objects hit at click position");
             }

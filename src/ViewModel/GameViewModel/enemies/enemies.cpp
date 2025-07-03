@@ -79,9 +79,11 @@ bool ActiveEnemyRange::shoot_judge(Store& store){
         if (this->ranged.attacks[i].IsReady(store)) {
             ranged.attacks[i].Apply(store,id,target_soldier,bullet_offset,SourceType::Enemy);   // 执行远程攻击
             this->animation.current_state = State::Shoot;   // 设置状态为射击
-            return;
+            return true;
         }
     }
+    if(target_in_range) return true;   // 如果有目标在射程内，返回true
+    return false;   // 如果没有目标在射程内，返回false
 }
 
 void ActiveEnemyRange::Update(Store& store)

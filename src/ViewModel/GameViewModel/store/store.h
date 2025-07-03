@@ -9,6 +9,7 @@
 #include "ViewModel/SpriteViewModel/resourceManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <cstddef>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -35,6 +36,7 @@ public:
     std::size_t current_wave_index    = 0;
     std::size_t current_subwave_index = 0;
     double      current_wave_time     = 0.0;
+    std::string current_level_name;
     bool        preparing             = true;
     // GameState                             game_state                  = GameState::Begin;
     // bool                                  come_into_level_select_view = true;
@@ -103,7 +105,6 @@ public:
     void UpdateTowers();
     void UpdateSoldiers();
     void UpdateFxs();
-
     /**
      * @brief 在关卡进行时调用，生成敌人
      *
@@ -131,6 +132,7 @@ private:
     std::vector<DamageEvent> damage_events;
     ViewDataQueue            view_data_queue;
     PendingEnemyQueue        pending_enemy_queue;
+
     /**
      * @brief 在开启新的关卡时调用，初始化塔位
      *

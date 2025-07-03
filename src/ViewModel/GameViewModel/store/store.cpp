@@ -1,4 +1,5 @@
 #include "ViewModel/GameViewModel/store/store.h"
+#include "Common/action.h"
 #include "Common/macros.h"
 #include "Common/viewData.h"
 #include "ViewModel/GameViewModel/Function/calc/damage.h"
@@ -383,3 +384,6 @@ void Store::InitLevel(const std::string& level_name){
     resource_manager.LoadLevelResources(level_name);
     InitTowers();
 }
+
+
+

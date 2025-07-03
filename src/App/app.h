@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Common/action.h"
 #include "View/UIManager.h"
 #include "ViewModel/GameViewModel/store/store.h"
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -19,10 +20,10 @@ public:
     App();
     void Run();
 private:
+    void HandleAction(Action& action);
     Store store;
     UIManager ui_manager;
     GameState last_state = GameState::None;
     GameState game_state = GameState::Begin;
     sf::RenderWindow window;
-    std::string current_level_name;
 };

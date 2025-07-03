@@ -28,6 +28,7 @@ struct UpgradeTowerParams
     TowerType new_tower_type;
     int       cost;
     Animation* animation;
+    sf::Vector2f offset;  // 渲染升级界面时的偏移量
 };
 
 struct SelectLevelParams

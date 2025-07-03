@@ -57,7 +57,7 @@ void UIManager::Render(const ViewData& view_data)
     }
 
     // TODO: 处理 Action 绘画
-    if (animation.clicked && !animation.actions.empty()) {
+    while (animation.clicked && !animation.actions.empty()) {
         Action action = animation.actions.front();
 
         // 处理不同的 Action 类型
@@ -72,10 +72,14 @@ void UIManager::Render(const ViewData& view_data)
         }
     case ActionType::UpgradeTower:
         {
-            static int  upgrade_cnt = 0;
-            const auto& params      = std::get<UpgradeTowerParams>(action.param);
-            ViewData    upgrade_view_data;
+            const auto& params = std::get<UpgradeTowerParams>(action.param);
+            ViewData upgrade_view_data;
             upgrade_view_data.animation = params.animation;
+            upgrade_view_data.animation->clicked = false;   // 升级界面点击后不再处于点击状态
+
+            upgrade_view_data.position = view_data.position + params.offset;
+            
+            Render(upgrade_view_data);
             break;
             // upgrade_view_data.position
         }
@@ -118,11 +122,8 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
         sprite_frame_data_map->at(animation.prefix).at(animation_group.to - 1);
 
     // 计算边界矩形...
-
-    // 计算边界矩形...?
-    // float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x *
-    // animation.anchor_x; float top = view_data.position.y - sprite_frame_data.displaySize.y *
-    // animation.scale_y * (1.0f - animation.anchor_y);
+    float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x; 
+    float top = view_data.position.y - sprite_frame_data.displaySize.y *animation.scale_y;
 
     sf::FloatRect bounds(sf::Vector2f(view_data.position.x, view_data.position.y),
                          sf::Vector2f(sprite_frame_data.displaySize.x * animation.scale_x,

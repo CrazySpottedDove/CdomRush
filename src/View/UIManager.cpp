@@ -66,7 +66,11 @@ void UIManager::Render(const ViewData& view_data)
                 INFO("Selected level: " + params.level_name);
             }
             case ActionType::UpgradeTower:{
+                static int upgrade_cnt = 0; 
                 const auto& params = std::get<UpgradeTowerParams>(action.param);
+                ViewData upgrade_view_data;
+                upgrade_view_data.animation = params.animation;
+                //upgrade_view_data.position 
             }
         }
 
@@ -104,7 +108,7 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     const auto& animation_group = animation_group_map->at(animation.prefix).at(animation.current_state);
     const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id);
     
-    // 计算边界矩形...
+    //计算边界矩形...?
     //float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x * animation.anchor_x;
     //float top = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y * (1.0f - animation.anchor_y);
 
@@ -133,7 +137,6 @@ void UIManager::HandleClick(const sf::Event& event, const sf::RenderWindow& wind
                 if (IsClickHit(view_data, click_position)) {
                     view_data.animation->clicked = true;
                     
-                    // 如果有关联的actions，准备触发
                     if (!view_data.animation->actions.empty()) {
                         INFO("Object has " + std::to_string(view_data.animation->actions.size()) + " actions available");
                     }

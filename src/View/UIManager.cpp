@@ -125,7 +125,7 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x; 
     float top = view_data.position.y - sprite_frame_data.displaySize.y *animation.scale_y;
 
-    sf::FloatRect bounds(sf::Vector2f(view_data.position.x, view_data.position.y),
+    sf::FloatRect bounds(sf::Vector2f(left, top),
                          sf::Vector2f(sprite_frame_data.displaySize.x * animation.scale_x,
                                       sprite_frame_data.displaySize.y * animation.scale_y));
 

@@ -6,7 +6,7 @@
 #define IMAGES_PATH "assets/images/"
 #define LEVEL_MAP_FILE "data/level_map.lua"
 #define LEVEL_DATA_PATH "data/levels/"
-#define SOUND_PATH "assets/sounds/"
+#define SOUNDS_PATH "assets/sounds/"
 #define PATH_PATH "data/paths/"
 #define WAVE_PATH "data/waves/"
 #define TOWER_PATH "data/towers/"

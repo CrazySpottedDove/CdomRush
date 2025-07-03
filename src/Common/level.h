@@ -3,7 +3,7 @@
 #include <string>
 #include "Common/macros.h"
 
-struct LevelAsset
+struct LevelAssets
 {
     std::vector<std::string> required_textures;
     std::vector<std::string> required_sounds;

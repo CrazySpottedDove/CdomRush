@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <unordered_map>
 enum class State
 {
     Idle,
@@ -18,3 +20,5 @@ enum class State
     ShootingDown,
     None
 };
+
+extern const  std::unordered_map<std::string, State> state_str_map;

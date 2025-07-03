@@ -41,14 +41,9 @@ public:
         this->texture_map = &texture_map;
     }    
 
-    Action GetNextAction()
+    std::queue<Action>* GetActionQueue()
     {
-        if (action_queue.empty())
-            return Action();
-
-        Action action = action_queue.front();
-        action_queue.pop();
-        return action;
+        return &action_queue;
     }
 
     /**

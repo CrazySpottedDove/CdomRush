@@ -65,7 +65,9 @@ void UIManager::Render(const ViewData& view_data)
                 action_queue.push(action);
                 INFO("Selected level: " + params.level_name);
             }
-            //case..
+            case ActionType::UpgradeTower:{
+                const auto& params = std::get<UpgradeTowerParams>(action.param);
+            }
         }
 
         animation.actions.erase(animation.actions.begin()); // 已处理的 Action

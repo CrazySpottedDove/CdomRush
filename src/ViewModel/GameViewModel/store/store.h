@@ -9,7 +9,7 @@
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/components/damage.h"
 #include "Common/macros.h"
-#include "ViewModel/SpiritViewModel/resourceManager.h"
+#include "ViewModel/SpriteViewModel/resourceManager.h"
 #include "ViewModel/GameViewModel/templateManager/templateManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <unordered_map>

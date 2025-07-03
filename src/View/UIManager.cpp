@@ -11,7 +11,7 @@
  *
  * @param view_data
  */
-void UIManager::Render(ViewData& view_data)
+void UIManager::Render(const ViewData& view_data)
 {
     Animation&             animation         = *view_data.animation;
     const AnimationGroup  animation_group   = animation_group_map->at(animation.prefix).at(animation.current_state);
@@ -49,4 +49,31 @@ void UIManager::Render(ViewData& view_data)
     }
 
     // TODO: 处理 Action 绘画
+}
+
+void UIManager::QueueViewData(ViewData view_data)
+{
+    view_data_queue.insert(view_data);
+}
+
+void UIManager::RenderAll(sf::RenderWindow& window, AnimationGroupMap& animation_group_map,
+                   SpriteFrameDataMap& sprite_frame_data_map, TextureMap& texture_map)
+{
+    this->window = &window;
+    this->animation_group_map = &animation_group_map;
+    this->sprite_frame_data_map = &sprite_frame_data_map;
+    this->texture_map = &texture_map;
+
+    for (const auto& view_data : view_data_queue) {
+        Render(view_data);
+    }
+}
+
+void UIManager::ClearViewData()
+{
+    view_data_queue.clear();
+    window = nullptr;
+    animation_group_map = nullptr;
+    sprite_frame_data_map = nullptr;
+    texture_map = nullptr;
 }

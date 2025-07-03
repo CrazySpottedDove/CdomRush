@@ -15,9 +15,15 @@ public:
      */
     ~UIManager() = default;
 
-    void QueueViewData(const ViewData& view_data);
+    void QueueViewData(ViewData view_data);
+
+    void RenderAll(sf::RenderWindow& window, AnimationGroupMap& animation_group_map,
+                   SpriteFrameDataMap& sprite_frame_data_map, TextureMap& texture_map);
+    
+    void ClearViewData();
+    
 private:
-    void Render(ViewData& view_data);
+    void Render(const ViewData& view_data);
 
     struct ViewDataComparator
     {

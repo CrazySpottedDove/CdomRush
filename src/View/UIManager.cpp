@@ -43,6 +43,8 @@ void UIManager::Render(const ViewData& view_data)
 
     sprite.setPosition(view_data.position);
 
+    sprite.setRotation(sf::degrees(animation.rotation)); 
+
     window->draw(sprite);
 
     ++animation.frame_id;

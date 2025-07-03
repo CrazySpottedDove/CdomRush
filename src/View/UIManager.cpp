@@ -16,8 +16,9 @@
  */
 void UIManager::Render(const ViewData& view_data)
 {
-    Animation&             animation         = *view_data.animation;
-    const AnimationGroup  animation_group   = animation_group_map->at(animation.prefix).at(animation.current_state);
+    Animation&           animation = *view_data.animation;
+    const AnimationGroup animation_group =
+        animation_group_map->at(animation.prefix).at(animation.current_state);
 
     if (animation.last_state != animation.current_state ||
         (animation.current_state != State::Death && animation.frame_id > animation_group.to)) {
@@ -27,7 +28,8 @@ void UIManager::Render(const ViewData& view_data)
 
     animation.last_state = animation.current_state;
 
-    const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
+    const SpriteFrameData& sprite_frame_data =
+        sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
 
     const sf::Texture& texture = texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
 
@@ -39,7 +41,8 @@ void UIManager::Render(const ViewData& view_data)
         sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
         sprite_frame_data.displaySize.y * (1 - animation.anchor_y) - sprite_frame_data.trim_top));
 
-    sprite.setScale(sf::Vector2f(animation.flip ? -animation.scale_x:animation.scale_x, animation.scale_y));
+    sprite.setScale(
+        sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x, animation.scale_y));
 
     sprite.setPosition(view_data.position);
 
@@ -49,32 +52,36 @@ void UIManager::Render(const ViewData& view_data)
 
     ++animation.frame_id;
 
-    if(animation.frame_id > animation_group.to){
+    if (animation.frame_id > animation_group.to) {
         animation.pending = false;
     }
 
     // TODO: 处理 Action 绘画
-    if( animation.clicked && !animation.actions.empty()) {
+    if (animation.clicked && !animation.actions.empty()) {
         Action action = animation.actions.front();
 
         // 处理不同的 Action 类型
         switch (action.type) {
-            case ActionType::SelectLevel: {
-                animation.clicked = false; // 对于选关卡，点击后UI不再处于点击状态
-                const auto& params = std::get<SelectLevelParams>(action.param);
-                action_queue.push(action);
-                INFO("Selected level: " + params.level_name);
-            }
-            case ActionType::UpgradeTower:{
-                static int upgrade_cnt = 0;
-                const auto& params = std::get<UpgradeTowerParams>(action.param);
-                ViewData upgrade_view_data;
-                upgrade_view_data.animation = params.animation;
-                //upgrade_view_data.position
-            }
+        case ActionType::SelectLevel:
+        {
+            animation.clicked  = false;   // 对于选关卡，点击后UI不再处于点击状态
+            const auto& params = std::get<SelectLevelParams>(action.param);
+            action_queue.push(action);
+            INFO("Selected level: " + params.level_name);
+            break;
+        }
+    case ActionType::UpgradeTower:
+        {
+            static int  upgrade_cnt = 0;
+            const auto& params      = std::get<UpgradeTowerParams>(action.param);
+            ViewData    upgrade_view_data;
+            upgrade_view_data.animation = params.animation;
+            break;
+            // upgrade_view_data.position
+        }
         }
 
-        animation.actions.erase(animation.actions.begin()); // 已处理的 Action
+        animation.actions.erase(animation.actions.begin());   // 已处理的 Action
     }
 }
 
@@ -88,10 +95,10 @@ void UIManager::RenderAll()
 void UIManager::ClearViewData()
 {
     view_data_queue->clear();
-    window = nullptr;
-    animation_group_map = nullptr;
+    window                = nullptr;
+    animation_group_map   = nullptr;
     sprite_frame_data_map = nullptr;
-    texture_map = nullptr;
+    texture_map           = nullptr;
 }
 
 /**
@@ -105,17 +112,21 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
 
     const Animation& animation = *view_data.animation;
 
-    const auto& animation_group = animation_group_map->at(animation.prefix).at(animation.current_state);
-    const SpriteFrameData& sprite_frame_data = sprite_frame_data_map->at(animation.prefix).at(animation.frame_id);
+    const auto& animation_group =
+        animation_group_map->at(animation.prefix).at(animation.current_state);
+    const SpriteFrameData& sprite_frame_data =
+        sprite_frame_data_map->at(animation.prefix).at(animation_group.to - 1);
 
     // 计算边界矩形...
 
-    //计算边界矩形...?
-    //float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x * animation.anchor_x;
-    //float top = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y * (1.0f - animation.anchor_y);
+    // 计算边界矩形...?
+    // float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x *
+    // animation.anchor_x; float top = view_data.position.y - sprite_frame_data.displaySize.y *
+    // animation.scale_y * (1.0f - animation.anchor_y);
 
     sf::FloatRect bounds(sf::Vector2f(view_data.position.x, view_data.position.y),
-    sf::Vector2f( sprite_frame_data.displaySize.x *animation.scale_x, sprite_frame_data.displaySize.y * animation.scale_y));
+                         sf::Vector2f(sprite_frame_data.displaySize.x * animation.scale_x,
+                                      sprite_frame_data.displaySize.y * animation.scale_y));
 
     return bounds.contains(click_position);
 }
@@ -123,33 +134,49 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
 /**
  * @brief 处理SFML鼠标点击
  */
-void UIManager::HandleClick(const sf::Event& event, const sf::RenderWindow& window, const sf::Vector2f& click_position)
+void UIManager::HandleClick()
 {
-    if (event.is<sf::Event::MouseButtonPressed>()) {
-        const auto& mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
+    while (auto event_opt = window->pollEvent()) {
+        if (!event_opt.has_value()) {
+            continue;
+        }
+        const auto& event = event_opt.value();
+        if (event.is<sf::Event::MouseButtonPressed>()) {
+            const auto& mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
 
-        if (mouse_event.button == sf::Mouse::Button::Left) {
+            if (mouse_event.button == sf::Mouse::Button::Left) {
 
-            // 遍历所有ViewData，寻找被点击对象
-            bool hit_found = false;
+                // 遍历所有ViewData，寻找被点击对象
+                bool hit_found = false;
 
-            for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
-                const ViewData& view_data = *it;
-
-                if (IsClickHit(view_data, click_position)) {
-                    view_data.animation->clicked = true;
-
-                    // 如果有关联的actions，准备触发
-                    if (!view_data.animation->actions.empty()) {
-                        INFO("Object has " + std::to_string(view_data.animation->actions.size()) + " actions available");
+                for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
+                    const ViewData& view_data = *it;
+                    if (view_data.animation->actions.empty()) {
+                        continue;
                     }
-                    hit_found = true;
-                    break;
-                }
-            }
+                    sf::Vector2f click_position(static_cast<float>(mouse_event.position.x),
+                                                static_cast<float>(mouse_event.position.y));
+                    INFO("Click position: (" + std::to_string(click_position.x) + ", " +
+                         std::to_string(click_position.y) + ")");
+                    INFO("Checking view_data: " + view_data.animation->prefix + " at position (" +
+                         std::to_string(view_data.position.x) + ", " +
+                         std::to_string(view_data.position.y) + ")");
+                    if (IsClickHit(view_data, click_position)) {
+                        view_data.animation->clicked = true;
 
-            if (!hit_found) {
-                INFO("No objects hit at click position");
+                        // 如果有关联的actions，准备触发
+
+                        INFO("Object has " + std::to_string(view_data.animation->actions.size()) +
+                             " actions available");
+
+                        hit_found = true;
+                        break;
+                    }
+                }
+
+                if (!hit_found) {
+                    INFO("No objects hit at click position");
+                }
             }
         }
     }

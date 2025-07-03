@@ -23,7 +23,7 @@ public:
     void SetViewData(std::multiset<ViewData, ViewDataComparator>& view_data_queue)
     {
         this->view_data_queue = &view_data_queue;
-    }   
+    }
     void SetWindow(sf::RenderWindow& window)
     {
         this->window = &window;
@@ -39,7 +39,7 @@ public:
     void SetTextureMap(TextureMap& texture_map)
     {
         this->texture_map = &texture_map;
-    }    
+    }
 
     std::queue<Action>* GetActionQueue()
     {
@@ -52,7 +52,7 @@ public:
      * @param window 渲染窗口（用于坐标转换）
      * @param click_position 鼠标点击的世界坐标位置
      */
-    void HandleClick(const sf::Event& event, const sf::RenderWindow& window, const sf::Vector2f& click_position);
+    void HandleClick();
 
 private:
     void Render(const ViewData& view_data);

@@ -156,11 +156,29 @@ void Store::SpawnWaves()
 
     while (pending_enemy_queue.size() > 0 &&
            pending_enemy_queue.top().spawn_time <= current_wave_time) {
+        INFO(waves.size());
+        INFO("Current wave index: " << current_wave_index);
+        INFO("Current subwave index: " << current_subwave_index);
+        const auto& sub_wave = waves[current_wave_index].sub_waves[current_subwave_index];
+        INFO("=== SubWave Debug Info ===");
+        INFO("SubWave time: " << sub_wave.time);
+        INFO("SubWave count: " << sub_wave.count);
+        INFO("SubWave path_id: " << sub_wave.path_id);
+        INFO("SubWave subpath_id: " << sub_wave.subpath_id);
+        INFO("SubWave enemy_type: " << static_cast<int>(sub_wave.enemy_type));
+        INFO("SubWave gap: " << sub_wave.gap);
+
         const auto& pending_enemy        = pending_enemy_queue.top();
         Enemy*      new_enemy            = template_manager.CreateEnemy(pending_enemy.enemy_type);
         new_enemy->path_info.path_id     = pending_enemy.path_id;
         new_enemy->path_info.subpath_id  = pending_enemy.subpath_id;
         new_enemy->path_info.waypoint_id = 0;
+        // 验证构造后的值
+        INFO("Created PendingEnemy:");
+        INFO("  - enemy_type: " << static_cast<int>(pending_enemy.enemy_type));
+        INFO("  - spawn_time: " << pending_enemy.spawn_time);
+        INFO("  - path_id: " << pending_enemy.path_id);
+        INFO("  - subpath_id: " << pending_enemy.subpath_id);
         new_enemy->position =
             (*resource_manager.GetPaths())[pending_enemy.path_id][pending_enemy.subpath_id][0];
         QueueEnemy(new_enemy);

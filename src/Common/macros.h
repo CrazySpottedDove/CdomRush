@@ -29,7 +29,7 @@
 #ifdef DEBUG
 #    include <iostream>
 #    define INFO(message)                                                                \
-        std::cout << ANSI_COLOR_CYAN << ANSI_COLOR_BOLD << "[INFO] " << ANSI_COLOR_RESET \
+        std::cerr << ANSI_COLOR_CYAN << ANSI_COLOR_BOLD << "[INFO] " << ANSI_COLOR_RESET \
                   << ANSI_COLOR_CYAN << message << ANSI_COLOR_RESET << std::endl
 
 #    define ERROR(message)                                                               \
@@ -41,7 +41,7 @@
                   << ANSI_COLOR_GREEN << message << ANSI_COLOR_RESET << std::endl
 
 #    define WARNING(message)                                                                  \
-        std::cout << ANSI_COLOR_YELLOW << ANSI_COLOR_BOLD << "[WARNING] " << ANSI_COLOR_RESET \
+        std::cerr << ANSI_COLOR_YELLOW << ANSI_COLOR_BOLD << "[WARNING] " << ANSI_COLOR_RESET \
                   << ANSI_COLOR_YELLOW << message << ANSI_COLOR_RESET << std::endl
 #    define DEBUG_CODE(debug_code) {debug_code}
 #else

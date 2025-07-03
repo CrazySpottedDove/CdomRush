@@ -36,7 +36,6 @@ public:
         return true;   // 返回 true 表示移除成功
     }
 
-    virtual void death_action() = 0;   // 纯虚函数，用于处理敌人死亡后的行为
     virtual Enemy* Clone() const = 0;   // 纯虚函数，用于克隆敌人对象
 };
 

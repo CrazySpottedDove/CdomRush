@@ -24,7 +24,7 @@ void enemy_move_tick(const Store& store, Enemy& self);
  * @param store [in]
  * @param self [in, out]
  */
-void soldier_move_tick(const Store& store, Soldier& self);
+void soldier_move_tick(const Store& store, Soldier& self, Position target_position);
 
 /**
  * @brief 判断敌人是否已经到达防守点

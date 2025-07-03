@@ -83,6 +83,10 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
     )
 }
 
+void calc::soldier_move_tick(const Store& store, Soldier& self, Position target_position){
+    
+}
+
 bool calc::enemy_reached_defence_point(const Store& store, const Enemy& self)
 {
     const Paths* paths = store.resource_manager.GetPaths();

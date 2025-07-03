@@ -45,4 +45,5 @@ public:
         else if(heading == Heading::Down) return State::WalkingDown; // 如果方向是向下，设置状态为向下行走
         else return State::WalkingLeftRight; // 如果方向是向左，设置状态为左右行走
     }
+    virtual void death_action() = 0;   // 纯虚函数，用于处理unit死亡后的行为
 };

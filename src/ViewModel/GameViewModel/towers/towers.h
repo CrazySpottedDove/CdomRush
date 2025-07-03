@@ -7,11 +7,6 @@ class Store;
 
 class Tower;
 
-enum class TowerAction{
-    Upgrade,
-    Sell,
-    ChangeRally
-};
 
 struct Layer{
     Animation animation;
@@ -33,7 +28,6 @@ public:
     Position            position;
     int                total_price;
     // 每个 Tower 的操作列表，每个操作会对应一个新的tower类型和一个价格:
-    std::vector <std::pair<TowerAction, std::pair<TowerType, int>>> tower_actions;
     // 每个 Tower 的图层列表:
     std::vector<Layer> Layers;
 

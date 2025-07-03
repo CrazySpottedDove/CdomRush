@@ -15,22 +15,24 @@ void ResourceManager::LoadTexture(const std::string& file_name, TextureLevel lev
             if (!load_success) { ERROR("Failed to load texture: " << file_name); } else {
                 SUCCESS("Successfully loaded texture: " << file_name);
             })
-        texture_level_map[file_name] = level;
+        texture_level_map[level].insert(file_name);
     }
 }
 
 void ResourceManager::UnloadSpecificTexturesAndSpriteFrameDatas()
 {
-    specific_sprite_frame_data_map.clear();
-    for (auto it = texture_level_map.begin(); it != texture_level_map.end();) {
-        if (it->second == TextureLevel::Specific) {
-            texture_map.erase(it->first);
-            it = texture_level_map.erase(it);
-        }
-        else {
-            ++it;
-        }
+    for (auto it = prefix_level_map[TextureLevel::Specific].begin();
+         it != prefix_level_map[TextureLevel::Specific].end();
+         ++it) {
+        sprite_frame_data_map.erase(*it);
     }
+    for (auto it = texture_level_map[TextureLevel::Specific].begin();
+         it != texture_level_map[TextureLevel::Specific].end();
+         ++it) {
+        texture_map.erase(*it);
+    }
+    prefix_level_map[TextureLevel::Specific].clear();
+    texture_level_map[TextureLevel::Specific].clear();
 }
 
 void ResourceManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed,
@@ -62,18 +64,8 @@ void ResourceManager::LoadTexturesAndSpriteFrameDatas(const std::string& file_na
             SpriteFrameData  frame_data;
             ParseSpriteFrameData(frame_data_unparsed, frame_data);
             LoadTexture(IMAGES_PATH + frame_data.textureName, level);
-            switch (level) {
-            case TextureLevel::Common:
-            {
-                common_sprite_frame_data_map[prefix].push_back(frame_data);
-                break;
-            }
-            case TextureLevel::Specific:
-            {
-                specific_sprite_frame_data_map[prefix].push_back(frame_data);
-                break;
-            }
-            }
+            sprite_frame_data_map[prefix].push_back(frame_data);
+            prefix_level_map[level].insert(prefix);
         }
     }
 }

@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 enum class TextureLevel
@@ -15,9 +16,15 @@ enum class TextureLevel
     Specific
 };
 
+// TextureName -> Texture
 typedef std::unordered_map<std::string, sf::Texture> TextureMap;
 
-typedef std::unordered_map<std::string, TextureLevel> TextureLevelMap;
+// TextureLevel -> TextureName
+typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>> TextureLevelMap;
+
+// TextureLevel -> Prefix
+typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>>
+PrefixLevelMap;
 
 struct SpriteFrameData
 {
@@ -41,11 +48,11 @@ struct AnimationGroup
     {}
 };
 
-// prefix->(状态->动画组)
+// prefix->(State->AnimationGroup)
 typedef std::unordered_map<std::string, std::unordered_map<State, AnimationGroup>>
     AnimationGroupMap;
 
-// prefix->纹理文件名
+// prefix->(std::vector<SpriteFrameData>)
 typedef std::unordered_map<std::string, std::vector<SpriteFrameData>> SpriteFrameDataMap;
 
 struct Animation

@@ -27,9 +27,6 @@ public:
     TowerType type = TowerType::None; // 默认塔类型为 None
     Position            position;
     int                total_price;
-    // 每个 Tower 的操作列表，每个操作会对应一个新的tower类型和一个价格:
-    // 每个 Tower 的图层列表:
-    std::vector<Layer> Layers;
 
     bool Insert(Store& store) override {
         return true;

@@ -57,13 +57,16 @@ typedef std::unordered_map<std::string, std::vector<SpriteFrameData>> SpriteFram
 struct Animation
 {
     Animation() = default;   // 默认构造函数
-    Animation(const State state, const std::string& prefix)
+    Animation(const State state, const std::string& prefix, Position offset_ = sf::Vector2f(0,0), bool hidden_ = false)
         : current_state(state)
         , prefix(prefix)
+        , offset(offset_)
+        ,hidden(hidden_)
     {}
     State               current_state;   // 当前状态
     std::string         prefix;          // 动画的前缀名
     std::vector<Action> actions;
+    Position            offset     = sf::Vector2f(0,0);
     State               last_state = State::None;   // 上一个状态
     double              rotation   = 0.0;           // 旋转角度
     bool                pending    = true;          // 动画正在进行
@@ -73,5 +76,6 @@ struct Animation
     float               scale_x    = 1.0f;    // 水平缩放
     float               scale_y    = 1.0f;    // 垂直
     bool                clicked    = false;   // 是否处于被点击状态 (决定 actions UI 是否展开)
+    bool                hidden     = false;
     std::size_t         frame_id   = 1;       // 动画进行到第几帧
 };

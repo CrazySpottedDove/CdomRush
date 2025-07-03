@@ -84,3 +84,4 @@ void SoldierMelee::Update(Store& store){
 
     return ;
 }
+

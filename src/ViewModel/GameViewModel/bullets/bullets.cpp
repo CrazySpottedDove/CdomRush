@@ -8,12 +8,12 @@ void Bullet::check_position(Store& store)
     // 检查目标是否存活
     if(source_type == SourceType::Tower || source_type == SourceType::Soldier){
         Enemy* target = store.GetEnemy(damage_event.target);   // 获取目标敌人
-        if (target->animation.current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
+        if (target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
         else target_position = target->position + target->Hit_offset;   // 更新目标位置
     }
     if(source_type == SourceType::Enemy){
         Soldier* target = store.GetSoldier(damage_event.target);   // 获取目标士兵
-        if (target->animation.current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
+        if (target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
         else target_position = target->position + target->Hit_offset;   // 更新目标位置
     }
 }
@@ -49,11 +49,11 @@ bool Bullet::Insert(Store& store)
 void Arrow::Update(Store& store)
 {
     // 更新箭矢位置和动画
-    if(animation.current_state == State::Hit) return ;   // 如果已经击中，则不再更新
+    if(animations[0].current_state == State::Hit) return ;   // 如果已经击中，则不再更新
 
     float t = (store.time - initial_time) / totalDuration_;
     if (t >= 1.0f) {
-        animation.current_state = State::Hit;           // 击中了
+        animations[0].current_state = State::Hit;           // 击中了
         store.QueueDamageEvent(damage_event);   // 结算伤害
         return;
     }
@@ -68,19 +68,19 @@ void Arrow::Update(Store& store)
     float angle_radians = std::atan2(dBezier.y, dBezier.x);
     float angle_degrees = angle_radians * 180.0f / 3.14159265f;
 
-    this->animation.rotation = angle_degrees;
+    this->animations[0].rotation = angle_degrees;
     return ;
 }
 
 void Bolt::Update(Store& store)
 {
     // 更新法球位置和动画
-    if(animation.current_state == State::Hit) return ;   // 如果已经击中，则不再更新
+    if(animations[0].current_state == State::Hit) return ;   // 如果已经击中，则不再更新
 
     float t = (store.time - initial_time) / totalDuration_;
     if (t >= 1.0f) {
         store.QueueDamageEvent(damage_event);   // 结算伤害
-        animation.current_state = State::Hit;           // 击中了
+        animations[0].current_state = State::Hit;           // 击中了
         return;
     }
 
@@ -95,7 +95,7 @@ void Bolt::Update(Store& store)
 void Bomb::Update(Store& store)
 {
     // 更新炸弹位置和动画
-    if(animation.current_state == State::Hit) return ;   // 如果已经击中，则不再更新
+    if(animations[0].current_state == State::Hit) return ;   // 如果已经击中，则不再更新
 
     float t = (store.time - initial_time) / totalDuration_;
     if (t >= 1.0f && (source_type == SourceType::Tower || source_type == SourceType::Soldier)) {
@@ -105,7 +105,7 @@ void Bomb::Update(Store& store)
             event.target      = id;         // 设置目标
             store.QueueDamageEvent(event);      // 结算伤害
         }
-        animation.current_state = State::Hit;   // 击中了
+        animations[0].current_state = State::Hit;   // 击中了
         return;
     }
 
@@ -116,7 +116,7 @@ void Bomb::Update(Store& store)
             event.target      = id;         // 设置目标
             store.QueueDamageEvent(event);      // 结算伤害
         }
-        animation.current_state = State::Hit;   // 击中了
+        animations[0].current_state = State::Hit;   // 击中了
         return;
     }
 
@@ -129,6 +129,6 @@ void Bomb::Update(Store& store)
     float angle_radians = std::atan2(dBezier.y, dBezier.x);
     float angle_degrees = angle_radians * 180.0f / 3.14159265f;
 
-    this->animation.rotation = angle_degrees;
+    this->animations[0].rotation = angle_degrees;
     return;
 }

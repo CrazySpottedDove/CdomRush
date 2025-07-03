@@ -37,42 +37,42 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
         if (displacement.y > 0) {
             if (displacement.x > displacement.y) {
                 self.heading = Heading::Right;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
             else {
                 self.heading = Heading::Down;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
         }
         else {
             if( displacement.x > -displacement.y) {
                 self.heading = Heading::Right;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
             else {
                 self.heading = Heading::Up;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
         }
     }else {
         if (displacement.y > 0) {
             if (-displacement.x > displacement.y) {
                 self.heading = Heading::Left;
-                self.animation.flip = true;
+                self.animations[0].flip = true;
             }
             else {
                 self.heading = Heading::Down;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
         }
         else {
             if (-displacement.x > -displacement.y) {
                 self.heading = Heading::Left;
-                self.animation.flip = true;
+                self.animations[0].flip = true;
             }
             else {
                 self.heading = Heading::Up;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
         }
     }

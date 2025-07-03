@@ -31,7 +31,7 @@ void SoldierMelee::Update(Store& store){
                 return ;
             }
             else{
-                for(register int i=0;i<melee.attacks.size();i++){
+                for(int i=0;i<melee.attacks.size();i++){
                     if (this->melee.attacks[i].IsReady(store)) {
                         melee.attacks[i].Apply(store,id,target_enemy,SourceType::Soldier);   // 执行近战攻击
                         this->animation.current_state = State::Attack;   // 设置状态为攻击
@@ -42,17 +42,20 @@ void SoldierMelee::Update(Store& store){
             }
         }
         else{
-            if(calc::ready_to_regen(store,*this)) calc::regen(store,*this);
             target_enemy = calc::find_foremost_enemy(store,rally_point,range,true);
             if(target_enemy != INVALID_ID){
-                Enemy* enemy = store.GetEnemy(target_enemy);
-                
+                ActiveEnemy* enemy_ptr = dynamic_cast<ActiveEnemy*>(store.GetEnemy(target_enemy));
+                enemy_ptr->blocker = id;
                 return ;
             }
             if(position!=rally_point+rally_point_offset){
+                health.last_regen_time = store.time;
                 calc::soldier_move_tick(store,*this,rally_point+rally_point_offset);
                 walkjudge();
                 return ;
+            }
+            if(position == rally_point + rally_point_offset){
+                if(calc::ready_to_regen(store,*this)) calc::regen(store,*this);
             }
         }
         return ;
@@ -65,14 +68,19 @@ void SoldierMelee::Update(Store& store){
             return ;
         }
         else{
-            ActiveEnemyMelee* enemy_ptr = dynamic_cast<ActiveEnemyMelee*>(store.GetEnemy(target_enemy));
-
-            if(position==rally_point+rally_point_offset) animation.current_state = State::Idle;
-            else calc::soldier_move_tick(store,*this,rally_point+rally_point_offset),walkjudge();
+            Enemy* enemy_ptr = store.GetEnemy(target_enemy);
+            if(position==enemy_ptr->slot+slot+enemy_ptr->position) animation.current_state = State::Idle;
+            else calc::soldier_move_tick(store,*this,enemy_ptr->slot+slot+enemy_ptr->position),walkjudge();
             return ;
         }
     }
     
-    //在状态改变的时候记得改一下last_heal_time
+    if(animation.current_state == State::Attack){
+        if(animation.pending == true) return ;
+        animation.current_state = State::Idle;
+        animation.pending = true;   // 设置动画为进行中
+        return;
+    }
 
+    return ;
 }

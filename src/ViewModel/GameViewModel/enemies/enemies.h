@@ -55,7 +55,12 @@ public:
 
 };
 
-class ActiveEnemyMelee : public Enemy
+class ActiveEnemy : public Enemy{
+public:
+    ID blocker = INVALID_ID;
+};
+
+class ActiveEnemyMelee : public ActiveEnemy
 {
 public:
     ActiveEnemyMelee()
@@ -63,7 +68,6 @@ public:
         type = EnemyInnerType::ActiveEnemyMelee;   // 设置敌人类型为近战敌人
         slot = sf::Vector2f(0.0f, 0.0f);       // 初始化近战偏移
     }
-    ID blocker = INVALID_ID;   // 用于阻挡敌人前进的单位
     Melee    melee;               // 近战攻击组件
 
     void Update(Store& store) override;
@@ -73,7 +77,7 @@ public:
     void death_action() override{}
 };
 
-class ActiveEnemyRange : public Enemy
+class ActiveEnemyRange : public ActiveEnemy
 {
 public:
     ActiveEnemyRange()
@@ -81,7 +85,6 @@ public:
         type = EnemyInnerType::ActiveEnemyRange;   // 设置敌人类型为远程敌人
         slot = sf::Vector2f(0.0f, 0.0f);       // 初始化近战偏移
     }
-    ID blocker = INVALID_ID;   // 用于阻挡敌人前进的单位
     Ranged ranged;             // 远程攻击组件
     Melee melee;               // 近战攻击组件
     Position bullet_offset;

@@ -1,5 +1,6 @@
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/store/store.h"
+#include "ViewModel/GameViewModel/soldiers/soldiers.h"
 #include <cmath>
 
 void Bullet::check_position(Store& store)

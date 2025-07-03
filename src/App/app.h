@@ -22,4 +22,5 @@ private:
     UIManager ui_manager;
     GameState game_state = GameState::Begin;
     sf::RenderWindow window;
+    
 };

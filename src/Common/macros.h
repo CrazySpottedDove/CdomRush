@@ -50,7 +50,7 @@
 #endif
 
 constexpr double FRAME_LENGTH = 1.0 / FPS;
-
+constexpr int FRAME_LENGTH_IN_MILLISECONDS = FRAME_LENGTH * 1000;
 #define INVALID_ID -1
 typedef int                   ID;
 typedef sf::Vector2f          Position;

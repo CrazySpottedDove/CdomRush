@@ -116,7 +116,7 @@ void Store::UpdateTowers()
     }
 }
 
-void Store::UpdateFx()
+void Store::UpdateFxs()
 {
     auto it = fxs.begin();
     while (it != fxs.end()) {
@@ -193,106 +193,6 @@ void Store::SpawnWaves()
         }
     }
 }
-
-// void Store::ExecuteEvents()
-// {
-//     while (!event_queue.empty()) {
-//         const Event event = std::move(event_queue.front());
-//         event_queue.pop();
-//         switch (event.type) {
-//         case EventType::SelectLevel:
-//             callback::SelectLevel(*this, std::get<std::string>(event.data.prop1));
-//             game_state = GameState::Loading;
-//             break;
-//         }
-//     }
-// }
-
-// void Store::Update(sf::RenderWindow& window)
-// {
-//     UpdateDamageEvents(window);
-//     UpdateTowers(window);
-//     UpdateEnemies(window);
-//     UpdateSoldiers(window);
-//     UpdateBullets(window);
-// }
-
-// void Store::Game(sf::RenderWindow& window)
-// {
-//     static constexpr int FRAME_LENGTH_IN_MILLISECONDS = FRAME_LENGTH * 1000;
-//     while (true) {
-//         switch (game_state) {
-//         case GameState::Begin:
-//             if (come_into_level_select_view) {
-//                 for (const auto& level : level_manager.levels) {
-//                     Fx* fx       = template_manager.CreateFx(FxType::LevelFlag);
-//                     fx->position = level.second;
-//                     QueueFx(fx);
-//                     ui_manager.QueueFxUI(fx);
-//                 }
-//                 come_into_level_select_view = false;
-//             }
-
-//             window.clear();
-//             ui_manager.RenderMap(window, "map_background");
-//             UpdateFx(window);
-
-//             window.display();
-//             ExecuteEvents();
-//             DEBUG_CODE(game_state = GameState::Loading;)
-//             break;
-//         case GameState::GameStart:
-//             window.clear();
-//             ui_manager.RenderMap(window, level_manager.GetCurrentLevelName());
-//             Update(window);
-//             window.display();
-//             time += FRAME_LENGTH;
-//             ExecuteEvents();
-//             DEBUG_CODE(game_state = GameState::GamePlaying;)
-//             break;
-//         case GameState::GamePlaying:
-//             wave_manager.Update(*this);
-//             window.clear();
-//             ui_manager.RenderMap(window, level_manager.GetCurrentLevelName());
-//             Update(window);
-//             time += FRAME_LENGTH;
-//             window.display();
-//             ExecuteEvents();
-//             // DEBUG_CODE(
-//             //     bool changed = false;
-//             //     if (time > 10){
-//             //         for (auto &[id,enemy ] : enemies) {
-//             //             if(!changed){
-//             //                 enemy->animation.state   = State::Death;
-//             //                 enemy->health.death_time = time;
-//             //                 std::cout << enemy->health.dead_lifetime << std::endl;
-//             //                 changed = true;
-//             //             }
-//             //         }
-//             //     }
-//             // )
-//             break;
-//         case GameState::GameOver:
-//             // AnimationPlayer::DrawGameOver();
-//             ExecuteEvents();
-//             break;
-//         case GameState::Loading:
-//             // AnimationPlayer::DrawLoading();
-//             DEBUG_CODE(callback::SelectLevel(*this, "acaroth");)
-//             level_manager.LoadLevelResource(*this);
-//             game_state = GameState::GameStart;
-//             time       = 0.0;
-//             break;
-//         }
-//         std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
-//     }
-// }
-
-// Store::Store()
-// {
-//     ui_manager.store_            = this;
-//     ui_manager.animation_player_ = std::make_unique<AnimationPlayer>(animation_manager);
-// }
 
 void Store::QueueViewDataFromEntity(Entity* entity)
 {

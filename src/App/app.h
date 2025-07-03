@@ -11,6 +11,7 @@ enum class GameState
     GameStart,     // 开始一场游戏，等待玩家点击开始按钮
     GamePlaying,   // 游戏进行中
     GameOver,      // 游戏结束，显示游戏结果
+    None, // 未定义状态
 };
 
 class App{
@@ -20,7 +21,8 @@ public:
 private:
     Store store;
     UIManager ui_manager;
+    GameState last_state = GameState::None;
     GameState game_state = GameState::Begin;
     sf::RenderWindow window;
-    
+    std::string current_level_name;
 };

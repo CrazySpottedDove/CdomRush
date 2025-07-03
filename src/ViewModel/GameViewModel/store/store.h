@@ -102,7 +102,7 @@ public:
     void UpdateBullets();
     void UpdateTowers();
     void UpdateSoldiers();
-    void UpdateFx();
+    void UpdateFxs();
 
     /**
      * @brief 在关卡进行时调用，生成敌人

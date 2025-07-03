@@ -3,6 +3,7 @@
 #include "Common/animation.h"
 #include "Common/macros.h"
 #include <SFML/Graphics/Texture.hpp>
+#include <set>
 
 struct ViewData{
     Animation* animation;
@@ -16,3 +17,5 @@ struct ViewDataComparator
         return lhs.position.y < rhs.position.y;
     }
 };
+
+typedef std::multiset<ViewData, ViewDataComparator> ViewDataQueue;

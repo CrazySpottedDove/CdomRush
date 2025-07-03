@@ -12,3 +12,6 @@ const std::unordered_map<std::string, TowerType> tower_type_str_map = {
     {"tower_mage_1", TowerType::Mage1},
     {"tower_mage_2", TowerType::Mage2},
     {"tower_mage_3", TowerType::Mage3}};
+
+const std::unordered_map<std::string, EnemyType> enemy_type_str_map = {
+    {"ForestTroll", EnemyType::ForestTroll}, {"OrcArmored", EnemyType::orc_armored}};

@@ -1,141 +1,198 @@
 #include "ViewModel/GameViewModel/store/store.h"
+#include "Common/macros.h"
+#include "Common/viewData.h"
 #include "ViewModel/GameViewModel/Function/calc/damage.h"
 #include "ViewModel/GameViewModel/Function/calc/hp.h"
 #include "ViewModel/GameViewModel/Function/calc/motion.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
-#include "ViewModel/GameViewModel/components/damage.h"
-#include "Common/state.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
 #include "ViewModel/GameViewModel/soldiers/soldiers.h"
-#include "Common/macros.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <thread>
+#include <vector>
 
+/**
+ * @brief 首先考虑结算所有可以结算的伤害事件，尽快完成生命值的更新
+ * @note 发现敌人已经死亡或者从 store 中移除时，不执行伤害事件，直接删去
+ *
+ */
+void Store::UpdateDamageEvents()
+{
+    const auto new_damage_event_end = std::remove_if(
+        damage_events.begin(), damage_events.end(), [this](DamageEvent& damage_event) -> bool {
+            if (damage_event.target == INVALID_ID ||
+                calc::is_dead(*GetEnemy(damage_event.target))) {
+                return true;
+            }
 
-// /**
-//  * @brief 首先考虑结算所有可以结算的伤害事件，尽快完成生命值的更新
-//  * @note 发现敌人已经死亡或者从 store 中移除时，不执行伤害事件，直接删去
-//  *
-//  */
-// void Store::UpdateDamageEvents(sf::RenderWindow& window)
-// {
-//     const auto new_damage_event_end = std::remove_if(
-//         damage_events.begin(), damage_events.end(), [this](DamageEvent& damage_event) -> bool {
-//             if (damage_event.target == INVALID_ID ||
-//                 calc::is_dead(*GetEnemy(damage_event.target))) {
-//                 return true;
-//             }
+            if (damage_event.data.apply_delay > 0) {
+                --damage_event.data.apply_delay;
+                return false;
+            }
 
-//             if (damage_event.data.apply_delay > 0) {
-//                 --damage_event.data.apply_delay;
-//                 return false;
-//             }
+            calc::enforce_damage(*this, damage_event);
+            return true;
+        });
+    damage_events.erase(new_damage_event_end, damage_events.end());
+}
 
-//             calc::enforce_damage(*this, damage_event);
-//             return true;
-//         });
-//     damage_events.erase(new_damage_event_end, damage_events.end());
-// }
+void Store::UpdateEnemies()
+{
+    auto it = enemies.begin();
+    while (it != enemies.end()) {
+        Enemy* enemy = it->second;
+        if (calc::is_dead(*enemy) && calc::should_remove(*this, *enemy)) {
+            DEBUG_CODE(std::cout << "Removing enemy with ID: " << enemy->id << std::endl;
+                       std::cout << enemy->health.dead_lifetime << std::endl;
+                       std::cout << enemy->health.death_time << std::endl;
+                       std::cout << time << std::endl;
+                       break;)
+            it = DequeueEnemy(it);
+            continue;
+        }
+        if (calc::enemy_reached_defence_point(*this, *enemy)) {
+            life -= enemy->life_cost;
+            gold += enemy->gold;
+            it = DequeueEnemy(it);
+            continue;
+        }
+        enemy->Update(*this);
+        QueueViewDataFromEntity(enemy);
+        ++it;
+    }
+}
 
-// void Store::UpdateEnemies(sf::RenderWindow& window)
-// {
-//     auto it = enemies.begin();
-//     while (it != enemies.end()) {
-//         Enemy* enemy = it->second;
-//         if (calc::is_dead(*enemy) && calc::should_remove(*this, *enemy)) {
-//             DEBUG_CODE(
-//                 std::cout << "Removing enemy with ID: " << enemy->id << std::endl;
-//                 std::cout << enemy->health.dead_lifetime << std::endl;
-//                 std::cout << enemy->health.death_time << std::endl;
-//                 std::cout << time << std::endl;
-//                 break;
-//             )
-//             it = DequeueEnemy(it);
-//             continue;
-//         }
-//         if (calc::enemy_reached_defence_point(*this, *enemy)) {
-//             life -= enemy->life_cost;
-//             gold += enemy->gold;
-//             it = DequeueEnemy(it);
-//             continue;
-//         }
-//         enemy->Update(*this);
-//         ui_manager.RenderEnemyUI(window, enemy);
-//         ++it;
-//     }
-// }
+void Store::UpdateBullets()
+{
+    auto it = bullets.begin();
+    while (it != bullets.end()) {
+        Bullet* bullet = it->second;
+        if (bullet->animation.current_state == State::Hit &&
+            resource_manager.GetAnimationGroupMap()
+                    ->at(bullet->animation.prefix)
+                    .at(bullet->animation.current_state)
+                    .to <= bullet->animation.frame_id) {
+            bullet->Remove(*this);
+            delete bullet;
+            it = bullets.erase(it);
+            continue;
+        }
+        bullet->Update(*this);
+        QueueViewDataFromEntity(bullet);
+        ++it;
+    }
+}
 
-// void Store::UpdateBullets(sf::RenderWindow& window)
-// {
-//     auto it = bullets.begin();
-//     while (it != bullets.end()) {
-//         Bullet* bullet = it->second;
-//         if (bullet->animation.current_state == State::Hit &&
-//             animation_manager
-//                     .RequireAnimationGroup(bullet->animation.prefix, bullet->animation.current_state)
-//                     .to <= bullet->animation.frame_id) {
-//             bullet->Remove(*this);
-//             ui_manager.DeQueueBulletUI(bullet);
-//             delete bullet;
-//             it = bullets.erase(it);
-//             continue;
-//         }
-//         bullet->Update(*this);
-//         ui_manager.RenderBulletUI(window, bullet);
-//         ++it;
-//     }
-// }
+void Store::UpdateSoldiers()
+{
+    auto it = soldiers.begin();
+    while (it != soldiers.end()) {
+        Soldier* soldier = it->second;
+        if (calc::is_dead(*soldier) && calc::should_remove(*this, *soldier)) {
+            soldier->Remove(*this);
+            delete soldier;
+            it = soldiers.erase(it);
+            continue;
+        }
+        soldier->Update(*this);
+        QueueViewDataFromEntity(soldier);
+        ++it;
+    }
+}
 
-// void Store::UpdateSoldiers(sf::RenderWindow& window)
-// {
-//     auto it = soldiers.begin();
-//     while (it != soldiers.end()) {
-//         Soldier* soldier = it->second;
-//         if (calc::is_dead(*soldier) && calc::should_remove(*this, *soldier)) {
-//             soldier->Remove(*this);
-//             ui_manager.DeQueueSoldierUI(soldier);
-//             delete soldier;
-//             it = soldiers.erase(it);
-//             continue;
-//         }
-//         soldier->Update(*this);
-//         ui_manager.RenderSoldierUI(window, soldier);
-//         ++it;
-//     }
-// }
+/**
+ * @brief 删除和购买塔应该通过事件来处理，塔的 update 中因此没有删除这一项
+ *
+ * @param window
+ */
+void Store::UpdateTowers()
+{
+    auto it = towers.begin();
+    while (it != towers.end()) {
+        Tower* tower = it->second;
+        tower->Update(*this);
+        QueueViewDataFromEntity(tower);
+        ++it;
+    }
+}
 
-// /**
-//  * @brief 删除和购买塔应该通过事件来处理，塔的 update 中因此没有删除这一项
-//  *
-//  * @param window
-//  */
-// void Store::UpdateTowers(sf::RenderWindow& window)
-// {
-//     auto it = towers.begin();
-//     while (it != towers.end()) {
-//         Tower* tower = it->second;
-//         tower->Update(*this);
-//         ui_manager.RenderTowerUI(window, tower);
-//         DEBUG_CODE(
-//             std::cout << "Tower ID: " << tower->id << ", Position: (" << tower->position.x
-//                       << ", " << tower->position.y << "), State: " << static_cast<int>(tower->animation.current_state)
-//                       << std::endl;
-//         )
-//         ++it;
-//     }
-// }
+void Store::UpdateFx()
+{
+    auto it = fxs.begin();
+    while (it != fxs.end()) {
+        Fx* fx = it->second;
+        fx->Update(*this);
+        QueueViewDataFromEntity(fx);
+        ++it;
+    }
+}
 
-// void Store::UpdateFx(sf::RenderWindow& window)
-// {
-//     auto it = fxs.begin();
-//     while (it != fxs.end()) {
-//         Fx* fx = it->second;
-//         fx->Update(*this);
-//         ui_manager.RenderFxUI(window, fx);
-//         ++it;
-//     }
-// }
+void Store::InitTowers()
+{
+    for (const auto& tower_essential : *resource_manager.GetTowerEssentials()) {
+        Tower* tower       = template_manager.CreateTower(tower_essential.type);
+        tower->position    = tower_essential.position;
+        tower->rally_point = tower_essential.rally_point;
+        QueueTower(tower);
+    }
+}
+
+void Store::SpawnWaves()
+{
+    current_wave_time += FRAME_LENGTH;
+    std::vector<Wave>& waves = *resource_manager.GetWaves();
+    if (current_wave_index >= waves.size()) {
+        return;
+    }
+
+    if (preparing) {
+        if (current_wave_time >= waves[current_wave_index].preparation_time) {
+            preparing         = false;
+            current_wave_time = 0;
+        }
+        return;
+    }
+
+    while (pending_enemy_queue.size() > 0 &&
+           pending_enemy_queue.top().spawn_time <= current_wave_time) {
+        const auto& pending_enemy        = pending_enemy_queue.top();
+        Enemy*      new_enemy            = template_manager.CreateEnemy(pending_enemy.enemy_type);
+        new_enemy->path_info.path_id     = pending_enemy.path_id;
+        new_enemy->path_info.subpath_id  = pending_enemy.subpath_id;
+        new_enemy->path_info.waypoint_id = 0;
+        new_enemy->position =
+            (*resource_manager.GetPaths())[pending_enemy.path_id][pending_enemy.subpath_id][0];
+        QueueEnemy(new_enemy);
+        pending_enemy_queue.pop();
+    }
+
+    // 检查当前波次持续时间是否已经结束
+    if (current_wave_time >= waves[current_wave_index].duration) {
+        ++current_wave_index;
+        current_wave_time     = 0;
+        preparing             = true;
+        current_subwave_index = 0;
+        return;
+    }
+
+    // 检查当前波次的子波是否需要触发
+    while (waves[current_wave_index].sub_waves.size() > current_subwave_index) {
+        const auto& sub_wave = waves[current_wave_index].sub_waves[current_subwave_index];
+        if (current_wave_time >= sub_wave.time) {
+            // 生成子波的敌人
+            for (std::size_t i = 0; i < sub_wave.count; ++i) {
+                pending_enemy_queue.emplace(PendingEnemy(sub_wave.enemy_type,
+                                                     current_wave_time + i * sub_wave.gap,
+                                                     sub_wave.path_id,
+                                                     sub_wave.subpath_id));
+            }
+            ++current_subwave_index;
+        }
+        else {
+            break;
+        }
+    }
+}
 
 // void Store::ExecuteEvents()
 // {
@@ -236,6 +293,11 @@
 //     ui_manager.store_            = this;
 //     ui_manager.animation_player_ = std::make_unique<AnimationPlayer>(animation_manager);
 // }
+
+void Store::QueueViewDataFromEntity(Entity* entity)
+{
+    view_data_queue.emplace(ViewData{&entity->animation, entity->position});
+}
 
 std::unordered_map<ID, Enemy*>::iterator Store::DequeueEnemy(
     std::unordered_map<ID, Enemy*>::iterator& it)
@@ -366,33 +428,58 @@ Fx* Store::GetFx(const ID id) const
 
 void Store::QueueEnemy(Enemy* enemy)
 {
-    enemy->id = next_id++;
+    enemy->id        = next_id++;
     enemies[next_id] = enemy;
     enemy->Insert(*this);
 }
 void Store::QueueTower(Tower* tower)
 {
-    tower->id = next_id++;
+    tower->id       = next_id++;
     towers[next_id] = tower;
     tower->Insert(*this);
 }
 void Store::QueueBullet(Bullet* bullet)
 {
-    bullet->id = next_id++;
+    bullet->id       = next_id++;
     bullets[next_id] = bullet;
     bullet->Insert(*this);
 }
 
 void Store::QueueSoldier(Soldier* soldier)
 {
-    soldier->id = next_id++;
+    soldier->id       = next_id++;
     soldiers[next_id] = soldier;
     soldier->Insert(*this);
 }
 
 void Store::QueueFx(Fx* fx)
 {
-    fx->id = next_id++;
+    fx->id       = next_id++;
     fxs[next_id] = fx;
     fx->Insert(*this);
+}
+void Store::Clear()
+{
+    enemies.clear();
+    towers.clear();
+    bullets.clear();
+    soldiers.clear();
+    fxs.clear();
+    damage_events.clear();
+    view_data_queue.clear();
+    PendingEnemyQueue empty_queue;
+    pending_enemy_queue.swap(empty_queue);
+}
+void Store::ClearViewDataQueue()
+{
+    view_data_queue.clear();
+}
+ViewDataQueue* Store::GetViewDataQueue()
+{
+    return &view_data_queue;
+}
+
+void Store::InitLevel(const std::string& level_name){
+    resource_manager.LoadLevelResources(level_name);
+    InitTowers();
 }

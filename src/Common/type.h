@@ -34,3 +34,4 @@ enum class BulletType
 };
 
 extern const std::unordered_map<std::string, TowerType> tower_type_str_map;
+extern const std::unordered_map<std::string, EnemyType> enemy_type_str_map;

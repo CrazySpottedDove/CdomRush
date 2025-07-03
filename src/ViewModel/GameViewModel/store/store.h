@@ -1,19 +1,14 @@
 #pragma once
-// #include "Function/events/events.h"
-// #include "Manager/levelManager/levelManager.h"
-// #include "Manager/pathManager/pathManager.h"
-// #include "Manager/resourceManager/animationManager.h"
-// #include "Manager/templateManager/templateManager.h"
-// #include "Manager/waveManager/waveManager.h"
 
+#include "Common/macros.h"
+#include "Common/viewData.h"
+#include "Common/wave.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/components/damage.h"
-#include "Common/macros.h"
-#include "ViewModel/SpriteViewModel/resourceManager.h"
 #include "ViewModel/GameViewModel/templateManager/templateManager.h"
-#include "Common/viewData.h"
+#include "ViewModel/SpriteViewModel/resourceManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <set>
+#include <cstddef>
 #include <unordered_map>
 #include <vector>
 
@@ -22,28 +17,25 @@ class Tower;
 class Enemy;
 class Soldier;
 
-// TODO: 将 GameState 移动到 App 层
-enum class GameState
-{
-    Begin,         // 游戏打开时的界面，用于选择关卡
-    Loading,       // 加载资源时显示的等待界面
-    GameStart,     // 开始一场游戏，等待玩家点击开始按钮
-    GamePlaying,   // 游戏进行中
-    GameOver,      // 游戏结束，显示游戏结果
-};
-
 /**
- * @brief Store 是游戏的全局数据存储结构，只负责实体数据的创建，删除与更新函数，不负责任何游戏状态更新与渲染相关的内容。另外， Store 还持有 ResourceManager，在初始化时通过 ResourceManager 的初始化来实现游戏资源数据的加载。
- * @note View 层对 Store 并不可见，Store 只需要将 ViewData 放进自己的 ViewDataQueue 中即可，具体的传递由 App 层完成。
+ * @brief Store
+ * 是游戏的全局数据存储结构，只负责实体数据的创建，删除与更新函数，不负责任何游戏状态更新与渲染相关的内容。另外，
+ * Store 还持有 ResourceManager，在初始化时通过 ResourceManager 的初始化来实现游戏资源数据的加载。
+ * @note View 层对 Store 并不可见，Store 只需要将 ViewData 放进自己的 ViewDataQueue
+ * 中即可，具体的传递由 App 层完成。
  *
  */
 class Store
 {
 public:
-    Store() = default;
-    double                                time                        = 0.0;
-    double                                gold                        = 0.0;
-    int                                   life                        = 20;
+    Store()                           = default;
+    double      time                  = 0.0;
+    double      gold                  = 0.0;
+    int         life                  = 20;
+    std::size_t current_wave_index    = 0;
+    std::size_t current_subwave_index = 0;
+    double      current_wave_time     = 0.0;
+    bool        preparing             = true;
     // GameState                             game_state                  = GameState::Begin;
     // bool                                  come_into_level_select_view = true;
     const std::unordered_map<ID, Enemy*>& GetEnemies() const { return enemies; }
@@ -102,10 +94,31 @@ public:
 
     Fx* GetFx(const ID id) const;
 
-    TemplateManager  template_manager;
+    TemplateManager template_manager;
     ResourceManager resource_manager;
-    // 游戏进行的主函数
-    // void Game(sf::RenderWindow& window);
+
+    void UpdateDamageEvents();
+    void UpdateEnemies();
+    void UpdateBullets();
+    void UpdateTowers();
+    void UpdateSoldiers();
+    void UpdateFx();
+
+    /**
+     * @brief 在关卡进行时调用，生成敌人
+     *
+     */
+    void SpawnWaves();
+
+    ViewDataQueue* GetViewDataQueue();
+    void           ClearViewDataQueue();
+    void           Clear();
+
+    /**
+     * @brief 在进入关卡时调用，更新一个关卡的全部数据
+     * @note 在调用前，保证 Clear() 已经被调用，保证 Store 中的数据是干净的。
+     */
+    void InitLevel(const std::string& level_name);
 
 private:
     std::unordered_map<ID, Enemy*>   enemies;
@@ -116,15 +129,12 @@ private:
     ID                               next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象
     std::vector<DamageEvent> damage_events;
-    std::multiset<ViewData, ViewDataComparator> view_data_queue;
-    // void                     UpdateDamageEvents(sf::RenderWindow& window);
-    // void                     UpdateEnemies(sf::RenderWindow& window);
-    // void                     UpdateBullets(sf::RenderWindow& window);
-    // void                     UpdateTowers(sf::RenderWindow& window);
-    // void                     UpdateSoldiers(sf::RenderWindow& window);
-
-    // void                     UpdateFx(sf::RenderWindow& window);
-
-    // void                     ExecuteEvents();
-    // void                     Update(sf::RenderWindow& window);
+    ViewDataQueue            view_data_queue;
+    PendingEnemyQueue        pending_enemy_queue;
+    /**
+     * @brief 在开启新的关卡时调用，初始化塔位
+     *
+     */
+    void InitTowers();
+    void QueueViewDataFromEntity(Entity* entity);
 };

@@ -9,7 +9,7 @@
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/components/damage.h"
 #include "Common/macros.h"
-#include "ViewModel/SpiritViewModel/ResourceManager.h"
+#include "ViewModel/SpiritViewModel/resourceManager.h"
 #include "ViewModel/GameViewModel/templateManager/templateManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <unordered_map>
@@ -19,6 +19,7 @@ class Tower;
 class Enemy;
 class Soldier;
 
+// TODO: 将 GameState 移动到 App 层
 enum class GameState
 {
     Begin,         // 游戏打开时的界面，用于选择关卡
@@ -28,10 +29,15 @@ enum class GameState
     GameOver,      // 游戏结束，显示游戏结果
 };
 
+/**
+ * @brief Store 是游戏的全局数据存储结构，只负责实体数据的创建与删除，不负责任何实体状态更新与渲染相关的内容。另外， Store 还持有 ResourceManager，在初始化时通过 ResourceManager 的初始化来实现游戏资源数据的加载。
+ *
+ *
+ */
 class Store
 {
 public:
-    Store();
+    Store() = default;
     double                                time                        = 0.0;
     double                                gold                        = 0.0;
     int                                   life                        = 20;

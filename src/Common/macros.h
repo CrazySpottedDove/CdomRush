@@ -15,8 +15,34 @@
 #define DEFAULT_WINDOW_TITLE "CdomRush"
 #define ORIGIN_SCREEN_WIDTH 1024
 #define ORIGIN_SCREEN_HEIGHT 768
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_GREEN "\x1b[32m"
+#define ANSI_COLOR_YELLOW "\x1b[33m"
+#define ANSI_COLOR_BLUE "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN "\x1b[36m"
+#define ANSI_COLOR_WHITE "\x1b[37m"
+#define ANSI_COLOR_RESET "\x1b[0m"
+#define ANSI_COLOR_BOLD "\x1b[1m"
+#define ANSI_COLOR_DIM "\x1b[2m"
+
 #ifdef DEBUG
 #    include <iostream>
+#    define INFO(message)                                                                \
+        std::cout << ANSI_COLOR_CYAN << ANSI_COLOR_BOLD << "[INFO] " << ANSI_COLOR_RESET \
+                  << ANSI_COLOR_CYAN << message << ANSI_COLOR_RESET << std::endl
+
+#    define ERROR(message)                                                               \
+        std::cerr << ANSI_COLOR_RED << ANSI_COLOR_BOLD << "[ERROR] " << ANSI_COLOR_RESET \
+                  << ANSI_COLOR_RED << message << ANSI_COLOR_RESET << std::endl
+
+#    define SUCCESS(message)                                                                 \
+        std::cout << ANSI_COLOR_GREEN << ANSI_COLOR_BOLD << "[SUCCESS] " << ANSI_COLOR_RESET \
+                  << ANSI_COLOR_GREEN << message << ANSI_COLOR_RESET << std::endl
+
+#    define WARNING(message)                                                                  \
+        std::cout << ANSI_COLOR_YELLOW << ANSI_COLOR_BOLD << "[WARNING] " << ANSI_COLOR_RESET \
+                  << ANSI_COLOR_YELLOW << message << ANSI_COLOR_RESET << std::endl
 #    define DEBUG_CODE(debug_code) {debug_code}
 #else
 #    define DEBUG_CODE(debug_code) \
@@ -26,8 +52,8 @@
 constexpr double FRAME_LENGTH = 1.0 / FPS;
 
 #define INVALID_ID -1
-typedef int          ID;
-typedef sf::Vector2f Position;
+typedef int                   ID;
+typedef sf::Vector2f          Position;
 typedef std::vector<Position> SubPath;
 typedef std::vector<SubPath>  Path;
 typedef std::vector<Path>     Paths;

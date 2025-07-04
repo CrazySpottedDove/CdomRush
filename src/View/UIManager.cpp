@@ -18,7 +18,7 @@
 void UIManager::Render(const ViewData& view_data)
 {
     if (view_data.animations->empty()) {
-        ERROR("ViewData animations is empty.");
+        //ERROR("ViewData animations is empty.");
         return;
     }
 
@@ -59,7 +59,7 @@ void UIManager::Render(const ViewData& view_data)
         if (!animation.hidden)
             window->draw(sprite);
         else
-            INFO("Animation " + animation.prefix + " is hidden, not rendering.");
+            //INFO("Animation " + animation.prefix + " is hidden, not rendering.");
 
         ++animation.frame_id;
 
@@ -75,7 +75,7 @@ void UIManager::Render(const ViewData& view_data)
                 {
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
-                    SUCCESS("Action: SelectLevel Triggered");
+                    //SUCCESS("Action: SelectLevel Triggered");
                     break;
                 }
                 case ActionType::CreateActionFx:
@@ -91,7 +91,7 @@ void UIManager::Render(const ViewData& view_data)
                 {
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
-                    SUCCESS("Action: UpgradeTower Triggered");
+                    //SUCCESS("Action: UpgradeTower Triggered");
                     break;
                 }
                 case ActionType::CheckSoldierStatus:
@@ -116,14 +116,14 @@ void UIManager::Render(const ViewData& view_data)
                 {
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
-                    SUCCESS("Action: ChangeRallyPoint Triggered");
+                    //SUCCESS("Action: ChangeRallyPoint Triggered");
                     break;
                 }
                 case ActionType::SellTower:
                 {
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
-                    SUCCESS("Action: SellTower Triggered");
+                    //SUCCESS("Action: SellTower Triggered");
                     break;
                 }
                 }
@@ -154,7 +154,7 @@ void UIManager::ClearViewData()
 bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_position) const
 {
     if (!animation_group_map || !sprite_frame_data_map) {
-        ERROR("Animation group map or sprite frame data map is not initialized.");
+        //ERROR("Animation group map or sprite frame data map is not initialized.");
     }
 
     const Animation& animation = (*view_data.animations)[0];   // 只处理第0层
@@ -201,16 +201,16 @@ void UIManager::HandleClick()
                     }
                     sf::Vector2f click_position(static_cast<float>(mouse_event.position.x),
                                                 static_cast<float>(mouse_event.position.y));
-                    INFO("Click position: (" + std::to_string(click_position.x) + ", " +
-                         std::to_string(click_position.y) + ")");
+                    //INFO("Click position: (" + std::to_string(click_position.x) + ", " +
+                         //std::to_string(click_position.y) + ")");
 
                     if (IsClickHit(view_data, click_position)) {
                         (*view_data.animations)[0].clicked = true;
 
                         // 如果有关联的actions，准备触发
-                        INFO("Object has " +
-                             std::to_string((*view_data.animations)[0].actions.size()) +
-                             " actions available");
+                        //INFO("Object has " +
+                             //std::to_string((*view_data.animations)[0].actions.size()) +
+                             //" actions available");
 
                         hit_found = true;
                         break;
@@ -218,7 +218,7 @@ void UIManager::HandleClick()
                 }
 
                 if (!hit_found) {
-                    INFO("No objects hit at click position");
+                    //INFO("No objects hit at click position");
                 }
             }
         }

@@ -2,6 +2,7 @@
 #include "ViewModel/GameViewModel/templates/activeEntity.h"
 #include "Common/macros.h"
 #include "ViewModel/GameViewModel/components/ranged.h"
+#include "Common/type.h"
 
 class Store;
 class Soldier;

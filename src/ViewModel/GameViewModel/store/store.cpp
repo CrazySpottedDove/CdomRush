@@ -162,11 +162,11 @@ void Store::SpawnWaves()
         new_enemy->path_info.subpath_id  = pending_enemy.subpath_id;
         new_enemy->path_info.waypoint_id = 0;
         // 验证构造后的值
-        INFO("Created PendingEnemy:");
-        INFO("  - enemy_type: " << static_cast<int>(pending_enemy.enemy_type));
-        INFO("  - spawn_time: " << pending_enemy.spawn_time);
-        INFO("  - path_id: " << pending_enemy.path_id);
-        INFO("  - subpath_id: " << pending_enemy.subpath_id);
+        // INFO("Created PendingEnemy:");
+        // INFO("  - enemy_type: " << static_cast<int>(pending_enemy.enemy_type));
+        // INFO("  - spawn_time: " << pending_enemy.spawn_time);
+        // INFO("  - path_id: " << pending_enemy.path_id);
+        // INFO("  - subpath_id: " << pending_enemy.subpath_id);
         new_enemy->position =
             (*resource_manager.GetPaths())[pending_enemy.path_id][pending_enemy.subpath_id][0];
         QueueEnemy(new_enemy);
@@ -193,10 +193,10 @@ void Store::SpawnWaves()
                                                      sub_wave.path_id,
                                                      sub_wave.subpath_id));
             }
-            INFO("Spawning subwave: " << current_subwave_index
-                                      << ", enemy type: " << static_cast<int>(sub_wave.enemy_type)
-                                      << ", count: " << sub_wave.count
-                                      << ", gap: " << sub_wave.gap);
+            // INFO("Spawning subwave: " << current_subwave_index
+            //                           << ", enemy type: " << static_cast<int>(sub_wave.enemy_type)
+            //                           << ", count: " << sub_wave.count
+            //                           << ", gap: " << sub_wave.gap);
             ++current_subwave_index;
         }
         else {

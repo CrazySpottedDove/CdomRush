@@ -9,7 +9,7 @@
 void ResourceManager::LoadTexture(const std::string& file_name, TextureLevel level)
 {
     if (texture_map.find(file_name) == texture_map.end()) {
-        INFO("Loading texture: " << file_name);
+        // INFO("Loading texture: " << file_name);
         const bool load_success = texture_map[file_name].loadFromFile(file_name);
         DEBUG_CODE(
             if (!load_success) { ERROR("Failed to load texture: " << file_name); } else {
@@ -101,7 +101,7 @@ void ResourceManager::LoadLevelAssets(const std::string& level_name)
     for (const auto& [key, value] : required_sounds) {
         const std::string& sound_file = SOUNDS_PATH + value.as<std::string>();
         level_assets.required_sounds.push_back(value.as<std::string>());
-        WARNING("To be done: Load sound file: " << sound_file);
+        // WARNING("To be done: Load sound file: " << sound_file);
     }
 };
 

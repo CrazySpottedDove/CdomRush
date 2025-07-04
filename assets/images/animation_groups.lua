@@ -1696,4 +1696,14 @@ return {
             from = 22
         }
     },
+    arrow = {
+        flying = {
+            to = 1,
+            from = 1
+        },
+        hit = {
+            to = 1,
+            from = 1
+        }
+    },
 }

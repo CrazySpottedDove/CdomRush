@@ -80,6 +80,7 @@ void UIManager::Render(const ViewData& view_data)
                 }
                 case ActionType::CreateActionFx:
                 {
+                    animation.clicked = false;
                     Action create_action = animation.actions[i];
                     auto&  params        = std::get<CreateActionFxParams>(create_action.param);
                     params.position      = view_data.position + params.offset; // to be fixed
@@ -88,28 +89,41 @@ void UIManager::Render(const ViewData& view_data)
                 }
                 case ActionType::UpgradeTower:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     SUCCESS("Action: UpgradeTower Triggered");
                     break;
                 }
                 case ActionType::CheckSoldierStatus:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     break;
                 }
                 case ActionType::CheckEnemyStatus:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     break;
                 }
                 case ActionType::CheckTowerStatus:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     break;
                 }
                 case ActionType::ChangeRallyPoint:
                 {
-                    
+                    animation.clicked = false;
+                    action_queue.push(animation.actions[i]);
+                    SUCCESS("Action: ChangeRallyPoint Triggered");
+                    break;
+                }
+                case ActionType::SellTower:
+                {
+                    animation.clicked = false;
+                    action_queue.push(animation.actions[i]);
+                    SUCCESS("Action: SellTower Triggered");
                     break;
                 }
                 }
@@ -155,8 +169,8 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     float top  = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y;
 
     sf::FloatRect bounds(sf::Vector2f(left, top),
-                         sf::Vector2f(sprite_frame_data.displaySize.x * animation.scale_x,
-                                      sprite_frame_data.displaySize.y * animation.scale_y));
+                         sf::Vector2f(2.0*sprite_frame_data.displaySize.x * animation.scale_x,
+                                      2.0*sprite_frame_data.displaySize.y * animation.scale_y));
 
     return bounds.contains(click_position);
 }

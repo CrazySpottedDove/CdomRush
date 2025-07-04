@@ -73,14 +73,13 @@ struct ChangeRallyPointParams
 struct SellTowerParams
 {
     ID        tower_id; // 要出售的塔的 ID
-    TowerType tower_type; 
     int       price; //出售的价格
-    Position  position; // 出售位置，View 层会根据这个位置渲染出售的特效
-    Position  offset; // 出售特效的偏移位置
+    TowerType tower_type; 
+    //Position  offset; // 出售有无效果需要渲染？
 };
 
 using Params = std::variant<std::monostate, UpgradeTowerParams, SelectLevelParams, CreateActionFxParams,CheckSoldierStatusParams,
-                            CheckEnemyStatusParams, CheckTowerStatusParams, ChangeRallyPointParams>;
+                            CheckEnemyStatusParams, CheckTowerStatusParams, ChangeRallyPointParams,SellTowerParams>;
 
 struct Action
 {

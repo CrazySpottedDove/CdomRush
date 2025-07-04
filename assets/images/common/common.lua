@@ -4236,5 +4236,68 @@ return {
                 [4] = 70
             }
         }
+    },
+    icon_archer = {
+        [1] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {830, 639, 82, 73}
+        },
+        [2] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {918, 639, 82, 73}
+        }
+    },
+    icon_barrack = {
+        [1] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {1006, 639, 82, 73}
+        },
+        [2] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {1094, 639, 82, 73}
+        }
+    },
+    icon_mage = {
+        [1] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {1182, 639, 82, 73}
+        },
+        [2] = {
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {1270, 639, 82, 73}
+        }
+    },
+    icon_engineer = {
+        [1] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {1358, 639, 82, 73}
+        },
+        [2] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {1446, 639, 82, 73}
+        }
     }
 }

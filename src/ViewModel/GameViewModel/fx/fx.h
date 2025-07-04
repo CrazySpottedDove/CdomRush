@@ -13,7 +13,6 @@ public:
 class Map : public Fx{
     public:
     Map();
-    Map(const std::string& prefix);
     Fx* Clone() override { return new Map(*this); }
 };
 

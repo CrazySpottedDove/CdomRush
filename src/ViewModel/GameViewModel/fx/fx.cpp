@@ -16,5 +16,5 @@ Map::Map(){
 }
 
 CommonUpgradeIcon::CommonUpgradeIcon(){
-    animations.emplace_back(Animation(State::))
+    // animations.emplace_back(Animation(State::Enabled,))
 }

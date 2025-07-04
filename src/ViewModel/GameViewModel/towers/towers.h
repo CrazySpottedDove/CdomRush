@@ -175,16 +175,20 @@ public:
 class Barracks : public Tower{
 public:
     Position rally_point;
-    std::vector<Soldier*> soldiers;
+    std::vector<ID> soldiers;
 
     void layer_update() override;
     void Update(Store& store);
+    virtual SoldierType return_soldier_type() = 0;
 };
 class Barracks1 : public Barracks{
 public:
     Barracks1(Position position = sf::Vector2f(0,0), int total_price = 0);
     Tower* Clone() override {
         return new Barracks1(*this);
+    }
+    SoldierType return_soldier_type() override{
+        return SoldierType::SoldierMeleelv1;
     }
 };
 class Barracks2 : public Barracks{
@@ -193,11 +197,17 @@ public:
     Tower* Clone() override {
         return new Barracks2(*this);
     }
+    SoldierType return_soldier_type() override{
+        return SoldierType::SoldierMeleelv1;
+    }
 };
 class Barracks3 : public Barracks{
 public:
     Barracks3(Position position = sf::Vector2f(0,0), int total_price = 0);
     Tower* Clone() override {
         return new Barracks3(*this);
+    }
+    SoldierType return_soldier_type() override{
+        return SoldierType::SoldierMeleelv1;
     }
 };

@@ -127,6 +127,7 @@ private:
     std::unordered_map<ID, Bullet*>  bullets;
     std::unordered_map<ID, Soldier*> soldiers;
     std::unordered_map<ID, Fx*>      fxs;
+    std::unordered_map<ID, Fx*> action_fxs;
     ID                               next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象
     std::vector<DamageEvent> damage_events;

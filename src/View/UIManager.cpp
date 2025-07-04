@@ -8,6 +8,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <algorithm>
+#include <variant>
 
 /**
  * @brief 保证传入的 frame_id 合法！
@@ -16,13 +17,12 @@
  */
 void UIManager::Render(const ViewData& view_data)
 {
-    if(view_data.animations->empty())
-    {
+    if (view_data.animations->empty()) {
         ERROR("ViewData animations is empty.");
         return;
     }
 
-    for(size_t layer_index = 0; layer_index < view_data.animations->size();++layer_index){
+    for (size_t layer_index = 0; layer_index < view_data.animations->size(); ++layer_index) {
         Animation&           animation = (*view_data.animations)[layer_index];
         const AnimationGroup animation_group =
             animation_group_map->at(animation.prefix).at(animation.current_state);
@@ -46,16 +46,17 @@ void UIManager::Render(const ViewData& view_data)
 
         sprite.setOrigin(Position(
             sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
-            sprite_frame_data.displaySize.y * (1 - animation.anchor_y) - sprite_frame_data.trim_top));
+            sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
+                sprite_frame_data.trim_top));
 
-        sprite.setScale(
-            sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x, animation.scale_y));
+        sprite.setScale(sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x,
+                                     animation.scale_y));
 
         sprite.setPosition(view_data.position);
 
         sprite.setRotation(sf::degrees(animation.rotation));
 
-        if(!animation.hidden)
+        if (!animation.hidden)
             window->draw(sprite);
         else
             INFO("Animation " + animation.prefix + " is hidden, not rendering.");
@@ -66,44 +67,37 @@ void UIManager::Render(const ViewData& view_data)
             animation.pending = false;
         }
 
-        //对于第零层，处理action
-        if(layer_index == 0)
-        {
-            while(animation.clicked && !animation.actions.empty())
-            {
-                Action action = animation.actions.front();
-
-                // 处理不同的 Action 类型
-                switch (action.type) {
-                    case ActionType::SelectLevel:
-                    {
-                        animation.clicked  = false;   // 对于选关卡，点击后UI不再处于点击状态
-                        const auto& params = std::get<SelectLevelParams>(action.param);
-                        action_queue.push(action);
-                        INFO("Selected level: " + params.level_name);
-                        break;
-                    }
-                    case ActionType::UpgradeTower:
-                        {
-                            const auto& params = std::get<UpgradeTowerParams>(action.param);
-                            ViewData upgrade_view_data;
-                            upgrade_view_data.animations = params.animations;
-                            upgrade_view_data.animations->clicked = false;   // 升级界面点击后不再处于点击状态
-
-                            upgrade_view_data.position = view_data.position + params.offset;
-                            
-                            Render(upgrade_view_data);
-                            break;
-                            // upgrade_view_data.position
-                        }
-                    }
-
-                animation.actions.erase(animation.actions.begin());   // 已处理的 Action
+        // 对于第零层，处理action
+        if (layer_index == 0 && animation.clicked) {
+            for (size_t i = 0; i < animation.actions.size(); ++i) {
+                switch (animation.actions[i].type) {
+                case ActionType::SelectLevel:
+                {
+                    animation.clicked = false;
+                    action_queue.push(animation.actions[i]);
+                    SUCCESS("Action: SelectLevel Triggered");
+                    break;
+                }
+                case ActionType::CreateActionFx:
+                {
+                    Action create_action = animation.actions[i];
+                    auto&  params        = std::get<CreateActionFxParams>(create_action.param);
+                    params.position      = view_data.position + params.offset;
+                    action_queue.push(create_action);
+                    break;
+                }
+                case ActionType::UpgradeTower:
+                {
+                    action_queue.push(animation.actions[i]);
+                    SUCCESS("Action: UpgradeTower Triggered");
+                    break;
+                }
+                }
             }
         }
     }
-}  
- 
+}
+
 
 void UIManager::RenderAll()
 {
@@ -130,7 +124,7 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
         ERROR("Animation group map or sprite frame data map is not initialized.");
     }
 
-    const Animation& animation = (*view_data.animations)[0]; //只处理第0层
+    const Animation& animation = (*view_data.animations)[0];   // 只处理第0层
 
     const auto& animation_group =
         animation_group_map->at(animation.prefix).at(animation.current_state);
@@ -138,8 +132,8 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
         sprite_frame_data_map->at(animation.prefix).at(animation_group.to - 1);
 
     // 计算边界矩形...
-    float left = view_data.position.x - sprite_frame_data.displaySize.x *animation.scale_x; 
-    float top = view_data.position.y - sprite_frame_data.displaySize.y *animation.scale_y;
+    float left = view_data.position.x - sprite_frame_data.displaySize.x * animation.scale_x;
+    float top  = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y;
 
     sf::FloatRect bounds(sf::Vector2f(left, top),
                          sf::Vector2f(sprite_frame_data.displaySize.x * animation.scale_x,
@@ -168,23 +162,22 @@ void UIManager::HandleClick()
 
                 for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
                     const ViewData& view_data = *it;
-                    if((*view_data.animations)[0].actions.empty()){
-                    //if (view_data.animation->actions.empty()) {
+                    if ((*view_data.animations)[0].actions.empty()) {
+                        // if (view_data.animation->actions.empty()) {
                         continue;
                     }
                     sf::Vector2f click_position(static_cast<float>(mouse_event.position.x),
                                                 static_cast<float>(mouse_event.position.y));
                     INFO("Click position: (" + std::to_string(click_position.x) + ", " +
                          std::to_string(click_position.y) + ")");
-                    INFO("Checking view_data: " + (*view_data.animations)[0].prefix + " at position (" +
-                         std::to_string(view_data.position.x) + ", " +
-                         std::to_string(view_data.position.y) + ")");
+
                     if (IsClickHit(view_data, click_position)) {
                         (*view_data.animations)[0].clicked = true;
 
                         // 如果有关联的actions，准备触发
 
-                        INFO("Object has " + std::to_string((*view_data.animations)[0].actions.size()) +
+                        INFO("Object has " +
+                             std::to_string((*view_data.animations)[0].actions.size()) +
                              " actions available");
 
                         hit_found = true;
@@ -197,5 +190,6 @@ void UIManager::HandleClick()
                 }
             }
         }
+        action_queue.push(Action{ActionType::Delete, std::monostate{}});
     }
 }

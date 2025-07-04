@@ -23,3 +23,9 @@ public:
     LevelFlag();
     Fx* Clone() override { return new LevelFlag(*this); }
 };
+
+class CommonUpgradeIcon: public Fx{
+public:
+    CommonUpgradeIcon();
+    Fx* Clone() override { return new CommonUpgradeIcon(*this); }
+};

@@ -23,7 +23,6 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
     const sf::Vector2f displacement = next_waypoint - self.position;
     const sf::Vector2f direction    = displacement.normalized();
 
-
     const float movement = real_speed * FRAME_LENGTH;
     self.position += direction * movement;
 

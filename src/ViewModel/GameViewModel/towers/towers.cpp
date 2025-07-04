@@ -265,5 +265,17 @@ void Barracks::layer_update(){
     if(animations[0].current_state == State::DoorClose) animations[2].current_state = State::DoorClose;
 }
 void Barracks::Update(Store& store){
-    
+    bool solider_size_changed = false;;
+    while(soldiers.size()<3){
+        animations[0].current_state = State::DoorOpen;
+        Soldier* soldierx = store.template_manager.CreateSoldier(return_soldier_type);
+        store.QueueSoldier(soldierx);
+        soldiers.push_back(soldierx->id);
+        solider_size_changed = true;
+    }
+    if(solider_size_changed){
+        for(int i=0;i<3;i++){
+            
+        }
+    }
 }

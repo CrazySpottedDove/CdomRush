@@ -5,6 +5,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <set>
 
+// Animations[0] 确定了指示状态，储存所有可以触发的点击事件
 struct ViewData{
     std::vector<Animation>* animations;
     Position position;

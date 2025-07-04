@@ -34,5 +34,13 @@ public:
 
 class SoldierMeleelv1 : public SoldierMelee{
 public:
-    SoldierMeleelv1(Position position_ = sf::Vector2f(0,0));
+    SoldierMeleelv1(Position position_ = sf::Vector2f(0,0),Position rally_point = sf::Vector2f(0,0),Position offset_ = sf::Vector2f(0,0));
+};
+class SoldierMeleelv2 : public SoldierMelee{
+public:
+    SoldierMeleelv2(Position position_ = sf::Vector2f(0,0),Position rally_point = sf::Vector2f(0,0),Position offset_ = sf::Vector2f(0,0));
+};
+class SoldierMeleelv3 : public SoldierMelee{
+public:
+    SoldierMeleelv3(Position position_ = sf::Vector2f(0,0),Position rally_point_ = sf::Vector2f(0,0),Position offset_ = sf::Vector2f(0,0));
 };

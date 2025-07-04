@@ -80,6 +80,7 @@ void UIManager::Render(const ViewData& view_data)
                 }
                 case ActionType::CreateActionFx:
                 {
+                    animation.clicked = false;
                     Action create_action = animation.actions[i];
                     auto&  params        = std::get<CreateActionFxParams>(create_action.param);
                     params.position      = view_data.position + params.offset; // to be fixed
@@ -88,33 +89,41 @@ void UIManager::Render(const ViewData& view_data)
                 }
                 case ActionType::UpgradeTower:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     SUCCESS("Action: UpgradeTower Triggered");
                     break;
                 }
                 case ActionType::CheckSoldierStatus:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     break;
                 }
                 case ActionType::CheckEnemyStatus:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     break;
                 }
                 case ActionType::CheckTowerStatus:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     break;
                 }
                 case ActionType::ChangeRallyPoint:
                 {
+                    animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     SUCCESS("Action: ChangeRallyPoint Triggered");
                     break;
                 }
                 case ActionType::SellTower:
                 {
+                    animation.clicked = false;
+                    action_queue.push(animation.actions[i]);
+                    SUCCESS("Action: SellTower Triggered");
                     break;
                 }
                 }

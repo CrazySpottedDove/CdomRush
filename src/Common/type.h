@@ -1,7 +1,5 @@
 #pragma once
 
-#include <unordered_map>
-#include <string>
 enum class TowerType
 {
     None,
@@ -42,5 +40,3 @@ enum class FxType
 };
 
 
-extern const std::unordered_map<std::string, TowerType> tower_type_str_map;
-extern const std::unordered_map<std::string, EnemyType> enemy_type_str_map;

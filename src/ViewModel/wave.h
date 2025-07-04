@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <queue>
+#include "ViewModel/SpriteViewModel/stringMap.h"
+
 struct SubWave
 {
     double      time;          // 在本波中的什么时间产生

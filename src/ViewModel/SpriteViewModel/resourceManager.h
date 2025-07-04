@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Common/animation.h"
-#include "Common/level.h"
+#include "ViewModel/level.h"
 #include "Common/macros.h"
 #include "Common/towerEssential.h"
-#include "Common/wave.h"
+#include "ViewModel/wave.h"
 #include "sol/sol.hpp"
 #include <vector>
 

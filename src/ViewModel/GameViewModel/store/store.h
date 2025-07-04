@@ -2,7 +2,7 @@
 
 #include "Common/macros.h"
 #include "Common/viewData.h"
-#include "Common/wave.h"
+#include "ViewModel/wave.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/components/damage.h"
 #include "ViewModel/GameViewModel/templateManager/templateManager.h"

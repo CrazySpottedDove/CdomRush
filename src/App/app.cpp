@@ -33,7 +33,7 @@ void App::Run()
                 for (const auto& level : *store.resource_manager.GetLevels()) {
                     Fx* fx       = store.template_manager.CreateFx(FxType::LevelFlag);
                     fx->position = level.second;
-                    fx->animation.actions.emplace_back(
+                    fx->animations[0].actions.emplace_back(
                         Action(ActionType::SelectLevel, SelectLevelParams{level.first})
                     );
                     store.QueueFx(fx);
@@ -57,7 +57,7 @@ void App::Run()
                 store.time = 0;
                 store.Clear();
                 Fx* fx               = store.template_manager.CreateFx(FxType::Map);
-                fx->animation.prefix = store.current_level_name;
+                fx->animations[0].prefix = store.current_level_name;
                 store.QueueFx(fx);
                 last_state = GameState::GameStart;
                 store.current_subwave_index = 0;

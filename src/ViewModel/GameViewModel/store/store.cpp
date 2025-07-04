@@ -68,11 +68,11 @@ void Store::UpdateBullets()
     auto it = bullets.begin();
     while (it != bullets.end()) {
         Bullet* bullet = it->second;
-        if (bullet->animation.current_state == State::Hit &&
+        if (bullet->animations[0].current_state == State::Hit &&
             resource_manager.GetAnimationGroupMap()
-                    ->at(bullet->animation.prefix)
-                    .at(bullet->animation.current_state)
-                    .to <= bullet->animation.frame_id) {
+                    ->at(bullet->animations[0].prefix)
+                    .at(bullet->animations[0].current_state)
+                    .to <= bullet->animations[0].frame_id) {
             bullet->Remove(*this);
             delete bullet;
             it = bullets.erase(it);
@@ -207,7 +207,7 @@ void Store::SpawnWaves()
 
 void Store::QueueViewDataFromEntity(Entity* entity)
 {
-    view_data_queue.emplace(ViewData{&entity->animation, entity->position});
+    view_data_queue.emplace(ViewData{&entity->animations, entity->position});
 }
 
 std::unordered_map<ID, Enemy*>::iterator Store::DequeueEnemy(

@@ -107,7 +107,11 @@ void UIManager::Render(const ViewData& view_data)
                     action_queue.push(animation.actions[i]);
                     break;
                 }
-                case 
+                case ActionType::ChangeRallyPoint:
+                {
+                    
+                    break;
+                }
                 }
             }
         }

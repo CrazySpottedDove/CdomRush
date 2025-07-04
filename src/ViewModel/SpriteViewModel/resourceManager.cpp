@@ -79,6 +79,7 @@ void ResourceManager::LoadAnimationGroups()
         const sol::table  state_group = pair.second.as<sol::table>();
 
         for (const auto& state_pair : state_group) {
+            INFO("Loading animation group: " << prefix << " - " << state_pair.first.as<std::string>());
             const State      state        = state_str_map.at(state_pair.first.as<std::string>());
             const sol::table frames_table = state_pair.second.as<sol::table>();
             animation_group_map[prefix][state] = AnimationGroup(

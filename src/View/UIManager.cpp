@@ -35,16 +35,23 @@ void UIManager::Render(const ViewData& view_data)
             }
 
             animation.last_state = animation.current_state;
+            animation.last_state = animation.current_state;
 
             const SpriteFrameData& sprite_frame_data =
                 sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
+
 
             const sf::Texture& texture = texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
 
             sf::Sprite sprite(texture);
 
             sprite.setTextureRect(sprite_frame_data.frameRect);
+            sprite.setTextureRect(sprite_frame_data.frameRect);
 
+            sprite.setOrigin(Position(
+                sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
+                sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
+                    sprite_frame_data.trim_top));
             sprite.setOrigin(Position(
                 sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
                 sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
@@ -115,6 +122,7 @@ void UIManager::Render(const ViewData& view_data)
                 }
                 case ActionType::ChangeRallyPoint:
                 {
+
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     SUCCESS("Action: ChangeRallyPoint Triggered");

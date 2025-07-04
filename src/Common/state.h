@@ -19,6 +19,8 @@ enum class State
     ShootingDown,
     DoorOpen,
     DoorClose,
-    None
+    None,
+    Enabled,
+    Disabled,
 };
 

@@ -24,47 +24,52 @@ void UIManager::Render(const ViewData& view_data)
 
     for (size_t layer_index = 0; layer_index < view_data.animations->size(); ++layer_index) {
         Animation&           animation = (*view_data.animations)[layer_index];
-        const AnimationGroup animation_group =
-            animation_group_map->at(animation.prefix).at(animation.current_state);
+        INFO("Rendering animation: " + animation.prefix +
+             ", current state: " + std::to_string(static_cast<int>(animation.current_state)) +
+             ", frame ID: " + std::to_string(animation.frame_id));
+        if(!animation.hidden){
+            const AnimationGroup animation_group =
+                animation_group_map->at(animation.prefix).at(animation.current_state);
 
-        if (animation.last_state != animation.current_state ||
-            (animation.current_state != State::Death && animation.frame_id > animation_group.to)) {
-            animation.frame_id = animation_group.from;
-            animation.pending  = true;
-        }
+            if (animation.last_state != animation.current_state ||
+                (animation.current_state != State::Death &&
+                 animation.frame_id > animation_group.to)) {
+                animation.frame_id = animation_group.from;
+                animation.pending  = true;
+            }
 
-        animation.last_state = animation.current_state;
+            animation.last_state = animation.current_state;
 
-        const SpriteFrameData& sprite_frame_data =
-            sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
+            const SpriteFrameData& sprite_frame_data =
+                sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
 
-        const sf::Texture& texture = texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
+            const sf::Texture& texture =
+                texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
 
-        sf::Sprite sprite(texture);
+            sf::Sprite sprite(texture);
 
-        sprite.setTextureRect(sprite_frame_data.frameRect);
+            sprite.setTextureRect(sprite_frame_data.frameRect);
 
-        sprite.setOrigin(Position(
-            sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
-            sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
-                sprite_frame_data.trim_top));
+            sprite.setOrigin(Position(
+                sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
+                sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
+                    sprite_frame_data.trim_top));
 
-        sprite.setScale(sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x,
-                                     animation.scale_y));
+            sprite.setScale(sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x,
+                                         animation.scale_y));
 
-        sprite.setPosition(view_data.position);
+            sprite.setPosition(view_data.position);
+            INFO("Sprite position: (" + std::to_string(view_data.position.x) + ", " +
+                 std::to_string(view_data.position.y) + ")");
 
-        sprite.setRotation(sf::degrees(animation.rotation));
-
-        if (!animation.hidden)
+            sprite.setRotation(sf::degrees(animation.rotation));
             window->draw(sprite);
-        else
-            INFO("Animation " + animation.prefix + " is hidden, not rendering.");
 
-        ++animation.frame_id;
+            ++animation.frame_id;
 
-        if (animation.frame_id > animation_group.to) {
-            animation.pending = false;
+            if (animation.frame_id > animation_group.to) {
+                animation.pending = false;
+            }
         }
 
         // 对于第零层，处理action
@@ -114,6 +119,7 @@ void UIManager::Render(const ViewData& view_data)
                 }
                 case ActionType::ChangeRallyPoint:
                 {
+
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
                     SUCCESS("Action: ChangeRallyPoint Triggered");

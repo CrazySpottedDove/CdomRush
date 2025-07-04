@@ -8,11 +8,7 @@
 #include "ViewModel/GameViewModel/templates/unit.h"
 #include "Common/macros.h"
 
-enum class SoldierType{
-    SoldierMeleelv1,
-    SoldierMeleelv2,
-    SoldierMeleelv3
-};
+
 
 class Soldier: public Unit{
 public:

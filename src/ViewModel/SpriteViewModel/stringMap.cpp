@@ -1,4 +1,5 @@
 #include "ViewModel/SpriteViewModel/stringMap.h"
+#include "Common/state.h"
 
 const std::unordered_map<std::string, TowerType> tower_type_str_map = {
     {"tower_holder_grass", TowerType::None},
@@ -30,4 +31,9 @@ const std::unordered_map<std::string, State> state_str_map = {
     {"flying", State::Flying},
     {"hit", State::Hit},
     {"shootingUp", State::ShootingUp},
-    {"shootingDown", State::ShootingDown}};
+    {"shootingDown", State::ShootingDown},
+{"door_close",State::DoorClose},
+{"door_open",State::DoorOpen},
+{"enabled",State::Enabled},
+{"disabled",State::Disabled},
+{"none",State::None}};

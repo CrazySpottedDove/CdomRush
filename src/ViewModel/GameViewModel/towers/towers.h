@@ -2,7 +2,7 @@
 #include "ViewModel/GameViewModel/templates/activeEntity.h"
 #include "Common/macros.h"
 #include "ViewModel/GameViewModel/components/ranged.h"
-
+#include "Common/type.h"
 class Store;
 class Soldier;
 class Tower;
@@ -25,7 +25,6 @@ public:
     tower_heading heading = tower_heading::Down; // 默认塔的朝向为 Up
     Ranged ranged;
     TowerType type = TowerType::None; // 默认塔类型为 None
-    Position            position;
     int                total_price;
 
     bool Insert(Store& store) override {

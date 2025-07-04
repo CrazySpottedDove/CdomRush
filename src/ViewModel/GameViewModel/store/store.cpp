@@ -112,6 +112,9 @@ void Store::UpdateTowers()
     while (it != towers.end()) {
         Tower* tower = it->second;
         tower->Update(*this);
+        INFO("Updating tower with ID: " << tower->id
+                                   << ", position: (" << tower->position.x << ", "
+                                   << tower->position.y << ")");
         QueueViewDataFromEntity(tower);
         ++it;
     }
@@ -135,6 +138,9 @@ void Store::InitTowers()
         tower->position    = tower_essential.position;
         tower->rally_point = tower_essential.rally_point;
         QueueTower(tower);
+        INFO("Initialized tower: " << static_cast<int>(tower_essential.type)
+                                   << " at position: " << tower_essential.position.x << ", "
+                                   << tower_essential.position.y);
     }
 }
 
@@ -207,6 +213,9 @@ void Store::SpawnWaves()
 
 void Store::QueueViewDataFromEntity(Entity* entity)
 {
+    INFO("Queueing view data for entity with ID: " << entity->id
+                                   << ", position: (" << entity->position.x << ", "
+                                   << entity->position.y << ")");
     view_data_queue.emplace(ViewData{&entity->animations, entity->position});
 }
 
@@ -369,13 +378,39 @@ void Store::QueueFx(Fx* fx)
     fxs[next_id] = fx;
     fx->Insert(*this);
 }
+
+void Store::QueueActionFx(Fx* action_fx){
+    action_fx->id       = next_id++;
+    action_fxs[next_id] = action_fx;
+    action_fx->Insert(*this);
+}
+
 void Store::Clear()
 {
+    for(auto& [id, enemy] : enemies) {
+        delete enemy;
+    }
     enemies.clear();
+    for(auto& [id, tower] : towers) {
+        delete tower;
+    }
     towers.clear();
+    for(auto& [id, bullet] : bullets) {
+        delete bullet;
+    }
     bullets.clear();
+    for(auto& [id, soldier] : soldiers) {
+        delete soldier;
+    }
     soldiers.clear();
+    for(auto& [id, fx] : fxs) {
+        delete fx;
+    }
     fxs.clear();
+    for(auto& [id, action_fx]: action_fxs){
+        delete action_fx;
+    }
+    action_fxs.clear();
     damage_events.clear();
     view_data_queue.clear();
     PendingEnemyQueue empty_queue;
@@ -395,5 +430,21 @@ void Store::InitLevel(const std::string& level_name){
     InitTowers();
 }
 
+void Store::ClearFxs()
+{
+    for (auto& pair : fxs) {
+        delete pair.second;
+    }
+    fxs.clear();
+    for (auto& pair : action_fxs) {
+        delete pair.second;
+    }
+    action_fxs.clear();
+}
 
-
+void Store::ClearActionFxs(){
+    for (auto& pair : action_fxs) {
+        delete pair.second;
+    }
+    action_fxs.clear();
+}

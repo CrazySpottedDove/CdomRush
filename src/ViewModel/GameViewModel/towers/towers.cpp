@@ -76,16 +76,17 @@ void Archer::layer_update() {
         }
         shooter = ~ shooter; // 切换射手状态
     }
+    animations[0].pending = animations[3].pending || animations[4].pending; // 更新动画的 pending 状态
 }
 Archer1::Archer1(Position position_, int total_price_) {
     type = TowerType::Archer1; // 设置塔类型为弓箭手1
     position = position_;
     total_price = total_price_;
-    animations.push_back(Animation(State::Idle,"terrain_archer_0001",Position{0.0f, 12.0f},true));
-    animations.push_back(Animation(State::Idle,"terrain_archer_0001",Position{0.0f, 12.0f}));
-    animations.push_back(Animation(State::Idle,"archer_tower_0001",Position{0.0f, 37.0f}));
-    animations.push_back(Animation(State::IdleDown,"shooterarcherlvl1",Position{-9.0f, 51.0f}));
-    animations.push_back(Animation(State::IdleDown,"shooterarcherlvl1",Position{9.0f, 51.0f}));
+    animations.push_back(Animation(State::Idle,"terrain_archer1",Position{0.0f, 12.0f},true));
+    animations.push_back(Animation(State::Idle,"terrain_archer1",Position{0.0f, 12.0f}));
+    animations.push_back(Animation(State::Idle,"archer_tower1",Position{0.0f, 37.0f}));
+    animations.push_back(Animation(State::IdleDown,"tower_archer_lvl1_shooter",Position{-9.0f, 51.0f}));
+    animations.push_back(Animation(State::IdleDown,"tower_archer_lvl1_shooter",Position{9.0f, 51.0f}));
     animations[0].actions.push_back(Action(ActionType::UpgradeTower,UpgradeTowerParams{id,TowerType::Archer2, 110}));
     animations[0].actions.push_back(Action(ActionType::SellTower,UpgradeTowerParams{id,TowerType::None, -total_price}));
     ranged.attacks.push_back(RangedAttack(0.8, 140.0, BulletType::Arrow, 0.0, 5.5, "arrow", 1.0)); // 添加攻击
@@ -96,11 +97,11 @@ Archer2::Archer2(Position position_, int total_price_) {
     type = TowerType::Archer2; // 设置塔类型为弓箭手2
     position = position_;
     total_price = total_price_;
-    animations.push_back(Animation(State::Idle,"terrain_archer_0002",Position{0.0f, 12.0f},true));
-    animations.push_back(Animation(State::Idle,"terrain_archer_0002",Position{0.0f, 12.0f}));
-    animations.push_back(Animation(State::Idle,"archer_tower_0002",Position{0.0f, 37.0f}));
-    animations.push_back(Animation(State::IdleDown,"shooterarcherlvl2",Position{-9.0f, 52.0f}));
-    animations.push_back(Animation(State::IdleDown,"shooterarcherlvl2",Position{9.0f, 52.0f}));
+    animations.push_back(Animation(State::Idle,"terrain_archer2",Position{0.0f, 12.0f},true));
+    animations.push_back(Animation(State::Idle,"terrain_archer2",Position{0.0f, 12.0f}));
+    animations.push_back(Animation(State::Idle,"archer_tower2",Position{0.0f, 37.0f}));
+    animations.push_back(Animation(State::IdleDown,"tower_archer_lvl2_shooter",Position{-9.0f, 52.0f}));
+    animations.push_back(Animation(State::IdleDown,"tower_archer_lvl2_shooter",Position{9.0f, 52.0f}));
     animations[0].actions.push_back(Action(ActionType::UpgradeTower,UpgradeTowerParams{id,TowerType::Archer3, 160}));
     animations[0].actions.push_back(Action(ActionType::SellTower,UpgradeTowerParams{id,TowerType::None, -total_price}));
     ranged.attacks.push_back(RangedAttack(0.6, 160.0, BulletType::Arrow, 0.0, 10.0, "arrow", 1.0)); // 添加攻击
@@ -111,11 +112,11 @@ Archer3::Archer3(Position position_, int total_price_) {
     type = TowerType::Archer3; // 设置塔类型为弓箭手3
     position = position_;
     total_price = total_price_;
-    animations.push_back(Animation(State::Idle,"terrain_archer_0003",Position{0.0f, 12.0f},true));
-    animations.push_back(Animation(State::Idle,"terrain_archer_0003",Position{0.0f, 12.0f}));
-    animations.push_back(Animation(State::Idle,"archer_tower_0003",Position{0.0f, 37.0f}));
-    animations.push_back(Animation(State::IdleDown,"shooterarcherlvl3",Position{-9.0f, 52.0f}));
-    animations.push_back(Animation(State::IdleDown,"shooterarcherlvl3",Position{9.0f, 52.0f}));
+    animations.push_back(Animation(State::Idle,"terrain_archer3",Position{0.0f, 12.0f},true));
+    animations.push_back(Animation(State::Idle,"terrain_archer3",Position{0.0f, 12.0f}));
+    animations.push_back(Animation(State::Idle,"archer_tower3",Position{0.0f, 37.0f}));
+    animations.push_back(Animation(State::IdleDown,"tower_archer_lvl3_shooter",Position{-9.0f, 52.0f}));
+    animations.push_back(Animation(State::IdleDown,"tower_archer_lvl3_shooter",Position{9.0f, 52.0f}));
     animations[0].actions.push_back(Action(ActionType::SellTower,UpgradeTowerParams{id,TowerType::None, -total_price}));
     ranged.attacks.push_back(RangedAttack(0.5, 180.0, BulletType::Arrow, 0.0, 15.0, "arrow", 1.0)); // 添加攻击
 
@@ -268,14 +269,14 @@ void Barracks::Update(Store& store){
     bool solider_size_changed = false;;
     while(soldiers.size()<3){
         animations[0].current_state = State::DoorOpen;
-        Soldier* soldierx = store.template_manager.CreateSoldier(return_soldier_type);
+        Soldier* soldierx = store.template_manager.CreateSoldier(return_soldier_type());
         store.QueueSoldier(soldierx);
         soldiers.push_back(soldierx->id);
         solider_size_changed = true;
     }
     if(solider_size_changed){
         for(int i=0;i<3;i++){
-            
+
         }
     }
 }

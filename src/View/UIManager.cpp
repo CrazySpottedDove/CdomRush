@@ -109,7 +109,12 @@ void UIManager::Render(const ViewData& view_data)
                 }
                 case ActionType::ChangeRallyPoint:
                 {
-                    
+                    action_queue.push(animation.actions[i]);
+                    SUCCESS("Action: ChangeRallyPoint Triggered");
+                    break;
+                }
+                case ActionType::SellTower:
+                {
                     break;
                 }
                 }
@@ -155,8 +160,8 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     float top  = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y;
 
     sf::FloatRect bounds(sf::Vector2f(left, top),
-                         sf::Vector2f(sprite_frame_data.displaySize.x * animation.scale_x,
-                                      sprite_frame_data.displaySize.y * animation.scale_y));
+                         sf::Vector2f(2.0*sprite_frame_data.displaySize.x * animation.scale_x,
+                                      2.0*sprite_frame_data.displaySize.y * animation.scale_y));
 
     return bounds.contains(click_position);
 }

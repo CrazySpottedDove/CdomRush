@@ -42,7 +42,7 @@ void App::Run()
 
                 store.QueueFx(map_fx);
                 last_state = GameState::Begin;
-                //INFO("State Changed to Begin");
+                INFO("State Changed to Begin");
             }
 
             window.clear();
@@ -62,7 +62,7 @@ void App::Run()
                 last_state = GameState::GameStart;
                 store.current_subwave_index = 0;
                 store.current_wave_index = 0;
-                //INFO("State Changed to GameStart");
+                INFO("State Changed to GameStart");
             }
             DEBUG_CODE(
                 game_state = GameState::GamePlaying; // For testing purposes, skip loading state
@@ -85,7 +85,7 @@ void App::Run()
                 store.InitLevel(store.current_level_name);
                 last_state = GameState::Loading;
                 game_state = GameState::GameStart;
-                //INFO("State Changed to Loading");
+                INFO("State Changed to Loading");
             }
             window.clear();
             store.UpdateFxs();
@@ -98,7 +98,7 @@ void App::Run()
             if (last_state != GameState::GamePlaying) {
                 last_state = GameState::GamePlaying;
                 store.current_wave_time = 0;
-                //INFO("State Changed to GamePlaying");
+                INFO("State Changed to GamePlaying");
             }
             window.clear();
             store.SpawnWaves();
@@ -113,7 +113,7 @@ void App::Run()
             store.time += FRAME_LENGTH;
             if(store.life <= 0){
                 game_state = GameState::GameOver;
-                //INFO("Game Over! Your life is smaller than 0.");
+                INFO("Game Over! Your life is smaller than 0.");
             }
             break;
         case GameState::GameOver:
@@ -122,7 +122,7 @@ void App::Run()
             if(last_state != GameState::GameOver) {
                 store.Clear();
                 last_state = GameState::GameOver;
-                //INFO("State Changed to GameOver");
+                INFO("State Changed to GameOver");
             }
             window.clear();
             store.UpdateFxs();

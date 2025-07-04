@@ -91,7 +91,29 @@ SoldierMeleelv1:: SoldierMeleelv1(Position position_,Position rally_point_,Posit
     rally_point = rally_point_;
     rally_point_offset = offset_;
     speed = 30;
-    animations.push_back(Animation(State::Idle,"forest_troll"));
+    animations.push_back(Animation(State::Idle,"soldier_lvl1"));
+    melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
+    melee[0].damage_event.source = id;
+    slot  = sf::Vector2f(-35.0f, 0.0f);   // 初始化近战偏移
+    Hit_offset = sf::Vector2f(30.0f,0.0f);   // 设置受击偏移位置
+}
+SoldierMeleelv2:: SoldierMeleelv2(Position position_,Position rally_point_,Position offset_){
+    position = position_;
+    rally_point = rally_point_;
+    rally_point_offset = offset_;
+    speed = 30;
+    animations.push_back(Animation(State::Idle,"soldier_lvl2"));
+    melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
+    melee[0].damage_event.source = id;
+    slot  = sf::Vector2f(-35.0f, 0.0f);   // 初始化近战偏移
+    Hit_offset = sf::Vector2f(30.0f,0.0f);   // 设置受击偏移位置
+}
+SoldierMeleelv3:: SoldierMeleelv3(Position position_,Position rally_point_,Position offset_){
+    position = position_;
+    rally_point = rally_point_;
+    rally_point_offset = offset_;
+    speed = 30;
+    animations.push_back(Animation(State::Idle,"soldier_lvl3"));
     melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
     melee[0].damage_event.source = id;
     slot  = sf::Vector2f(-35.0f, 0.0f);   // 初始化近战偏移

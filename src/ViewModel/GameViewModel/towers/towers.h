@@ -4,7 +4,7 @@
 #include "ViewModel/GameViewModel/components/ranged.h"
 
 class Store;
-
+class Soldier;
 class Tower;
 
 
@@ -169,5 +169,35 @@ public:
     Position return_offset() const override {
         if(heading == tower_heading::Up) return sf::Vector2f(8, 70); // 特定偏移位置
         else return sf::Vector2f(-5, 69); // 特定偏移位置
+    }
+};
+
+class Barracks : public Tower{
+public:
+    Position rally_point;
+    std::vector<Soldier*> soldiers;
+
+    void layer_update() override;
+    void Update(Store& store);
+};
+class Barracks1 : public Barracks{
+public:
+    Barracks1(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Barracks1(*this);
+    }
+};
+class Barracks2 : public Barracks{
+public:
+    Barracks2(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Barracks2(*this);
+    }
+};
+class Barracks3 : public Barracks{
+public:
+    Barracks3(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Tower* Clone() override {
+        return new Barracks3(*this);
     }
 };

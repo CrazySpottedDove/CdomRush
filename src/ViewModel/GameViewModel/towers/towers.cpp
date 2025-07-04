@@ -45,7 +45,6 @@ None::None(Position position_) {
     animations[0].actions.push_back(Action(ActionType::UpgradeTower,UpgradeTowerParams{id,TowerType::Mage1, 100}));
 }
 
-
 void Archer::layer_update() {
     if(animations[0].current_state == State::Idle && heading == tower_heading::Down){
         animations[3].current_state = State::IdleDown; // 设置朝下的动画状态
@@ -259,4 +258,12 @@ Mage3::Mage3(Position position_, int total_price_) {
     ranged.attacks.push_back(RangedAttack(1.5, 180.0, BulletType::Bolt, 0.0, 63, "bolt_3", 1.0)); // 添加攻击
 
     heading = tower_heading::Down; // 默认塔的朝向为 Down
+}
+
+void Barracks::layer_update(){
+    if(animations[0].current_state == State::DoorOpen) animations[2].current_state = State::DoorOpen;
+    if(animations[0].current_state == State::DoorClose) animations[2].current_state = State::DoorClose;
+}
+void Barracks::Update(Store& store){
+    
 }

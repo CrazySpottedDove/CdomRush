@@ -12,13 +12,30 @@ TemplateManager::TemplateManager()
                   {BulletType::Bolt, new Bolt()},
                   {BulletType::Bomb, new Bomb()}};
     tower_map  = {
-        {TowerType::None, new None(sf::Vector2f(0, 0))},
+        {TowerType::None, new None()},
+        {TowerType::Archer1, new Archer1()},
+        {TowerType::Archer2, new Archer2()},
+        {TowerType::Archer3, new Archer3()},
+        {TowerType::Engineer1, new Engineer1()},
+        {TowerType::Engineer2, new Engineer2()},
+        {TowerType::Engineer3, new Engineer3()},
+        {TowerType::Mage1, new Mage1()},
+        {TowerType::Mage2, new Mage2()},
+        {TowerType::Mage3, new Mage3()},
+        {TowerType::Barrack1, new Barracks1()},
+        {TowerType::Barrack2, new Barracks2()},
+        {TowerType::Barrack3, new Barracks3()}
     };
     enemy_map = {{EnemyType::ForestTroll, new ForestTroll()},
                  {EnemyType::orc_armored, new orc_armored()}};
     fx_map    = {
         {FxType::LevelFlag, new LevelFlag()},
         {FxType::Map, new Map()},
+    };
+    soldier_map = {
+        {SoldierType::SoldierMeleelv1, new SoldierMeleelv1()},
+        {SoldierType::SoldierMeleelv2, new SoldierMeleelv2()},
+        {SoldierType::SoldierMeleelv3, new SoldierMeleelv3()}
     };
 }
 
@@ -63,5 +80,16 @@ Fx* TemplateManager::CreateFx(const FxType type) const
         if (it == fx_map.end()) {
             ERROR("Error: Fx type " << static_cast<int>(type) << "not found.");
         } else { INFO("Created Fx of type: " << static_cast<int>(type)); })
+    return it->second->Clone();
+}
+
+Soldier* TemplateManager::CreateSoldier(const SoldierType type) const{
+    auto it = soldier_map.find(type);
+    DEBUG_CODE(
+        if(it==soldier_map.end()){
+            ERROR("Error: Soldier type" << static_cast<int>(type) << "not found.");
+        }
+        else { INFO("Created Soldier of type: " << static_cast<int>(type)); }
+    )
     return it->second->Clone();
 }

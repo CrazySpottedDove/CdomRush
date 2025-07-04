@@ -17,6 +17,8 @@ enum class State
     Hit,
     ShootingUp,
     ShootingDown,
+    DoorOpen,
+    DoorClose,
     None
 };
 

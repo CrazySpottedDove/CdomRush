@@ -44,3 +44,8 @@ enum class FxType
 };
 
 
+enum class SoldierType{
+    SoldierMeleelv1,
+    SoldierMeleelv2,
+    SoldierMeleelv3
+};

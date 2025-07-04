@@ -275,7 +275,11 @@ void Barracks::Update(Store& store){
     }
     if(solider_size_changed){
         for(int i=0;i<3;i++){
-
+            Soldier* si = store.GetSoldier(soldiers[i]);
+            si->rally_point = rally_point;
+            if(i==0) si->rally_point_offset = sf::Vector2f(-17.3,-10);
+            if(i==1) si->rally_point_offset = sf::Vector2f(17.3,-10);
+            if(i==2) si->rally_point_offset = sf::Vector2f(0,20);
         }
     }
 }

@@ -6,13 +6,9 @@
 #include "ViewModel/GameViewModel/components/path.h"
 #include "ViewModel/GameViewModel/components/ranged.h"
 #include "ViewModel/GameViewModel/templates/unit.h"
+#include "Common/type.h"
 #include "Common/macros.h"
 
-enum class SoldierType{
-    SoldierMeleelv1,
-    SoldierMeleelv2,
-    SoldierMeleelv3
-};
 
 class Soldier: public Unit{
 public:

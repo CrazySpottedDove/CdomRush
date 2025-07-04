@@ -1,6 +1,7 @@
 #include "ViewModel/GameViewModel/Function/calc/motion.h"
 #include "ViewModel/GameViewModel/store/store.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
+#include "ViewModel/GameViewModel/soldiers/soldiers.h"
 #include "ViewModel/GameViewModel/templates/unit.h"
 #include "Common/macros.h"
 #include <SFML/System/Vector2.hpp>
@@ -36,42 +37,42 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
         if (displacement.y > 0) {
             if (displacement.x > displacement.y) {
                 self.heading = Heading::Right;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
             else {
                 self.heading = Heading::Down;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
         }
         else {
             if( displacement.x > -displacement.y) {
                 self.heading = Heading::Right;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
             else {
                 self.heading = Heading::Up;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
         }
     }else {
         if (displacement.y > 0) {
             if (-displacement.x > displacement.y) {
                 self.heading = Heading::Left;
-                self.animation.flip = true;
+                self.animations[0].flip = true;
             }
             else {
                 self.heading = Heading::Down;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
         }
         else {
             if (-displacement.x > -displacement.y) {
                 self.heading = Heading::Left;
-                self.animation.flip = true;
+                self.animations[0].flip = true;
             }
             else {
                 self.heading = Heading::Up;
-                self.animation.flip = false;
+                self.animations[0].flip = false;
             }
         }
     }
@@ -84,7 +85,18 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
 }
 
 void calc::soldier_move_tick(const Store& store, Soldier& self, Position target_position){
-    
+    const sf::Vector2f displacement = target_position - self.position;
+    const sf::Vector2f direction = displacement.normalized();
+    const double real_speed = calc::real_speed(self);
+    const float movement = real_speed * FRAME_LENGTH;
+
+    if(displacement.lengthSquared()<=movement * movement){
+        self.position = target_position;
+        return ;
+    }
+
+    self.position += movement*direction;
+    return ;
 }
 
 bool calc::enemy_reached_defence_point(const Store& store, const Enemy& self)

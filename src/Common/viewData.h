@@ -6,7 +6,7 @@
 #include <set>
 
 struct ViewData{
-    Animation* animation;
+    std::vector<Animation>* animations;
     Position position;
 };
 

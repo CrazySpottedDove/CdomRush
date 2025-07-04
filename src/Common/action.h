@@ -27,7 +27,8 @@ struct UpgradeTowerParams
     ID        tower_id;
     TowerType new_tower_type;
     int       cost;
-    Animation* animation;
+    std::vector<Animation>* animations;
+    sf::Vector2f offset;  // 渲染升级界面时的偏移量
 };
 
 struct SelectLevelParams

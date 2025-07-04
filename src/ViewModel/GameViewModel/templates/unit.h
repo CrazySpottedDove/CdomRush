@@ -34,7 +34,7 @@ public:
     virtual ~Unit() = default;
 
     bool is_moving(){
-        if(animation.current_state == State::WalkingLeftRight || animation.current_state == State::WalkingUp || animation.current_state == State::WalkingDown || animation.current_state == State::Running) {
+        if(animations[0].current_state == State::WalkingLeftRight || animations[0].current_state == State::WalkingUp || animations[0].current_state == State::WalkingDown || animations[0].current_state == State::Running) {
             return true; // 如果状态是左右行走、向上行走、向下行走或奔跑，返回 true
         }
         return false; // 否则返回 false

@@ -46,8 +46,7 @@ public:
         totalDuration_ = 1.0; // 设置总持续时间
         hit_fx = FxType::None; // 箭矢没有特殊的击中效果
         radius = 0.0; // 箭矢没有爆炸半径
-        animation.current_state = State::Flying; // 设置初始状态为飞行
-        animation.prefix = "archer_arcane_proy2_0001"; // 设置动画前缀
+        animations.push_back(Animation(State::Flying,"archer_arcane_proy2_0001"));
     }; // 默认构造函数
     Arrow(const Arrow & other) = default; // 拷贝构造函数
     Bullet* Clone() const override {
@@ -82,8 +81,7 @@ public:
         totalDuration_ = 0.5; // 设置总持续时间
         hit_fx = FxType::None; // 法球没有特殊的击中效果
         radius = 0.0; // 法球没有爆炸半径
-        animation.current_state = State::Flying; // 设置初始状态为飞行
-        animation.prefix = "bolt"; // 设置动画前缀
+        animations.push_back(Animation(State::Flying,"bolt"));
     }
     Bolt(const Bolt & other) = default; // 拷贝构造函数
     Bullet* Clone() const override {
@@ -105,8 +103,7 @@ public:
         totalDuration_ = 1.5; // 设置总持续时间
         hit_fx = FxType::Explosion; // 爆炸效果
         radius = 60.0; // 设置爆炸半径
-        animation.current_state = State::Flying; // 设置初始状态为飞行
-        animation.prefix = "bombs_0001"; // 设置动画前缀
+        animations.push_back(Animation(State::Flying,"bombs_0001"));
     }
     Bomb(const Bomb & other) = default; // 拷贝构造函数
     Bullet* Clone() const override {

@@ -31,3 +31,8 @@ public:
 
     void Update(Store& store) override;
 };
+
+class SoldierMeleelv1 : public SoldierMelee{
+public:
+    SoldierMeleelv1(Position position_ = sf::Vector2f(0,0));
+};

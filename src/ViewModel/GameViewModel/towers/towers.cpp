@@ -283,3 +283,12 @@ void Barracks::Update(Store& store){
         }
     }
 }
+Barracks1::Barracks1(Position position , int total_price){
+
+}
+Barracks2::Barracks2(Position position , int total_price){
+
+}
+Barracks3::Barracks3(Position position , int total_price){
+
+}

@@ -45,8 +45,42 @@ struct CreateActionFxParams{
 
 // Delete Action 不带任何参数，就是让 ViewModel 层删除所有的 ActionFx 实体。
 
-// TODO: 日后处理别的事件的时候，就定义对应类型的 Params 结构体，然后添加到 Params 的 variant 中。
-using Params = std::variant<std::monostate, UpgradeTowerParams, SelectLevelParams, CreateActionFxParams>;
+struct CheckSoldierStatusParams
+{
+    ID soldier_id; // 要检查的士兵 ID
+    //Status? 士兵状态 
+};
+
+struct CheckEnemyStatusParams
+{
+    ID enemy_id; 
+    //Status? 敌人状态
+};
+
+struct CheckTowerStatusParams
+{
+    ID tower_id; 
+    //Status? 塔状态
+    // 可能还需要其他信息，比如塔的等级、攻击力、金钱等
+};
+
+struct ChangeRallyPointParams
+{
+    ID        soldier_id; // 要改变集结点的士兵 ID
+    Position  new_rally_point; 
+};
+
+struct SellTowerParams
+{
+    ID        tower_id; // 要出售的塔的 ID
+    TowerType tower_type; 
+    int       price; //出售的价格
+    Position  position; // 出售位置，View 层会根据这个位置渲染出售的特效
+    Position  offset; // 出售特效的偏移位置
+};
+
+using Params = std::variant<std::monostate, UpgradeTowerParams, SelectLevelParams, CreateActionFxParams,CheckSoldierStatusParams,
+                            CheckEnemyStatusParams, CheckTowerStatusParams, ChangeRallyPointParams>;
 
 struct Action
 {

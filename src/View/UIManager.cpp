@@ -82,7 +82,7 @@ void UIManager::Render(const ViewData& view_data)
                 {
                     Action create_action = animation.actions[i];
                     auto&  params        = std::get<CreateActionFxParams>(create_action.param);
-                    params.position      = view_data.position + params.offset;
+                    params.position      = view_data.position + params.offset; // to be fixed
                     action_queue.push(create_action);
                     break;
                 }
@@ -92,12 +92,27 @@ void UIManager::Render(const ViewData& view_data)
                     SUCCESS("Action: UpgradeTower Triggered");
                     break;
                 }
+                case ActionType::CheckSoldierStatus:
+                {
+                    action_queue.push(animation.actions[i]);
+                    break;
+                }
+                case ActionType::CheckEnemyStatus:
+                {
+                    action_queue.push(animation.actions[i]);
+                    break;
+                }
+                case ActionType::CheckTowerStatus:
+                {
+                    action_queue.push(animation.actions[i]);
+                    break;
+                }
+                case 
                 }
             }
         }
     }
 }
-
 
 void UIManager::RenderAll()
 {
@@ -175,7 +190,6 @@ void UIManager::HandleClick()
                         (*view_data.animations)[0].clicked = true;
 
                         // 如果有关联的actions，准备触发
-
                         INFO("Object has " +
                              std::to_string((*view_data.animations)[0].actions.size()) +
                              " actions available");

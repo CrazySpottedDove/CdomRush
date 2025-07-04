@@ -36,6 +36,9 @@ enum class FxType
     Explosion,
     LevelFlag,
     CommonUpgradeIcon,
+    SoldierStatusWidget,
+    EnemyStatusWidget,
+    TowerStatusWidget,
     Map,
     None
 };

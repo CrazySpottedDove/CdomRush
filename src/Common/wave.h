@@ -14,7 +14,9 @@ struct SubWave
     EnemyType   enemy_type;    // 敌人类型
     SubWave() = default;
     SubWave(const double time, const std::size_t path_id, const std::size_t subpath_id,
-            const std::size_t count, const double gap, const std::string& enemy_type){
+            const std::size_t count, const double gap, const std::string& enemy_type):time(time),
+            path_id(path_id), subpath_id(subpath_id), count(count), gap(gap)
+            {
                 this->enemy_type = enemy_type_str_map.at(enemy_type);
             }
 };

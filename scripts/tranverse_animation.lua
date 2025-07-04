@@ -1,5 +1,5 @@
 -- input.lua 是原始数据文件名
-local raw = dofile("/home/dove/CdomRush/tmp/map_flag.lua")
+local raw = dofile("/home/dove/CdomRush/tmp/gui_common.lua")
 
 local function extractPrefixAndIndex(name)
     -- 比如 bandit_0001 -> prefix=bandit, index=1

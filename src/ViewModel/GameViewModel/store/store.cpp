@@ -156,18 +156,6 @@ void Store::SpawnWaves()
 
     while (pending_enemy_queue.size() > 0 &&
            pending_enemy_queue.top().spawn_time <= current_wave_time) {
-        INFO(waves.size());
-        INFO("Current wave index: " << current_wave_index);
-        INFO("Current subwave index: " << current_subwave_index);
-        const auto& sub_wave = waves[current_wave_index].sub_waves[current_subwave_index];
-        INFO("=== SubWave Debug Info ===");
-        INFO("SubWave time: " << sub_wave.time);
-        INFO("SubWave count: " << sub_wave.count);
-        INFO("SubWave path_id: " << sub_wave.path_id);
-        INFO("SubWave subpath_id: " << sub_wave.subpath_id);
-        INFO("SubWave enemy_type: " << static_cast<int>(sub_wave.enemy_type));
-        INFO("SubWave gap: " << sub_wave.gap);
-
         const auto& pending_enemy        = pending_enemy_queue.top();
         Enemy*      new_enemy            = template_manager.CreateEnemy(pending_enemy.enemy_type);
         new_enemy->path_info.path_id     = pending_enemy.path_id;
@@ -205,6 +193,10 @@ void Store::SpawnWaves()
                                                      sub_wave.path_id,
                                                      sub_wave.subpath_id));
             }
+            INFO("Spawning subwave: " << current_subwave_index
+                                      << ", enemy type: " << static_cast<int>(sub_wave.enemy_type)
+                                      << ", count: " << sub_wave.count
+                                      << ", gap: " << sub_wave.gap);
             ++current_subwave_index;
         }
         else {

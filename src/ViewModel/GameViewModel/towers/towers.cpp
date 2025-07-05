@@ -87,7 +87,7 @@ void Archer::layer_update(bool flag)
             animations[3].current_state = State::IdleDown;       // 设置射击朝下的动画状态
             animations[4].current_state = State::ShootingDown;   // 设置射击朝下的动画
         }
-        shooter = ~shooter;   // 切换射手状态
+        shooter = !shooter;   // 切换射手状态
     }
     else if (flag && heading == tower_heading::Up) {
         if (shooter) {
@@ -98,7 +98,7 @@ void Archer::layer_update(bool flag)
             animations[3].current_state = State::IdleUp;       // 设置射击朝上的动画状态
             animations[4].current_state = State::ShootingUp;   // 设置射击朝上的动画
         }
-        shooter = ~shooter;   // 切换射手状态
+        shooter = !shooter;   // 切换射手状态
     }
 }
 Archer1::Archer1(Position position_, int total_price_)

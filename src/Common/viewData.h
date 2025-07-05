@@ -15,7 +15,7 @@ struct ViewDataComparator
 {
     bool operator()(const ViewData& lhs, const ViewData& rhs) const
     {
-        return lhs.position.y < rhs.position.y;
+        return lhs.position.y > rhs.position.y;
     }
 };
 

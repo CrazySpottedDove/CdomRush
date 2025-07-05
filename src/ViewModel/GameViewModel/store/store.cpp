@@ -79,8 +79,7 @@ void Store::UpdateBullets()
             continue;
         }
         bullet->Update(*this);
-        INFO("Bullet updated with ID: " << bullet->id << ", position: (" << bullet->position.x
-                                              << ", " << bullet->position.y << ")");
+
         QueueViewDataFromEntity(bullet);
         ++it;
     }

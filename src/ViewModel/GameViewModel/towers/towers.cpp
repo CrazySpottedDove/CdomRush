@@ -16,7 +16,7 @@ void Tower::Update(Store& store){
                 if(target_enemy_ptr == nullptr) continue;
 
                 animations[0].current_state = State::Shoot; // 设置状态为射击
-                if(target_enemy_ptr->position.y < position.y) heading = tower_heading::Up; // 如果目标敌人在塔的上方，设置塔的朝向为 Up
+                if(target_enemy_ptr->position.y > position.y) heading = tower_heading::Up; // 如果目标敌人在塔的上方，设置塔的朝向为 Up
                 else heading = tower_heading::Down; // 如果目标敌人在塔的下方，设置塔的朝向为 Down
                 attack.Apply(store, this->id, target_enemy, return_offset(),SourceType::Tower); // 应用攻击
                 layer_update();

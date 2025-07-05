@@ -25,7 +25,7 @@ bool Bullet::Insert(Store& store)
     if(source_type == SourceType::Enemy){
         Enemy* source = store.GetEnemy(damage_event.source);   // 获取源单位
         Unit* target = store.GetSoldier(damage_event.target); // 获取目标单位
-        source_position = source->position; // 设置源位置
+        source_position = source->position + bullet_offset; // 设置源位置
         target_position = target->position + target->Hit_offset; // 设置目标位置
         return true;
     }
@@ -33,14 +33,14 @@ bool Bullet::Insert(Store& store)
     if(source_type == SourceType::Tower){
         Tower* source = store.GetTower(damage_event.source);   // 获取源塔
         Unit* target = store.GetEnemy(damage_event.target); // 获取目标敌人
-        source_position = source->position; // 设置源位置
+        source_position = source->position + bullet_offset; // 设置源位置
         target_position = target->position + target->Hit_offset; // 设置目标位置
         return true;
     }
     if(source_type == SourceType::Soldier){
         Soldier* source = store.GetSoldier(damage_event.source);   // 获取源士兵
         Unit* target = store.GetEnemy(damage_event.target); // 获取目标敌人
-        source_position = source->position;   // 设置源位置
+        source_position = source->position + bullet_offset;   // 设置源位置
         target_position = target->position + target->Hit_offset; // 设置目标位置
         return true;
     }

@@ -184,7 +184,7 @@ public:
 };
 class Barracks1 : public Barracks{
 public:
-    Barracks1(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Barracks1(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
     Tower* Clone() override {
         return new Barracks1(*this);
     }
@@ -194,7 +194,7 @@ public:
 };
 class Barracks2 : public Barracks{
 public:
-    Barracks2(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Barracks2(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
     Tower* Clone() override {
         return new Barracks2(*this);
     }
@@ -204,7 +204,7 @@ public:
 };
 class Barracks3 : public Barracks{
 public:
-    Barracks3(Position position = sf::Vector2f(0,0), int total_price = 0);
+    Barracks3(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
     Tower* Clone() override {
         return new Barracks3(*this);
     }

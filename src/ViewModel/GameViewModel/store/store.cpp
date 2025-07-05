@@ -131,6 +131,25 @@ void Store::UpdateFxs()
     }
 }
 
+void Store::UpdateActionFxs()
+{
+    auto it = action_fxs.begin();
+    while (it != action_fxs.end()) {
+        ActionFx* action_fx = it->second;
+        // if (action_fx->animations[0].current_state == State::Hit &&
+        //     resource_manager.GetAnimationGroupMap()
+        //             ->at(action_fx->animations[0].prefix)
+        //             .at(action_fx->animations[0].current_state)
+        //             .to <= action_fx->animations[0].frame_id) {
+        //     it = DequeueActionFx(it);
+        //     continue;
+        // }
+        action_fx->Update(*this);
+        QueueViewDataFromEntity(action_fx);
+        ++it;
+    }
+}
+
 void Store::InitTowers()
 {
     for (const auto& tower_essential : *resource_manager.GetTowerEssentials()) {
@@ -350,11 +369,9 @@ void Store::QueueBullet(Bullet* bullet)
     bullets[next_id] = bullet;
     ++next_id;
     bullet->Insert(*this);
-    INFO("Bullet Source Position: (" << bullet->source_position.x << ", "
-                                     << bullet->source_position.y << ")");
-    DEBUG_CODE(if (resource_manager.GetAnimationGroupMap()->find(bullet->animations[0].prefix) !=
+    DEBUG_CODE(if (resource_manager.GetAnimationGroupMap()->find(bullet->animations[0].prefix) ==
                    resource_manager.GetAnimationGroupMap()->end()) {
-        SUCCESS("Bullet animation prefix found: " << bullet->animations[0].prefix);
+        ERROR("Bullet animation prefix not found: " << bullet->animations[0].prefix);
     })
 }
 

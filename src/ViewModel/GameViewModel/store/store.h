@@ -48,53 +48,33 @@ public:
     const std::unordered_map<ID, Soldier*>& GetSoldiers() const { return soldiers; }
 
     void QueueEnemy(Enemy* enemy);
-
     void QueueTower(Tower* tower);
-
     void QueueBullet(Bullet* bullet);
-
     void QueueSoldier(Soldier* soldier);
+    void QueueDamageEvent(DamageEvent&& event) { damage_events.push_back(std::move(event)); }
+    void QueueDamageEvent(const DamageEvent& event) { damage_events.push_back(event); }
+    void QueueFx(Fx* fx);
+    void QueueActionFx(ActionFx* action_fx);
 
     std::unordered_map<ID, Enemy*>::iterator DequeueEnemy(
         std::unordered_map<ID, Enemy*>::iterator& it);
-
     std::unordered_map<ID, Tower*>::iterator DequeueTower(
         std::unordered_map<ID, Tower*>::iterator& it);
-
     std::unordered_map<ID, Bullet*>::iterator DequeueBullet(
         std::unordered_map<ID, Bullet*>::iterator& it);
-
     std::unordered_map<ID, Soldier*>::iterator DequeueSoldier(
         std::unordered_map<ID, Soldier*>::iterator& it);
-
     std::unordered_map<ID, Fx*>::iterator DequeueFx(std::unordered_map<ID, Fx*>::iterator& it);
-
     void DequeueEnemy(const ID id);
-
     void DequeueTower(const ID id);
-
     void DequeueBullet(const ID id);
-
     void DequeueSoldier(const ID id);
-
     void DequeueFx(const ID id);
 
-    void QueueDamageEvent(DamageEvent&& event) { damage_events.push_back(std::move(event)); }
-
-    void QueueDamageEvent(const DamageEvent& event) { damage_events.push_back(event); }
-
-    void QueueFx(Fx* fx);
-
-    void QueueActionFx(ActionFx* action_fx);
-
     Enemy* GetEnemy(const ID id) const;
-
     Tower* GetTower(const ID id) const;
-
     Bullet* GetBullet(const ID id) const;
-
     Soldier* GetSoldier(const ID id) const;
-
     Fx* GetFx(const ID id) const;
 
     TemplateManager template_manager;
@@ -106,6 +86,7 @@ public:
     void UpdateTowers();
     void UpdateSoldiers();
     void UpdateFxs();
+    void UpdateActionFxs();
     /**
      * @brief 在关卡进行时调用，生成敌人
      *
@@ -125,13 +106,13 @@ public:
     void InitLevel(const std::string& level_name);
 
 private:
-    std::unordered_map<ID, Enemy*>   enemies;
-    std::unordered_map<ID, Tower*>   towers;
-    std::unordered_map<ID, Bullet*>  bullets;
-    std::unordered_map<ID, Soldier*> soldiers;
-    std::unordered_map<ID, Fx*>      fxs;
-    std::unordered_map<ID, ActionFx*>      action_fxs;
-    ID                               next_id = 0;
+    std::unordered_map<ID, Enemy*>    enemies;
+    std::unordered_map<ID, Tower*>    towers;
+    std::unordered_map<ID, Bullet*>   bullets;
+    std::unordered_map<ID, Soldier*>  soldiers;
+    std::unordered_map<ID, Fx*>       fxs;
+    std::unordered_map<ID, ActionFx*> action_fxs;
+    ID                                next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象
     std::vector<DamageEvent> damage_events;
     ViewDataQueue            view_data_queue;

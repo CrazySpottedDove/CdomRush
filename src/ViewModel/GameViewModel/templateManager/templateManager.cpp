@@ -34,67 +34,74 @@ TemplateManager::TemplateManager()
         {FxType::Map, new Map()},
         {FxType::Explosion, new Explosion()},
     };
-    soldier_map = {
-        {SoldierType::SoldierMeleelv1, new SoldierMeleelv1()},
-        {SoldierType::SoldierMeleelv2, new SoldierMeleelv2()},
-        {SoldierType::SoldierMeleelv3, new SoldierMeleelv3()}
-    };
-    action_fx_map = {
-        {FxType::UpgradeToArcherButton, new UpgradeToArcherButton()}
-    };
+    soldier_map   = {{SoldierType::SoldierMeleelv1, new SoldierMeleelv1()},
+                     {SoldierType::SoldierMeleelv2, new SoldierMeleelv2()},
+                     {SoldierType::SoldierMeleelv3, new SoldierMeleelv3()}};
+    action_fx_map = {{FxType::UpgradeToArcherButton, new UpgradeToArcherButton()}};
 }
 
 Bullet* TemplateManager::CreateBullet(const BulletType type) const
 {
     auto it = bullet_map.find(type);
-    DEBUG_CODE(
-        if (it == bullet_map.end()) {
-            std::cerr << "Error: Bullet type " << static_cast<int>(type) << "not found."
-                      << std::endl;
-        } else { INFO("Created Bullet of type: " << static_cast<int>(type)); })
+    DEBUG_CODE(if (it == bullet_map.end()) {
+        std::cerr << "Error: Bullet type " << static_cast<int>(type) << "not found." << std::endl;
+    } else {
+        //  INFO("Created Bullet of type: " << static_cast<int>(type));
+    })
     return it->second->Clone();
 }
 
 Tower* TemplateManager::CreateTower(const TowerType type) const
 {
     auto it = tower_map.find(type);
-    DEBUG_CODE(
-        if (it == tower_map.end()) {
-            std::cerr << "Error: Tower type " << static_cast<int>(type) << "not found."
-                      << std::endl;
-        } else { INFO("Creating Tower of type: " << static_cast<int>(type)); })
+    DEBUG_CODE(if (it == tower_map.end()) {
+        std::cerr << "Error: Tower type " << static_cast<int>(type) << "not found." << std::endl;
+    } else {
+        // INFO("Creating Tower of type: " << static_cast<int>(type));
+    })
     return it->second->Clone();
 }
 
 Enemy* TemplateManager::CreateEnemy(const EnemyType type) const
 {
     auto it = enemy_map.find(type);
-    DEBUG_CODE(
-        std::cerr << enemy_map.size() << " enemy types available." << std::endl;
-        if (it == enemy_map.end()) {
-            std::cerr << "Error: Enemy type " << static_cast<int>(type) << "not found."
-                      << std::endl;
-        } else { INFO("Created Enemy of type: " << static_cast<int>(type)); })
+    DEBUG_CODE(if (it == enemy_map.end()) {
+        std::cerr << "Error: Enemy type " << static_cast<int>(type) << "not found." << std::endl;
+    } else {
+        //  INFO("Created Enemy of type: " << static_cast<int>(type));
+    })
     return it->second->Clone();
 }
 
 Fx* TemplateManager::CreateFx(const FxType type) const
 {
     auto it = fx_map.find(type);
-    DEBUG_CODE(
-        if (it == fx_map.end()) {
-            ERROR("Error: Fx type " << static_cast<int>(type) << "not found.");
-        } else { INFO("Created Fx of type: " << static_cast<int>(type)); })
+    DEBUG_CODE(if (it == fx_map.end()) {
+        ERROR("Error: Fx type " << static_cast<int>(type) << "not found.");
+    } else {
+        // INFO("Created Fx of type: " << static_cast<int>(type));
+    })
     return it->second->Clone();
 }
 
-Soldier* TemplateManager::CreateSoldier(const SoldierType type) const{
+Soldier* TemplateManager::CreateSoldier(const SoldierType type) const
+{
     auto it = soldier_map.find(type);
-    DEBUG_CODE(
-        if(it==soldier_map.end()){
-            ERROR("Error: Soldier type" << static_cast<int>(type) << "not found.");
-        }
-        else { INFO("Created Soldier of type: " << static_cast<int>(type)); }
-    )
+    DEBUG_CODE(if (it == soldier_map.end()) {
+        ERROR("Error: Soldier type" << static_cast<int>(type) << "not found.");
+    } else {
+        // INFO("Created Soldier of type: " << static_cast<int>(type));
+    })
+    return it->second->Clone();
+}
+
+ActionFx* TemplateManager::CreateActionFx(const FxType type) const
+{
+    auto it = action_fx_map.find(type);
+    DEBUG_CODE(if (it == action_fx_map.end()) {
+        ERROR("Error: ActionFx type " << static_cast<int>(type) << "not found.");
+    } else {
+        // INFO("Created ActionFx of type: " << static_cast<int>(type));
+    })
     return it->second->Clone();
 }

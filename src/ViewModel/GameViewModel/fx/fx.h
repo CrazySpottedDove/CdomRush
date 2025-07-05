@@ -43,11 +43,13 @@ class ActionFx: public Fx
 {
 public:
     ID source_id;
+    virtual ActionFx* Clone() = 0;
 };
 
 class UpgradeToArcherButton : public ActionFx
 {
 public:
     UpgradeToArcherButton();
-    Fx* Clone() override { return new UpgradeToArcherButton(*this); }
+    ActionFx* Clone() override { return new UpgradeToArcherButton(*this); }
+    void Update(Store& store)override;
 };

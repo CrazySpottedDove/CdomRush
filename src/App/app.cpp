@@ -68,6 +68,7 @@ void App::Run()
             )
             window.clear();
             store.UpdateFxs();
+            store.UpdateActionFxs();
             ui_manager.RenderAll();
             window.display();
             store.time += FRAME_LENGTH;
@@ -88,6 +89,7 @@ void App::Run()
             }
             window.clear();
             store.UpdateFxs();
+
             ui_manager.RenderAll();
             window.display();
             break;
@@ -107,6 +109,7 @@ void App::Run()
             store.UpdateBullets();
             store.UpdateTowers();
             store.UpdateSoldiers();
+            store.UpdateActionFxs();
             ui_manager.RenderAll();
             window.display();
             store.time += FRAME_LENGTH;
@@ -152,10 +155,13 @@ void App::HandleAction(Action& action)
     }
     case ActionType::CreateActionFx:
     {
+        INFO("Creating ActionFx with type: " << static_cast<int>(action.type));
         CreateActionFxParams& fx_params = std::get<CreateActionFxParams>(action.param);
         ActionFx*                   action_fx = store.template_manager.CreateActionFx(fx_params.fx_type);
         action_fx->position             = fx_params.position + fx_params.offset;
         action_fx->source_id = fx_params.id;
+        std::get<UpgradeTowerParams>(action_fx->animations[0].actions[0].param).tower_id = fx_params.id;
+        store.QueueActionFx(action_fx);
         break;
     }
     case ActionType::Delete:{

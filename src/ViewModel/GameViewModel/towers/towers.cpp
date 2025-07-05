@@ -71,7 +71,7 @@ bool None::Insert(Store& store)
                                                   FxType::UpgradeToArcherButton,
                                                   position,
                                                   id,
-                                                  Position{20, 20},
+                                                  Position{-100, 100},
                                               }));
     return true;
 }

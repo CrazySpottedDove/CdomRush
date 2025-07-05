@@ -9,21 +9,16 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-
-enum class TextureLevel
-{
-    Common,
-    Specific
-};
+#include <Common/resourceLevel.h>
 
 // TextureName -> Texture
 typedef std::unordered_map<std::string, sf::Texture> TextureMap;
 
 // TextureLevel -> TextureName
-typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>> TextureLevelMap;
+typedef std::unordered_map<ResourceLevel, std::unordered_set<std::string>> TextureLevelMap;
 
 // TextureLevel -> Prefix
-typedef std::unordered_map<TextureLevel, std::unordered_set<std::string>> PrefixLevelMap;
+typedef std::unordered_map<ResourceLevel, std::unordered_set<std::string>> PrefixLevelMap;
 
 struct SpriteFrameData
 {

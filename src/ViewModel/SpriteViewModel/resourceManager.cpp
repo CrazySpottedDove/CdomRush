@@ -1,12 +1,15 @@
 #include "ViewModel/SpriteViewModel/resourceManager.h"
 #include "Common/animation.h"
-#include "ViewModel/level.h"
 #include "Common/macros.h"
+#include "Common/sound.h"
 #include "Common/towerEssential.h"
 #include "ViewModel/SpriteViewModel/mapPosition.h"
 #include "ViewModel/SpriteViewModel/readLua.h"
+#include "ViewModel/level.h"
+#include <string>
+#include <vector>
 
-void ResourceManager::LoadTexture(const std::string& file_name, TextureLevel level)
+void ResourceManager::LoadTexture(const std::string& file_name, ResourceLevel level)
 {
     if (texture_map.find(file_name) == texture_map.end()) {
         // INFO("Loading texture: " << file_name);
@@ -21,18 +24,18 @@ void ResourceManager::LoadTexture(const std::string& file_name, TextureLevel lev
 
 void ResourceManager::UnloadSpecificTexturesAndSpriteFrameDatas()
 {
-    for (auto it = prefix_level_map[TextureLevel::Specific].begin();
-         it != prefix_level_map[TextureLevel::Specific].end();
+    for (auto it = prefix_level_map[ResourceLevel::Specific].begin();
+         it != prefix_level_map[ResourceLevel::Specific].end();
          ++it) {
         sprite_frame_data_map.erase(*it);
     }
-    for (auto it = texture_level_map[TextureLevel::Specific].begin();
-         it != texture_level_map[TextureLevel::Specific].end();
+    for (auto it = texture_level_map[ResourceLevel::Specific].begin();
+         it != texture_level_map[ResourceLevel::Specific].end();
          ++it) {
         texture_map.erase(*it);
     }
-    prefix_level_map[TextureLevel::Specific].clear();
-    texture_level_map[TextureLevel::Specific].clear();
+    prefix_level_map[ResourceLevel::Specific].clear();
+    texture_level_map[ResourceLevel::Specific].clear();
 }
 
 void ResourceManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed,
@@ -52,8 +55,8 @@ void ResourceManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed
     frame_data.trim_bottom        = trim_table[4].get<int>();
 }
 
-void ResourceManager::LoadTexturesAndSpriteFrameDatas(const std::string& file_name,
-                                                      const TextureLevel level)
+void ResourceManager::LoadTexturesAndSpriteFrameDatas(const std::string&  file_name,
+                                                      const ResourceLevel level)
 {
     const sol::table& sprite_frames_table = ReadLua(file_name);
     for (const auto& pair : sprite_frames_table) {
@@ -70,6 +73,20 @@ void ResourceManager::LoadTexturesAndSpriteFrameDatas(const std::string& file_na
     }
 }
 
+void ResourceManager::LoadSoundGroups(const std::string& file_path, const ResourceLevel level)
+{
+    const sol::table& sound_groups_table = ReadLua(file_path);
+    for (const auto& pair : sound_groups_table) {
+        const std::string sound_group_name = pair.first.as<std::string>();
+        const sol::table  group            = pair.second.as<sol::table>();
+
+        sound_group_map[sound_group_name]  = SoundGroup{
+            group["files"].get<std::vector<std::string>>(), 0, group["stream"].get_or(false)};
+        INFO("Loading sound group: " << sound_group_name);
+        
+    }
+}
+
 void ResourceManager::LoadAnimationGroups()
 {
     const sol::table& animation_groups_table = ReadLua("assets/images/animation_groups.lua");
@@ -79,7 +96,8 @@ void ResourceManager::LoadAnimationGroups()
         const sol::table  state_group = pair.second.as<sol::table>();
 
         for (const auto& state_pair : state_group) {
-            INFO("Loading animation group: " << prefix << " - " << state_pair.first.as<std::string>());
+            INFO("Loading animation group: " << prefix << " - "
+                                             << state_pair.first.as<std::string>());
             const State      state        = state_str_map.at(state_pair.first.as<std::string>());
             const sol::table frames_table = state_pair.second.as<sol::table>();
             animation_group_map[prefix][state] = AnimationGroup(
@@ -97,7 +115,7 @@ void ResourceManager::LoadLevelAssets(const std::string& level_name)
     LevelAssets       level_assets;
     for (const auto& [key, value] : required_textures) {
         const std::string& required_texture = IMAGES_PATH + value.as<std::string>();
-        LoadTexturesAndSpriteFrameDatas(required_texture, TextureLevel::Specific);
+        LoadTexturesAndSpriteFrameDatas(required_texture, ResourceLevel::Specific);
     }
     for (const auto& [key, value] : required_sounds) {
         const std::string& sound_file = SOUNDS_PATH + value.as<std::string>();
@@ -198,6 +216,23 @@ ResourceManager::ResourceManager()
             if (path.extension() == ".lua") {
                 try {
                     LoadTexturesAndSpriteFrameDatas(path.string());
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
+                              << std::endl;
+                }
+            }
+        }
+    }
+
+    for (const auto& entry : std::filesystem::directory_iterator("assets/sounds/common")) {
+        if (entry.is_regular_file()) {
+            const auto& path = entry.path();
+
+            // 只处理 .lua 文件
+            if (path.extension() == ".lua") {
+                try {
+                    LoadSoundGroups(path.string());
                 }
                 catch (const std::exception& e) {
                     std::cerr << "  Failed to load " << path.filename() << ": " << e.what()

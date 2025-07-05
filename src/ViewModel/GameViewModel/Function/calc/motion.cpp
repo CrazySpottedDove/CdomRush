@@ -38,7 +38,7 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
                 self.animations[0].flip = false;
             }
             else {
-                self.heading = Heading::Down;
+                self.heading = Heading::Up;
                 self.animations[0].flip = false;
             }
         }
@@ -48,7 +48,7 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
                 self.animations[0].flip = false;
             }
             else {
-                self.heading = Heading::Up;
+                self.heading = Heading::Down;
                 self.animations[0].flip = false;
             }
         }
@@ -59,7 +59,7 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
                 self.animations[0].flip = true;
             }
             else {
-                self.heading = Heading::Down;
+                self.heading = Heading::Up;
                 self.animations[0].flip = false;
             }
         }
@@ -69,7 +69,7 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
                 self.animations[0].flip = true;
             }
             else {
-                self.heading = Heading::Up;
+                self.heading = Heading::Down;
                 self.animations[0].flip = false;
             }
         }

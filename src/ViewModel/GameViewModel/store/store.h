@@ -2,11 +2,11 @@
 
 #include "Common/macros.h"
 #include "Common/viewData.h"
-#include "ViewModel/wave.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/components/damage.h"
 #include "ViewModel/GameViewModel/templateManager/templateManager.h"
 #include "ViewModel/SpriteViewModel/resourceManager.h"
+#include "ViewModel/wave.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <cstddef>
 #include <string>
@@ -37,7 +37,7 @@ public:
     std::size_t current_subwave_index = 0;
     double      current_wave_time     = 0.0;
     std::string current_level_name;
-    bool        preparing             = true;
+    bool        preparing = true;
     // GameState                             game_state                  = GameState::Begin;
     // bool                                  come_into_level_select_view = true;
     const std::unordered_map<ID, Enemy*>& GetEnemies() const { return enemies; }
@@ -86,6 +86,8 @@ public:
 
     void QueueFx(Fx* fx);
 
+    void QueueActionFx(Fx* fx);
+
     Enemy* GetEnemy(const ID id) const;
 
     Tower* GetTower(const ID id) const;
@@ -113,6 +115,8 @@ public:
 
     ViewDataQueue* GetViewDataQueue();
     void           ClearViewDataQueue();
+    void           ClearFxs();
+    void           ClearActionFxs();
     void           Clear();
 
     /**
@@ -127,7 +131,7 @@ private:
     std::unordered_map<ID, Bullet*>  bullets;
     std::unordered_map<ID, Soldier*> soldiers;
     std::unordered_map<ID, Fx*>      fxs;
-    std::unordered_map<ID, Fx*> action_fxs;
+    std::unordered_map<ID, Fx*>      action_fxs;
     ID                               next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象
     std::vector<DamageEvent> damage_events;

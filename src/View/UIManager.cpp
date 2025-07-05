@@ -18,53 +18,61 @@
 void UIManager::Render(const ViewData& view_data)
 {
     if (view_data.animations->empty()) {
-        //ERROR("ViewData animations is empty.");
+        ERROR("ViewData animations is empty.");
         return;
     }
 
     for (size_t layer_index = 0; layer_index < view_data.animations->size(); ++layer_index) {
         Animation&           animation = (*view_data.animations)[layer_index];
-        const AnimationGroup animation_group =
-            animation_group_map->at(animation.prefix).at(animation.current_state);
+        if (!animation.hidden) {
+            const AnimationGroup animation_group =
+                animation_group_map->at(animation.prefix).at(animation.current_state);
 
-        if (animation.last_state != animation.current_state ||
-            (animation.current_state != State::Death && animation.frame_id > animation_group.to)) {
-            animation.frame_id = animation_group.from;
-            animation.pending  = true;
-        }
+            if (animation.last_state != animation.current_state ||
+                (animation.current_state != State::Death && animation.frame_id > animation_group.to)) {
+                animation.frame_id = animation_group.from;
+                animation.pending  = true;
+            }
 
-        animation.last_state = animation.current_state;
+            animation.last_state = animation.current_state;
+            animation.last_state = animation.current_state;
 
-        const SpriteFrameData& sprite_frame_data =
-            sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
+            const SpriteFrameData& sprite_frame_data =
+                sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
 
-        const sf::Texture& texture = texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
 
-        sf::Sprite sprite(texture);
+            const sf::Texture& texture = texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
 
-        sprite.setTextureRect(sprite_frame_data.frameRect);
+            sf::Sprite sprite(texture);
 
-        sprite.setOrigin(Position(
-            sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
-            sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
-                sprite_frame_data.trim_top));
+            sprite.setTextureRect(sprite_frame_data.frameRect);
+            sprite.setTextureRect(sprite_frame_data.frameRect);
 
-        sprite.setScale(sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x,
-                                     animation.scale_y));
+            sprite.setOrigin(Position(
+                sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
+                sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
+                    sprite_frame_data.trim_top));
+            sprite.setOrigin(Position(
+                sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
+                sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
+                    sprite_frame_data.trim_top));
 
-        sprite.setPosition(view_data.position);
+            sprite.setScale(sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x,
+                                        animation.scale_y));
 
-        sprite.setRotation(sf::degrees(animation.rotation));
+            sprite.setPosition(view_data.position);
 
-        if (!animation.hidden)
+            sprite.setRotation(sf::degrees(animation.rotation));
+
+
             window->draw(sprite);
-        else
-            //INFO("Animation " + animation.prefix + " is hidden, not rendering.");
+            //else
+                //INFO("Animation " + animation.prefix + " is hidden, not rendering.");
+            ++animation.frame_id;
 
-        ++animation.frame_id;
-
-        if (animation.frame_id > animation_group.to) {
-            animation.pending = false;
+            if (animation.frame_id > animation_group.to) {
+                animation.pending = false;
+            }
         }
 
         // 对于第零层，处理action
@@ -75,7 +83,7 @@ void UIManager::Render(const ViewData& view_data)
                 {
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
-                    //SUCCESS("Action: SelectLevel Triggered");
+                    SUCCESS("Action: SelectLevel Triggered");
                     break;
                 }
                 case ActionType::CreateActionFx:
@@ -91,7 +99,7 @@ void UIManager::Render(const ViewData& view_data)
                 {
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
-                    //SUCCESS("Action: UpgradeTower Triggered");
+                    SUCCESS("Action: UpgradeTower Triggered");
                     break;
                 }
                 case ActionType::CheckSoldierStatus:
@@ -114,16 +122,17 @@ void UIManager::Render(const ViewData& view_data)
                 }
                 case ActionType::ChangeRallyPoint:
                 {
+
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
-                    //SUCCESS("Action: ChangeRallyPoint Triggered");
+                    SUCCESS("Action: ChangeRallyPoint Triggered");
                     break;
                 }
                 case ActionType::SellTower:
                 {
                     animation.clicked = false;
                     action_queue.push(animation.actions[i]);
-                    //SUCCESS("Action: SellTower Triggered");
+                    SUCCESS("Action: SellTower Triggered");
                     break;
                 }
                 }
@@ -154,7 +163,7 @@ void UIManager::ClearViewData()
 bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_position) const
 {
     if (!animation_group_map || !sprite_frame_data_map) {
-        //ERROR("Animation group map or sprite frame data map is not initialized.");
+        ERROR("Animation group map or sprite frame data map is not initialized.");
     }
 
     const Animation& animation = (*view_data.animations)[0];   // 只处理第0层
@@ -201,16 +210,16 @@ void UIManager::HandleClick()
                     }
                     sf::Vector2f click_position(static_cast<float>(mouse_event.position.x),
                                                 static_cast<float>(mouse_event.position.y));
-                    //INFO("Click position: (" + std::to_string(click_position.x) + ", " +
-                         //std::to_string(click_position.y) + ")");
+                    INFO("Click position: (" + std::to_string(click_position.x) + ", " +
+                         std::to_string(click_position.y) + ")");
 
                     if (IsClickHit(view_data, click_position)) {
                         (*view_data.animations)[0].clicked = true;
 
                         // 如果有关联的actions，准备触发
-                        //INFO("Object has " +
-                             //std::to_string((*view_data.animations)[0].actions.size()) +
-                             //" actions available");
+                        INFO("Object has " +
+                             std::to_string((*view_data.animations)[0].actions.size()) +
+                             " actions available");
 
                         hit_found = true;
                         break;
@@ -218,7 +227,7 @@ void UIManager::HandleClick()
                 }
 
                 if (!hit_found) {
-                    //INFO("No objects hit at click position");
+                    INFO("No objects hit at click position");
                 }
             }
         }

@@ -34,17 +34,16 @@ void App::Run()
                     Fx* fx       = store.template_manager.CreateFx(FxType::LevelFlag);
                     fx->position = level.second;
                     fx->animations[0].actions.emplace_back(
-                        Action(ActionType::SelectLevel, SelectLevelParams{level.first})
-                    );
+                        Action(ActionType::SelectLevel, SelectLevelParams{level.first}));
                     store.QueueFx(fx);
                 }
                 Fx* map_fx = store.template_manager.CreateFx(FxType::Map);
 
                 store.QueueFx(map_fx);
                 last_state = GameState::Begin;
-                //INFO("State Changed to Begin");
+                INFO("State Changed to Begin");
             }
-
+            DEBUG_CODE(store.current_level_name = "acaroth"; game_state = GameState::Loading;)
             window.clear();
             store.UpdateFxs();
             ui_manager.RenderAll();
@@ -55,17 +54,17 @@ void App::Run()
             store.ClearViewDataQueue();
             if (last_state != GameState::GameStart) {
                 store.time = 0;
-                store.Clear();
-                Fx* fx               = store.template_manager.CreateFx(FxType::Map);
+                store.ClearFxs();
+                Fx* fx                   = store.template_manager.CreateFx(FxType::Map);
                 fx->animations[0].prefix = store.current_level_name;
                 store.QueueFx(fx);
-                last_state = GameState::GameStart;
+                last_state                  = GameState::GameStart;
                 store.current_subwave_index = 0;
-                store.current_wave_index = 0;
-                //INFO("State Changed to GameStart");
+                store.current_wave_index    = 0;
+                INFO("State Changed to GameStart");
             }
-            DEBUG_CODE(
-                game_state = GameState::GamePlaying; // For testing purposes, skip loading state
+            DEBUG_CODE(game_state =
+                           GameState::GamePlaying;   // For testing purposes, skip loading state
             )
             window.clear();
             store.UpdateFxs();
@@ -85,7 +84,7 @@ void App::Run()
                 store.InitLevel(store.current_level_name);
                 last_state = GameState::Loading;
                 game_state = GameState::GameStart;
-                //INFO("State Changed to Loading");
+                INFO("State Changed to Loading");
             }
             window.clear();
             store.UpdateFxs();
@@ -96,9 +95,9 @@ void App::Run()
             store.ClearViewDataQueue();
 
             if (last_state != GameState::GamePlaying) {
-                last_state = GameState::GamePlaying;
+                last_state              = GameState::GamePlaying;
                 store.current_wave_time = 0;
-                //INFO("State Changed to GamePlaying");
+                INFO("State Changed to GamePlaying");
             }
             window.clear();
             store.SpawnWaves();
@@ -111,18 +110,18 @@ void App::Run()
             ui_manager.RenderAll();
             window.display();
             store.time += FRAME_LENGTH;
-            if(store.life <= 0){
+            if (store.life <= 0) {
                 game_state = GameState::GameOver;
-                //INFO("Game Over! Your life is smaller than 0.");
+                INFO("Game Over! Your life is smaller than 0.");
             }
             break;
         case GameState::GameOver:
             store.ClearViewDataQueue();
 
-            if(last_state != GameState::GameOver) {
+            if (last_state != GameState::GameOver) {
                 store.Clear();
                 last_state = GameState::GameOver;
-                //INFO("State Changed to GameOver");
+                INFO("State Changed to GameOver");
             }
             window.clear();
             store.UpdateFxs();
@@ -145,8 +144,46 @@ void App::HandleAction(Action& action)
 {
     switch (action.type) {
     case ActionType::SelectLevel:
+    {
         SelectLevelParams& params = std::get<SelectLevelParams>(action.param);
-        store.current_level_name        = params.level_name;
-        game_state = GameState::Loading;
+        store.current_level_name  = params.level_name;
+        game_state                = GameState::Loading;
+        break;
+    }
+    case ActionType::CreateActionFx:
+    {
+        CreateActionFxParams& fx_params = std::get<CreateActionFxParams>(action.param);
+        Fx*                   action_fx = store.template_manager.CreateFx(fx_params.fx_type);
+        action_fx->position             = fx_params.position;
+        // action_fx->id                   = fx_params.id;
+        break;
+    }
+    case ActionType::Delete:{
+        store.ClearActionFxs();
+        break;
+    }
+    case ActionType::UpgradeTower:
+    {
+        UpgradeTowerParams& params = std::get<UpgradeTowerParams>(action.param);
+        if(store.gold < params.cost){
+            WARNING("Not enough gold to upgrade tower.");
+            break;
+        }
+        store.gold -= params.cost;
+        Tower* old_tower = store.GetTower(params.tower_id);
+        Tower* new_tower = store.template_manager.CreateTower(params.new_tower_type);
+        new_tower->position = old_tower->position;
+        new_tower->total_price = old_tower->total_price + params.cost;
+        store.DequeueTower(old_tower->id);
+        store.QueueTower(new_tower);
+        break;
+    }
+    case ActionType::SellTower:
+    {
+        SellTowerParams& params = std::get<SellTowerParams>(action.param);
+        Tower* tower = store.GetTower(params.tower_id);
+        
+        break;
+    }
     }
 }

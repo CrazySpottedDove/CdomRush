@@ -43,8 +43,8 @@ enum class FxType
     None
 };
 
-
-enum class SoldierType{
+enum class SoldierType
+{
     SoldierMeleelv1,
     SoldierMeleelv2,
     SoldierMeleelv3

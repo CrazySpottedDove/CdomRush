@@ -26,7 +26,6 @@ public:
     tower_heading heading = tower_heading::Down; // 默认塔的朝向为 Up
     Ranged ranged;
     TowerType type = TowerType::None; // 默认塔类型为 None
-    Position            position;
     int                total_price;
 
     bool Insert(Store& store) override {

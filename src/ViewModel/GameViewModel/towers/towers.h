@@ -178,7 +178,7 @@ public:
     std::vector<ID> soldiers;
 
     void layer_update() override;
-    void Update(Store& store);
+    void Update(Store& store) override;
     virtual SoldierType return_soldier_type() = 0;
 };
 class Barracks1 : public Barracks{

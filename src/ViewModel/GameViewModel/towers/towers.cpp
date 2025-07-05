@@ -78,7 +78,7 @@ void Archer::layer_update() {
         }
         shooter = ~ shooter; // 切换射手状态
     }
-    // animations[0].pending = animations[3].pending || animations[4].pending; // 更新动画的 pending 状态
+    animations[0].pending = animations[3].pending || animations[4].pending; // 更新动画的 pending 状态
 }
 Archer1::Archer1(Position position_, int total_price_) {
     type = TowerType::Archer1; // 设置塔类型为弓箭手1

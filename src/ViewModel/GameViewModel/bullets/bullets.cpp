@@ -9,12 +9,12 @@ void Bullet::check_position(Store& store)
     // 检查目标是否存活
     if(source_type == SourceType::Tower || source_type == SourceType::Soldier){
         Enemy* target = store.GetEnemy(damage_event.target);   // 获取目标敌人
-        if (target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
+        if (target == nullptr || target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
         else target_position = target->position + target->Hit_offset;   // 更新目标位置
     }
     if(source_type == SourceType::Enemy){
         Soldier* target = store.GetSoldier(damage_event.target);   // 获取目标士兵
-        if (target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
+        if (target == nullptr || target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
         else target_position = target->position + target->Hit_offset;   // 更新目标位置
     }
 }
@@ -50,7 +50,6 @@ bool Bullet::Insert(Store& store)
 
 void Arrow::Update(Store& store)
 {
-    INFO("Arrow Update called with ID: " << id);
     // 更新箭矢位置和动画
     if(animations[0].current_state == State::Hit) return ;   // 如果已经击中，则不再更新
 
@@ -63,8 +62,6 @@ void Arrow::Update(Store& store)
 
     // 检查目标是否存活
     check_position(store);
-    INFO("Source Position: (" << source_position.x << ", " << source_position.y << ")");
-    INFO("Target Position: (" << target_position.x << ", " << target_position.y << ")");
 
     // 计算控制点
     sf::Vector2f p1 = GetControlPoint(source_position, target_position);

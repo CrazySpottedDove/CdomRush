@@ -43,7 +43,7 @@ private:
                                                                 const ResourceLevel level = ResourceLevel::Common);
     // 加载声音组和声音组中的声音资源
     void LoadSoundGroups(const std::string& file_path, const ResourceLevel level = ResourceLevel::Common);
-    void UnloadSpecificSoundGroups();
+    // void UnloadSpecificSoundGroups();
     void                        LoadAnimationGroups();
     void                        LoadLevelAssets(const std::string& level_name);
     void                        LoadTowerEssentials(const std::string& file_name);

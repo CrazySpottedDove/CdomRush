@@ -79,6 +79,8 @@ void Store::UpdateBullets()
             continue;
         }
         bullet->Update(*this);
+        INFO("Bullet updated with ID: " << bullet->id << ", position: (" << bullet->position.x
+                                              << ", " << bullet->position.y << ")");
         QueueViewDataFromEntity(bullet);
         ++it;
     }
@@ -112,9 +114,6 @@ void Store::UpdateTowers()
     while (it != towers.end()) {
         Tower* tower = it->second;
         tower->Update(*this);
-        INFO("Updating tower with ID: " << tower->id
-                                   << ", position: (" << tower->position.x << ", "
-                                   << tower->position.y << ")");
         QueueViewDataFromEntity(tower);
         ++it;
     }
@@ -138,9 +137,6 @@ void Store::InitTowers()
         tower->position    = tower_essential.position;
         tower->rally_point = tower_essential.rally_point;
         QueueTower(tower);
-        INFO("Initialized tower: " << static_cast<int>(tower_essential.type)
-                                   << " at position: " << tower_essential.position.x << ", "
-                                   << tower_essential.position.y);
     }
 }
 
@@ -167,12 +163,6 @@ void Store::SpawnWaves()
         new_enemy->path_info.path_id     = pending_enemy.path_id;
         new_enemy->path_info.subpath_id  = pending_enemy.subpath_id;
         new_enemy->path_info.waypoint_id = 0;
-        // 验证构造后的值
-        // INFO("Created PendingEnemy:");
-        // INFO("  - enemy_type: " << static_cast<int>(pending_enemy.enemy_type));
-        // INFO("  - spawn_time: " << pending_enemy.spawn_time);
-        // INFO("  - path_id: " << pending_enemy.path_id);
-        // INFO("  - subpath_id: " << pending_enemy.subpath_id);
         new_enemy->position =
             (*resource_manager.GetPaths())[pending_enemy.path_id][pending_enemy.subpath_id][0];
         QueueEnemy(new_enemy);
@@ -195,14 +185,10 @@ void Store::SpawnWaves()
             // 生成子波的敌人
             for (std::size_t i = 0; i < sub_wave.count; ++i) {
                 pending_enemy_queue.emplace(PendingEnemy(sub_wave.enemy_type,
-                                                     current_wave_time + i * sub_wave.gap,
-                                                     sub_wave.path_id,
-                                                     sub_wave.subpath_id));
+                                                         current_wave_time + i * sub_wave.gap,
+                                                         sub_wave.path_id,
+                                                         sub_wave.subpath_id));
             }
-            // INFO("Spawning subwave: " << current_subwave_index
-            //                           << ", enemy type: " << static_cast<int>(sub_wave.enemy_type)
-            //                           << ", count: " << sub_wave.count
-            //                           << ", gap: " << sub_wave.gap);
             ++current_subwave_index;
         }
         else {
@@ -213,9 +199,6 @@ void Store::SpawnWaves()
 
 void Store::QueueViewDataFromEntity(Entity* entity)
 {
-    INFO("Queueing view data for entity with ID: " << entity->id
-                                   << ", position: (" << entity->position.x << ", "
-                                   << entity->position.y << ")");
     view_data_queue.emplace(ViewData{&entity->animations, entity->position});
 }
 
@@ -363,6 +346,12 @@ void Store::QueueBullet(Bullet* bullet)
     bullet->id       = next_id++;
     bullets[next_id] = bullet;
     bullet->Insert(*this);
+    INFO("Bullet queued with ID: " << bullet->id << ", position: (" << bullet->position.x << ", "
+                                   << bullet->position.y << ")");
+    DEBUG_CODE(if (resource_manager.GetAnimationGroupMap()->find(bullet->animations[0].prefix) !=
+                   resource_manager.GetAnimationGroupMap()->end()) {
+        SUCCESS("Bullet animation prefix found: " << bullet->animations[0].prefix);
+    })
 }
 
 void Store::QueueSoldier(Soldier* soldier)
@@ -379,7 +368,8 @@ void Store::QueueFx(Fx* fx)
     fx->Insert(*this);
 }
 
-void Store::QueueActionFx(Fx* action_fx){
+void Store::QueueActionFx(Fx* action_fx)
+{
     action_fx->id       = next_id++;
     action_fxs[next_id] = action_fx;
     action_fx->Insert(*this);
@@ -387,27 +377,27 @@ void Store::QueueActionFx(Fx* action_fx){
 
 void Store::Clear()
 {
-    for(auto& [id, enemy] : enemies) {
+    for (auto& [id, enemy] : enemies) {
         delete enemy;
     }
     enemies.clear();
-    for(auto& [id, tower] : towers) {
+    for (auto& [id, tower] : towers) {
         delete tower;
     }
     towers.clear();
-    for(auto& [id, bullet] : bullets) {
+    for (auto& [id, bullet] : bullets) {
         delete bullet;
     }
     bullets.clear();
-    for(auto& [id, soldier] : soldiers) {
+    for (auto& [id, soldier] : soldiers) {
         delete soldier;
     }
     soldiers.clear();
-    for(auto& [id, fx] : fxs) {
+    for (auto& [id, fx] : fxs) {
         delete fx;
     }
     fxs.clear();
-    for(auto& [id, action_fx]: action_fxs){
+    for (auto& [id, action_fx] : action_fxs) {
         delete action_fx;
     }
     action_fxs.clear();
@@ -425,7 +415,8 @@ ViewDataQueue* Store::GetViewDataQueue()
     return &view_data_queue;
 }
 
-void Store::InitLevel(const std::string& level_name){
+void Store::InitLevel(const std::string& level_name)
+{
     resource_manager.LoadLevelResources(level_name);
     InitTowers();
 }
@@ -442,7 +433,8 @@ void Store::ClearFxs()
     action_fxs.clear();
 }
 
-void Store::ClearActionFxs(){
+void Store::ClearActionFxs()
+{
     for (auto& pair : action_fxs) {
         delete pair.second;
     }

@@ -159,6 +159,7 @@ ForestTroll::ForestTroll(Position position_)
     this->gold            = 200;                  // 设置击杀奖励
     this->life_cost       = 5;                    // 设置生命损失
     this->animations.push_back(Animation(State::Idle,"forest_troll"));
+    this->animations[0].anchor_y = 0.21;
     this->melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
     this->melee[0].damage_event.source = id;
     this->slot     = sf::Vector2f(35.0f, 0.0f);   // 初始化近战偏移

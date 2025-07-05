@@ -2,6 +2,7 @@
 #include "Common/action.h"
 #include "Common/macros.h"
 #include "Common/viewData.h"
+#include "View/mapPosition.h"
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -50,17 +51,13 @@ void UIManager::Render(const ViewData& view_data)
 
             sprite.setOrigin(Position(
                 sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
-                sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
-                    sprite_frame_data.trim_top));
-            sprite.setOrigin(Position(
-                sprite_frame_data.displaySize.x * animation.anchor_x - sprite_frame_data.trim_left,
-                sprite_frame_data.displaySize.y * (1 - animation.anchor_y) -
+                sprite_frame_data.displaySize.y * ( animation.anchor_y) -
                     sprite_frame_data.trim_top));
 
             sprite.setScale(sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x,
                                         animation.scale_y));
 
-            sprite.setPosition(view_data.position);
+            sprite.setPosition(MapPosition(Position{view_data.position.x + animation.offset.x, view_data.position.y + animation.offset.y }));
 
             sprite.setRotation(sf::degrees(animation.rotation));
 
@@ -177,7 +174,7 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     float left = view_data.position.x - sprite_frame_data.displaySize.x * animation.scale_x;
     float top  = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y;
 
-    sf::FloatRect bounds(sf::Vector2f(left, top),
+    sf::FloatRect bounds(MapPosition(sf::Vector2f(left, top)),
                          sf::Vector2f(2.0*sprite_frame_data.displaySize.x * animation.scale_x,
                                       2.0*sprite_frame_data.displaySize.y * animation.scale_y));
 

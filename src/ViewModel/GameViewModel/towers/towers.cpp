@@ -37,6 +37,8 @@ void Tower::Update(Store& store){
 None::None(Position position_) {
     animations.push_back(Animation(State::Idle,"build_terrain_0001",Position{0.0f, 12.0f},true));
     animations.push_back(Animation(State::Idle,"build_terrain_0001",Position{0.0f, 12.0f}));
+    // animations[1].anchor_x = 0.5;
+    // animations[1].anchor_y = 1;
     type = TowerType::None;
     position = position_;
     total_price = 0;
@@ -84,7 +86,9 @@ Archer1::Archer1(Position position_, int total_price_) {
     total_price = total_price_;
     animations.push_back(Animation(State::Idle,"terrain_archer1",Position{0.0f, 12.0f},true));
     animations.push_back(Animation(State::Idle,"terrain_archer1",Position{0.0f, 12.0f}));
+    animations[1].anchor_y = 0.5;
     animations.push_back(Animation(State::Idle,"archer_tower1",Position{0.0f, 37.0f}));
+    animations[2].anchor_y = 0.5;
     animations.push_back(Animation(State::IdleDown,"tower_archer_lvl1_shooter",Position{-9.0f, 51.0f}));
     animations.push_back(Animation(State::IdleDown,"tower_archer_lvl1_shooter",Position{9.0f, 51.0f}));
     animations[0].actions.push_back(Action(ActionType::UpgradeTower,UpgradeTowerParams{id,TowerType::Archer2, 110}));

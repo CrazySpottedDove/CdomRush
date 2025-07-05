@@ -3,7 +3,6 @@
 #include "Common/macros.h"
 #include "Common/sound.h"
 #include "Common/towerEssential.h"
-#include "ViewModel/SpriteViewModel/mapPosition.h"
 #include "ViewModel/SpriteViewModel/readLua.h"
 #include "ViewModel/level.h"
 #include <string>
@@ -83,7 +82,7 @@ void ResourceManager::LoadSoundGroups(const std::string& file_path, const Resour
         sound_group_map[sound_group_name]  = SoundGroup{
             group["files"].get<std::vector<std::string>>(), 0, group["stream"].get_or(false)};
         INFO("Loading sound group: " << sound_group_name);
-        
+
     }
 }
 
@@ -134,11 +133,11 @@ void ResourceManager::LoadTowerEssentials(const std::string& file_name)
         Position position{tower_position_table["pos"]["x"].get<float>(),
                           tower_position_table["pos"]["y"].get<float>()};
 
-        MapPosition(position);
+        // MapPosition(position);
 
         Position rally_point{tower_position_table["rally_point"]["x"].get<float>(),
                              tower_position_table["rally_point"]["y"].get<float>()};
-        MapPosition(rally_point);
+        // MapPosition(rally_point);
 
         tower_essentials.emplace_back(TowerEssential{position, type, rally_point});
     }
@@ -166,7 +165,7 @@ void ResourceManager::LoadPaths(const std::string& file_name)
                 // 解析Position
                 Position waypoint(waypoint_table["x"].get<double>(),
                                   waypoint_table["y"].get<double>());
-                MapPosition(waypoint);
+                // MapPosition(waypoint);
                 current_subpath.push_back(waypoint);
             }
 
@@ -225,22 +224,22 @@ ResourceManager::ResourceManager()
         }
     }
 
-    for (const auto& entry : std::filesystem::directory_iterator("assets/sounds/common")) {
-        if (entry.is_regular_file()) {
-            const auto& path = entry.path();
+    // for (const auto& entry : std::filesystem::directory_iterator("assets/sounds/common")) {
+    //     if (entry.is_regular_file()) {
+    //         const auto& path = entry.path();
 
-            // 只处理 .lua 文件
-            if (path.extension() == ".lua") {
-                try {
-                    LoadSoundGroups(path.string());
-                }
-                catch (const std::exception& e) {
-                    std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
-                              << std::endl;
-                }
-            }
-        }
-    }
+    //         // 只处理 .lua 文件
+    //         if (path.extension() == ".lua") {
+    //             try {
+    //                 LoadSoundGroups(path.string());
+    //             }
+    //             catch (const std::exception& e) {
+    //                 std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
+    //                           << std::endl;
+    //             }
+    //         }
+    //     }
+    // }
 
     LoadAnimationGroups();
 }

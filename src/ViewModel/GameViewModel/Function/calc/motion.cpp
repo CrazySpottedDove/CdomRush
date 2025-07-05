@@ -100,11 +100,3 @@ bool calc::enemy_reached_defence_point(const Store& store, const Enemy& self)
     return (self.path_info.waypoint_id+1 == subpath->size());
 }
 
-void calc::map_position(Position& pos){
-    constexpr float origin_screen_width = 1024.0 * 8.4 / 6.4;
-    const float origin_screen_height = 768.0;
-    pos.x = DEFAULT_SCREEN_WIDTH * pos.x / origin_screen_width;
-    pos.y = DEFAULT_SCREEN_HEIGHT - (DEFAULT_SCREEN_HEIGHT * pos.y / origin_screen_height);
-    pos.x += 225.0f;
-    pos.y -= 35.0f;
-}

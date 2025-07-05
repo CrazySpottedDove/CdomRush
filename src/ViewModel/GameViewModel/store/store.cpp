@@ -47,7 +47,7 @@ void Store::UpdateEnemies()
                        std::cout << enemy->health.dead_lifetime << std::endl;
                        std::cout << enemy->health.death_time << std::endl;
                        std::cout << time << std::endl;
-                       break;)
+            )
             it = DequeueEnemy(it);
             continue;
         }

@@ -9,12 +9,12 @@ void Bullet::check_position(Store& store)
     // 检查目标是否存活
     if(source_type == SourceType::Tower || source_type == SourceType::Soldier){
         Enemy* target = store.GetEnemy(damage_event.target);   // 获取目标敌人
-        if (target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
+        if (target == nullptr || target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
         else target_position = target->position + target->Hit_offset;   // 更新目标位置
     }
     if(source_type == SourceType::Enemy){
         Soldier* target = store.GetSoldier(damage_event.target);   // 获取目标士兵
-        if (target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
+        if (target == nullptr || target->animations[0].current_state == State::Death) target_alive = false;   // 如果目标死亡，则不再更新
         else target_position = target->position + target->Hit_offset;   // 更新目标位置
     }
 }

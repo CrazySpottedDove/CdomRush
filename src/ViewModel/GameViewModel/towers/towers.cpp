@@ -231,8 +231,9 @@ Mage1::Mage1(Position position_, int total_price_) {
     animations.push_back(Animation(State::Idle,"terrain_artillery_0001",Position{0.0f, 15.0f}));
     animations.push_back(Animation(State::Idle,"towermagelvl1",Position{0.0f, 30.0f}));
     animations.push_back(Animation(State::Idle,"shootermage",Position{0.0f, 57.0f}));
-    animations[0].actions.push_back(Action(ActionType::UpgradeTower,UpgradeTowerParams{id,TowerType::Mage2, 160}));
-    animations[0].actions.push_back(Action(ActionType::SellTower,UpgradeTowerParams{id,TowerType::None, -total_price}));
+    // animations[0].actions.push_back(Action(ActionType))
+    // animations[0].actions.push_back(Action(ActionType::UpgradeTower,UpgradeTowerParams{id,TowerType::Mage2, 160}));
+    // animations[0].actions.push_back(Action(ActionType::SellTower,UpgradeTowerParams{id,TowerType::None, -total_price}));
     ranged.attacks.push_back(RangedAttack(1.5, 140.0, BulletType::Bolt, 0.0, 15, "bolt_1", 1.0)); // 添加攻击
 
     heading = tower_heading::Down; // 默认塔的朝向为 Down
@@ -287,14 +288,24 @@ void Barracks::Update(Store& store){
             if(i==1) si->rally_point_offset = sf::Vector2f(17.3,-10);
             if(i==2) si->rally_point_offset = sf::Vector2f(0,20);
         }
+        animations[0].current_state = State::DoorOpen;
+    }
+    if(animations[0].current_state == State::DoorOpen){
+        if(animations[2].pending){
+            animations[0].current_state = State::DoorClose;
+            animations[2].pending = true;
+        }
     }
 }
-Barracks1::Barracks1(Position position , int total_price){
+
+Barracks1::Barracks1(Position position_ , int total_price_){
+    type = TowerType::Barrack1;
+    position = position_;
+    total_price = total_price_;
+}
+Barracks2::Barracks2(Position position_ , int total_price_){
 
 }
-Barracks2::Barracks2(Position position , int total_price){
-
-}
-Barracks3::Barracks3(Position position , int total_price){
+Barracks3::Barracks3(Position position_ , int total_price_){
 
 }

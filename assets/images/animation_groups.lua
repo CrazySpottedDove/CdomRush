@@ -77,7 +77,7 @@ return {
         }
     },
     mage_shooter = {
-        idle = {
+        idleDown = {
             to = 1,
             from = 1
         },
@@ -532,4 +532,64 @@ return {
             from = 1
         },
     },
+    terrain_artillery_0001 = {
+        idle = {
+            to = 1,
+            from = 1
+        }
+    },
+    terrain_artillery_0002 = {
+        idle = {
+            to = 1,
+            from = 1
+        }
+    },
+    terrain_artillery_0003 = {
+        idle = {
+            to = 1,
+            from = 1
+        }
+    },
+    bombs_0001 = {
+        idle = {
+            to = 1,
+            from = 1
+        },
+        flying = {
+            to = 1,
+            from = 1
+        },
+        hit = {
+            to = 1,
+            from = 1
+        }
+    },
+    bombs_0002 = {
+        idle = {
+            to = 1,
+            from = 1
+        },
+        flying = {
+            to = 1,
+            from = 1
+        },
+        hit = {
+            to = 1,
+            from = 1
+        }
+    },
+    bombs_0003 = {
+        idle = {
+            to = 1,
+            from = 1
+        },
+        flying = {
+            to = 1,
+            from = 1
+        },
+        hit = {
+            to = 1,
+            from = 1
+        }
+    }
 }

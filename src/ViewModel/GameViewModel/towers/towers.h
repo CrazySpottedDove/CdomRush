@@ -57,6 +57,7 @@ public:
     Tower* Clone() override {
         return new None(*this);
     }
+    void pending_update() override ;
 };
 
 class Archer : public Tower {

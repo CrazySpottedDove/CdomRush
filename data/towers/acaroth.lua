@@ -55,7 +55,7 @@ return {
         }
     },
     [5] = {
-        type = "tower_holder_grass",
+        type = "tower_engineer_3",
         pos = {
             x = 461,
             y = 256
@@ -88,7 +88,7 @@ return {
         }
     },
     [8] = {
-        type = "tower_holder_grass",
+        type = "tower_engineer_1",
         pos = {
             x = 215,
             y = 395
@@ -99,7 +99,7 @@ return {
         }
     },
     [9] = {
-        type = "tower_holder_grass",
+        type = "tower_engineer_2",
         pos = {
             x = 429,
             y = 409
@@ -121,7 +121,7 @@ return {
         }
     },
     [11] = {
-        type = "tower_holder_grass",
+        type = "tower_mage_1",
         pos = {
             x = 804,
             y = 515
@@ -143,7 +143,7 @@ return {
         }
     },
     [13] = {
-        type = "tower_holder_grass",
+        type = "tower_mage_2",
         pos = {
             x = 463,
             y = 532
@@ -165,7 +165,7 @@ return {
         }
     },
     [15] = {
-        type = "tower_holder_grass",
+        type = "tower_mage_3",
         pos = {
             x = 362,
             y = 538

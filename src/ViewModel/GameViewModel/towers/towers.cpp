@@ -42,6 +42,7 @@ void Tower::Update(Store& store)
     return;
 }
 
+void None::pending_update(){}
 
 None::None(Position position_)
 {
@@ -199,13 +200,13 @@ Engineer1::Engineer1(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0001", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0001", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl1_layer1", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl1_layer2", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl1_layer3", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl1_layer4", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl1_layer5", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl1_layer6", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl1_layer7", Position{0.0f, 41.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer1", Position{0.0f, 41.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer2", Position{0.0f, 41.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer3", Position{0.0f, 41.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer4", Position{0.0f, 41.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer5", Position{0.0f, 41.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer6", Position{0.0f, 41.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer7", Position{0.0f, 41.0f}));
     animations[0].actions.push_back(
         Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Engineer2, 220}));
     animations[0].actions.push_back(
@@ -223,13 +224,13 @@ Engineer2::Engineer2(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0002", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0002", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl2_layer1", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl2_layer2", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl2_layer3", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl2_layer4", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl2_layer5", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl2_layer6", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl2_layer7", Position{0.0f, 42.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer1", Position{0.0f, 42.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer2", Position{0.0f, 42.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer3", Position{0.0f, 42.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer4", Position{0.0f, 42.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer5", Position{0.0f, 42.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer6", Position{0.0f, 42.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer7", Position{0.0f, 42.0f}));
     animations[0].actions.push_back(
         Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Engineer3, 320}));
     animations[0].actions.push_back(
@@ -247,13 +248,13 @@ Engineer3::Engineer3(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0003", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0003", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl3_layer1", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl3_layer2", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl3_layer3", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl3_layer4", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl3_layer5", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl3_layer6", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "towerengineerlvl3_layer7", Position{0.0f, 43.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer1", Position{0.0f, 43.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer2", Position{0.0f, 43.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer3", Position{0.0f, 43.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer4", Position{0.0f, 43.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer5", Position{0.0f, 43.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer6", Position{0.0f, 43.0f}));
+    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer7", Position{0.0f, 43.0f}));
     animations[0].actions.push_back(
         Action(ActionType::SellTower, UpgradeTowerParams{id, TowerType::None, -total_price}));
     ranged.attacks.push_back(
@@ -263,7 +264,7 @@ Engineer3::Engineer3(Position position_, int total_price_)
 };
 
 void Mage::pending_update(){
-    animations[0].pending = animations[2].pending | animations[3].pending;
+    animations[0].pending = animations[3].pending;
 }
 void Mage::layer_update(bool flag)
 {
@@ -292,15 +293,15 @@ Mage1::Mage1(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0001", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0001", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "towermagelvl1", Position{0.0f, 30.0f}));
-    animations.push_back(Animation(State::Idle, "shootermage", Position{0.0f, 57.0f}));
+    animations.push_back(Animation(State::Idle, "mage_lvl1", Position{0.0f, 30.0f}));
+    animations.push_back(Animation(State::Idle, "mage_shooter", Position{0.0f, 57.0f}));
     // animations[0].actions.push_back(Action(ActionType))
     // animations[0].actions.push_back(Action(ActionType::UpgradeTower,UpgradeTowerParams{id,TowerType::Mage2,
     // 160}));
     // animations[0].actions.push_back(Action(ActionType::SellTower,UpgradeTowerParams{id,TowerType::None,
     // -total_price}));
     ranged.attacks.push_back(
-        RangedAttack(1.5, 140.0, BulletType::Bolt, 0.0, 15, "bolt_1", 1.0));   // 添加攻击
+        RangedAttack(1.5, 140.0, BulletType::Bolt, 0.0, 15, "magebolt", 1.0));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
@@ -312,14 +313,14 @@ Mage2::Mage2(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0002", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0002", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "towermagelvl2", Position{0.0f, 30.0f}));
-    animations.push_back(Animation(State::Idle, "shootermage", Position{0.0f, 57.0f}));
+    animations.push_back(Animation(State::Idle, "mage_lvl2", Position{0.0f, 30.0f}));
+    animations.push_back(Animation(State::Idle, "mage_shooter", Position{0.0f, 57.0f}));
     animations[0].actions.push_back(
         Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Mage3, 240}));
     animations[0].actions.push_back(
         Action(ActionType::SellTower, UpgradeTowerParams{id, TowerType::None, -total_price}));
     ranged.attacks.push_back(
-        RangedAttack(1.5, 160.0, BulletType::Bolt, 0.0, 36, "bolt_2", 1.0));   // 添加攻击
+        RangedAttack(1.5, 160.0, BulletType::Bolt, 0.0, 36, "magebolt", 1.0));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
@@ -331,12 +332,12 @@ Mage3::Mage3(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0003", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0003", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "towermagelvl3", Position{0.0f, 30.0f}));
-    animations.push_back(Animation(State::Idle, "shootermage", Position{0.0f, 62.0f}));
+    animations.push_back(Animation(State::Idle, "mage_lvl3", Position{0.0f, 30.0f}));
+    animations.push_back(Animation(State::Idle, "mage_shooter", Position{0.0f, 62.0f}));
     animations[0].actions.push_back(
         Action(ActionType::SellTower, UpgradeTowerParams{id, TowerType::None, -total_price}));
     ranged.attacks.push_back(
-        RangedAttack(1.5, 180.0, BulletType::Bolt, 0.0, 63, "bolt_3", 1.0));   // 添加攻击
+        RangedAttack(1.5, 180.0, BulletType::Bolt, 0.0, 63, "magebolt", 1.0));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }

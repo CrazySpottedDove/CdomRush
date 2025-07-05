@@ -56,7 +56,7 @@ void Archer::layer_update() {
         animations[3].current_state = State::IdleUp; // 设置朝上的动画状态
         animations[4].current_state = State::IdleUp; // 设置朝上的动画
     }
-    else if(animations[0].current_state == State::Shoot && heading == tower_heading::Down && animations[0].last_state == State::Idle){
+    else if(animations[0].current_state == State::Shoot && heading == tower_heading::Down && !animations[0].pending){
         if(shooter){
             animations[3].current_state = State::ShootingDown; // 设置射击朝下的动画状态
             animations[4].current_state = State::IdleDown; // 设置射击朝下的动画
@@ -67,7 +67,7 @@ void Archer::layer_update() {
         }
         shooter = ~ shooter; // 切换射手状态
     }
-    else if(animations[0].current_state == State::Shoot && heading == tower_heading::Up && animations[0].last_state == State::Idle){
+    else if(animations[0].current_state == State::Shoot && heading == tower_heading::Up && !animations[0].pending){
         if(shooter){
             animations[3].current_state = State::ShootingUp; // 设置射击朝上的动画状态
             animations[4].current_state = State::IdleUp; // 设置射击朝上的动画

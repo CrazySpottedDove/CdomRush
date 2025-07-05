@@ -8,6 +8,7 @@
 
 void Tower::Update(Store& store)
 {
+    pending_update();
     if (animations[0].current_state == State::Idle) {
         for (auto& attack : ranged.attacks) {
             if (attack.IsReady(store)) {
@@ -59,6 +60,10 @@ None::None(Position position_)
         Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Mage1, 100}));
 }
 
+void Archer::pending_update(){
+    animations[0].pending =animations[3].pending || animations[4].pending;   // 更新动画的 pending 状态
+}
+
 void Archer::layer_update(bool flag)
 {
     INFO("animation[0].current_state: " << (int)animations[0].current_state);
@@ -95,8 +100,6 @@ void Archer::layer_update(bool flag)
         }
         shooter = ~shooter;   // 切换射手状态
     }
-    animations[0].pending =
-        animations[3].pending || animations[4].pending;   // 更新动画的 pending 状态
 }
 Archer1::Archer1(Position position_, int total_price_)
 {

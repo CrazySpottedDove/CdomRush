@@ -46,6 +46,10 @@ public:
     virtual Position return_offset() const {
         return sf::Vector2f(0, 0); // 默认偏移位置为 (0, 0)
     }
+
+    virtual void pending_update(){
+
+    }
 };
 
 class None : public Tower {
@@ -62,6 +66,7 @@ public:
     bool shooter = 1;
     Archer() = default; // 显式声明为public
     void layer_update(bool flag) override;
+    void pending_update() override;
 };
 class Archer1 : public Archer {
 public:

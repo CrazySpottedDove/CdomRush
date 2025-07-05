@@ -18,3 +18,7 @@ Map::Map(){
 CommonUpgradeIcon::CommonUpgradeIcon(){
     // animations.emplace_back(Animation(State::Enabled,))
 }
+
+Explosion::Explosion(){
+    animations.emplace_back(Animation(State::Hit, "explosion_big"));
+}

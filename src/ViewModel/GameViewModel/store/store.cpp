@@ -46,8 +46,7 @@ void Store::UpdateEnemies()
             DEBUG_CODE(std::cout << "Removing enemy with ID: " << enemy->id << std::endl;
                        std::cout << enemy->health.dead_lifetime << std::endl;
                        std::cout << enemy->health.death_time << std::endl;
-                       std::cout << time << std::endl;
-            )
+                       std::cout << time << std::endl;)
             it = DequeueEnemy(it);
             continue;
         }
@@ -73,13 +72,10 @@ void Store::UpdateBullets()
                     ->at(bullet->animations[0].prefix)
                     .at(bullet->animations[0].current_state)
                     .to <= bullet->animations[0].frame_id) {
-            bullet->Remove(*this);
-            delete bullet;
-            it = bullets.erase(it);
+            it = DequeueBullet(it);
             continue;
         }
         bullet->Update(*this);
-
         QueueViewDataFromEntity(bullet);
         ++it;
     }
@@ -91,9 +87,7 @@ void Store::UpdateSoldiers()
     while (it != soldiers.end()) {
         Soldier* soldier = it->second;
         if (calc::is_dead(*soldier) && calc::should_remove(*this, *soldier)) {
-            soldier->Remove(*this);
-            delete soldier;
-            it = soldiers.erase(it);
+            it = DequeueSoldier(it);
             continue;
         }
         soldier->Update(*this);
@@ -123,6 +117,14 @@ void Store::UpdateFxs()
     auto it = fxs.begin();
     while (it != fxs.end()) {
         Fx* fx = it->second;
+        if (fx->animations[0].current_state == State::Hit &&
+            resource_manager.GetAnimationGroupMap()
+                    ->at(fx->animations[0].prefix)
+                    .at(fx->animations[0].current_state)
+                    .to <= fx->animations[0].frame_id) {
+            it = DequeueFx(it);
+            continue;
+        }
         fx->Update(*this);
         QueueViewDataFromEntity(fx);
         ++it;
@@ -349,7 +351,7 @@ void Store::QueueBullet(Bullet* bullet)
     ++next_id;
     bullet->Insert(*this);
     INFO("Bullet Source Position: (" << bullet->source_position.x << ", "
-                                              << bullet->source_position.y << ")");
+                                     << bullet->source_position.y << ")");
     DEBUG_CODE(if (resource_manager.GetAnimationGroupMap()->find(bullet->animations[0].prefix) !=
                    resource_manager.GetAnimationGroupMap()->end()) {
         SUCCESS("Bullet animation prefix found: " << bullet->animations[0].prefix);

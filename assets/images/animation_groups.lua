@@ -77,21 +77,21 @@ return {
         }
     },
     mage_shooter = {
-        idleDown = {
+        idleUp = {
             to = 1,
             from = 1
         },
-        idleUp = {
+        idleDown = {
             to = 2,
             from = 2
         },
         shootingDown = {
-            to = 15,
-            from = 3
+            to = 16,
+            from = 4
         },
         shootingUp = {
-            to = 30,
-            from = 17
+            to = 31,
+            from = 18
         }
     },
     mage_lvl1 = {
@@ -590,6 +590,12 @@ return {
         hit = {
             to = 1,
             from = 1
+        }
+    },
+    explosion_big = {
+        hit = {
+            to = 20,
+            from = 3
         }
     }
 }

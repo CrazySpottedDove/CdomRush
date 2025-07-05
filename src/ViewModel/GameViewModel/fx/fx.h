@@ -28,3 +28,9 @@ public:
     CommonUpgradeIcon();
     Fx* Clone() override { return new CommonUpgradeIcon(*this); }
 };
+
+class Explosion : public Fx{
+public:
+    Explosion();
+    Fx* Clone() override { return new Explosion(*this); }
+};

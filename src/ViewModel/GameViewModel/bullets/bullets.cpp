@@ -108,6 +108,9 @@ void Bomb::Update(Store& store)
             store.QueueDamageEvent(event);      // 结算伤害
         }
         animations[0].current_state = State::Hit;   // 击中了
+        Fx* fx = store.template_manager.CreateFx(hit_fx);
+        fx->position = position;
+        store.QueueFx(fx);
         return;
     }
 
@@ -119,6 +122,9 @@ void Bomb::Update(Store& store)
             store.QueueDamageEvent(event);      // 结算伤害
         }
         animations[0].current_state = State::Hit;   // 击中了
+        Fx* fx                      = store.template_manager.CreateFx(hit_fx);
+        fx->position = position;
+        store.QueueFx(fx);
         return;
     }
 

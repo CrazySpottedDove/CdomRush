@@ -46,7 +46,7 @@ public:
         totalDuration_ = 1.0; // 设置总持续时间
         hit_fx = FxType::None; // 箭矢没有特殊的击中效果
         radius = 0.0; // 箭矢没有爆炸半径
-        animations.push_back(Animation(State::Flying,"archer_arcane_proy2_0001"));
+        animations.push_back(Animation(State::Flying,"arrow"));
     }; // 默认构造函数
     Arrow(const Arrow & other) = default; // 拷贝构造函数
     Bullet* Clone() const override {
@@ -100,7 +100,7 @@ public:
     Bomb(ID sourceID = INVALID_ID, ID targetID = INVALID_ID){
         bullet_type = BulletType::Bomb; // 设置弹道类型为炸弹
         damage_event = DamageEvent(DamageData(0, DamageType::Explosion, 0, 0), sourceID, targetID);
-        totalDuration_ = 1.5; // 设置总持续时间
+        totalDuration_ = 1; // 设置总持续时间
         hit_fx = FxType::Explosion; // 爆炸效果
         radius = 60.0; // 设置爆炸半径
         animations.push_back(Animation(State::Flying,"bombs_0001"));

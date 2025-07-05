@@ -3,6 +3,7 @@
 #include "Common/type.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
+#include "ViewModel/GameViewModel/fx/fx.h"
 #include "ViewModel/GameViewModel/towers/towers.h"
 #include <SFML/System/Vector2.hpp>
 
@@ -31,6 +32,7 @@ TemplateManager::TemplateManager()
     fx_map    = {
         {FxType::LevelFlag, new LevelFlag()},
         {FxType::Map, new Map()},
+        {FxType::Explosion, new Explosion()},
     };
     soldier_map = {
         {SoldierType::SoldierMeleelv1, new SoldierMeleelv1()},

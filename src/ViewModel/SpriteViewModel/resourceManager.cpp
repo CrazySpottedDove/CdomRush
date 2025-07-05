@@ -80,9 +80,11 @@ void ResourceManager::LoadSoundGroups(const std::string& file_path, const Resour
         const sol::table  group            = pair.second.as<sol::table>();
 
         sound_group_map[sound_group_name]  = SoundGroup{
-            group["files"].get<std::vector<std::string>>(), 0, group["stream"].get_or(false)};
+            group["files"].get<std::vector<std::string>>(),
+            0, group["stream"].get_or(false)};
+        sound_group_level_map[level].insert(sound_group_name);
         INFO("Loading sound group: " << sound_group_name);
-
+        // sound_buffer_map[sound_group_name] 
     }
 }
 

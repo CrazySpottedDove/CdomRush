@@ -4,6 +4,7 @@
 #include "ViewModel/GameViewModel/components/ranged.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
 #include "ViewModel/GameViewModel/store/store.h"
+#include <ostream>
 
 
 void Tower::Update(Store& store)
@@ -66,10 +67,6 @@ void Archer::pending_update(){
 }
 void Archer::layer_update(bool flag)
 {
-    INFO("animation[0].current_state: " << (int)animations[0].current_state);
-    INFO("animation[3].current_state: " << (int)animations[3].current_state);
-    INFO("animation[4].current_state: " << (int)animations[4].current_state);
-
     if (animations[0].current_state == State::Idle && heading == tower_heading::Down) {
         animations[3].current_state = State::IdleDown;   // 设置朝下的动画状态
         animations[4].current_state = State::IdleDown;   // 设置朝下的动画

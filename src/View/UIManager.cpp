@@ -31,11 +31,6 @@ void UIManager::Render(const ViewData& view_data)
 
             if (animation.last_state != animation.current_state ||
                 (animation.current_state != State::Death && animation.frame_id > animation_group.to)) {
-                    DEBUG_CODE(
-                        if(animation.last_state != animation.current_state){
-                            INFO("Entity Come Into state:" << (int) animation.current_state);
-                        }
-                    )
                 animation.frame_id = animation_group.from;
                 animation.pending  = true;
             }

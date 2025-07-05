@@ -331,23 +331,26 @@ Fx* Store::GetFx(const ID id) const
 
 void Store::QueueEnemy(Enemy* enemy)
 {
-    enemy->id        = next_id++;
+    enemy->id        = next_id;
     enemies[next_id] = enemy;
+    ++next_id;
     enemy->Insert(*this);
 }
 void Store::QueueTower(Tower* tower)
 {
-    tower->id       = next_id++;
+    tower->id       = next_id;
     towers[next_id] = tower;
+    ++next_id;
     tower->Insert(*this);
 }
 void Store::QueueBullet(Bullet* bullet)
 {
-    bullet->id       = next_id++;
+    bullet->id       = next_id;
     bullets[next_id] = bullet;
+    ++next_id;
     bullet->Insert(*this);
-    INFO("Bullet queued with ID: " << bullet->id << ", position: (" << bullet->position.x << ", "
-                                   << bullet->position.y << ")");
+    INFO("Bullet Source Position: (" << bullet->source_position.x << ", "
+                                              << bullet->source_position.y << ")");
     DEBUG_CODE(if (resource_manager.GetAnimationGroupMap()->find(bullet->animations[0].prefix) !=
                    resource_manager.GetAnimationGroupMap()->end()) {
         SUCCESS("Bullet animation prefix found: " << bullet->animations[0].prefix);
@@ -356,22 +359,25 @@ void Store::QueueBullet(Bullet* bullet)
 
 void Store::QueueSoldier(Soldier* soldier)
 {
-    soldier->id       = next_id++;
+    soldier->id       = next_id;
     soldiers[next_id] = soldier;
+    ++next_id;
     soldier->Insert(*this);
 }
 
 void Store::QueueFx(Fx* fx)
 {
-    fx->id       = next_id++;
+    fx->id       = next_id;
     fxs[next_id] = fx;
+    ++next_id;
     fx->Insert(*this);
 }
 
 void Store::QueueActionFx(Fx* action_fx)
 {
-    action_fx->id       = next_id++;
+    action_fx->id       = next_id;
     action_fxs[next_id] = action_fx;
+    ++next_id;
     action_fx->Insert(*this);
 }
 

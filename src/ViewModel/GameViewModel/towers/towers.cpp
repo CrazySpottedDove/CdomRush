@@ -19,7 +19,7 @@ void Tower::Update(Store& store){
                 if(target_enemy_ptr->position.y > position.y) heading = tower_heading::Up; // 如果目标敌人在塔的上方，设置塔的朝向为 Up
                 else heading = tower_heading::Down; // 如果目标敌人在塔的下方，设置塔的朝向为 Down
                 attack.Apply(store, this->id, target_enemy, return_offset(),SourceType::Tower); // 应用攻击
-                layer_update();
+                layer_update(1);
                 return ;
             }
         }
@@ -29,7 +29,7 @@ void Tower::Update(Store& store){
             animations[0].current_state = State::Idle; // 如果动画未进行，设置状态为闲置
         }
     }
-    layer_update();
+    layer_update(0);
     return ;
 }
 
@@ -47,7 +47,7 @@ None::None(Position position_) {
     animations[0].actions.push_back(Action(ActionType::UpgradeTower,UpgradeTowerParams{id,TowerType::Mage1, 100}));
 }
 
-void Archer::layer_update() {
+void Archer::layer_update(bool flag) {
     if(animations[0].current_state == State::Idle && heading == tower_heading::Down){
         animations[3].current_state = State::IdleDown; // 设置朝下的动画状态
         animations[4].current_state = State::IdleDown; // 设置朝下的动画
@@ -56,7 +56,7 @@ void Archer::layer_update() {
         animations[3].current_state = State::IdleUp; // 设置朝上的动画状态
         animations[4].current_state = State::IdleUp; // 设置朝上的动画
     }
-    else if(animations[0].current_state == State::Shoot && heading == tower_heading::Down && !animations[0].pending){
+    else if(flag && heading == tower_heading::Down){
         if(shooter){
             animations[3].current_state = State::ShootingDown; // 设置射击朝下的动画状态
             animations[4].current_state = State::IdleDown; // 设置射击朝下的动画
@@ -67,7 +67,7 @@ void Archer::layer_update() {
         }
         shooter = ~ shooter; // 切换射手状态
     }
-    else if(animations[0].current_state == State::Shoot && heading == tower_heading::Up && !animations[0].pending){
+    else if(flag && heading == tower_heading::Up){
         if(shooter){
             animations[3].current_state = State::ShootingUp; // 设置射击朝上的动画状态
             animations[4].current_state = State::IdleUp; // 设置射击朝上的动画
@@ -127,7 +127,7 @@ Archer3::Archer3(Position position_, int total_price_) {
     heading = tower_heading::Down; // 默认塔的朝向为 Down
 }
 
-void Engineer::layer_update(){
+void Engineer::layer_update(bool flag){
     if(animations[0].current_state == State::Idle){
         animations[2].current_state = State::Idle; // 设置工程师的闲置
         animations[3].current_state = State::Idle; // 设置工程师的闲置
@@ -205,7 +205,7 @@ Engineer3::Engineer3(Position position_, int total_price_) {
     heading = tower_heading::Down; // 默认塔的朝向为 Down
 };
 
-void Mage::layer_update() {
+void Mage::layer_update(bool flag) {
     if(animations[0].current_state == State::Idle && heading == tower_heading::Down){
         animations[2].current_state = State::Idle; // 设置朝下的动画状态
         animations[3].current_state = State::IdleDown; // 设置朝下的动画
@@ -266,7 +266,7 @@ Mage3::Mage3(Position position_, int total_price_) {
     heading = tower_heading::Down; // 默认塔的朝向为 Down
 }
 
-void Barracks::layer_update(){
+void Barracks::layer_update(bool flag){
     if(animations[0].current_state == State::DoorOpen) animations[2].current_state = State::DoorOpen;
     if(animations[0].current_state == State::DoorClose) animations[2].current_state = State::DoorClose;
 }

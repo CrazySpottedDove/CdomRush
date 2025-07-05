@@ -63,7 +63,7 @@ public:
 
     sf::Vector2f GetControlPoint(const Position& p0,const Position& p2) const {
         sf::Vector2f mid = (p0 + p2) * 0.5f;
-        mid.y -= 100.f; // 控制点向上偏移，形成抛物线
+        mid.y += 100.f; // 控制点向上偏移，形成抛物线
         return mid;
     }
 
@@ -120,7 +120,7 @@ public:
 
     sf::Vector2f getControlPoint(const Position& p0,const Position& p2) const {
         sf::Vector2f mid = (p0 + p2) * 0.5f;
-        mid.y -= 75.f; // 控制点向上偏移，形成抛物线
+        mid.y += 75.f; // 控制点向上偏移，形成抛物线
         return mid;
     }
 

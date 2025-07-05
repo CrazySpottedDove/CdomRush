@@ -31,22 +31,29 @@ void UIManager::Render(const ViewData& view_data)
 
             if (animation.last_state != animation.current_state ||
                 (animation.current_state != State::Death && animation.frame_id > animation_group.to)) {
+                    DEBUG_CODE(
+                        if(animation.last_state != animation.current_state){
+                            INFO("Entity Come Into state:" << (int) animation.current_state);
+                        }
+                    )
                 animation.frame_id = animation_group.from;
                 animation.pending  = true;
             }
 
-            animation.last_state = animation.current_state;
+            // 死亡结束后，一直播放死亡的最后一帧
+            if(animation.current_state == State::Death && animation.pending == false && animation.last_state == State::Death){
+                animation.frame_id = animation_group.to;
+            }
+
             animation.last_state = animation.current_state;
 
             const SpriteFrameData& sprite_frame_data =
                 sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
 
-
             const sf::Texture& texture = texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
 
             sf::Sprite sprite(texture);
 
-            sprite.setTextureRect(sprite_frame_data.frameRect);
             sprite.setTextureRect(sprite_frame_data.frameRect);
 
             sprite.setOrigin(Position(

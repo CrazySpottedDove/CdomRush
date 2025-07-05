@@ -166,7 +166,7 @@ ForestTroll::ForestTroll(Position position_)
     this->melee[0].damage_event.source = id;
     this->slot     = sf::Vector2f(35.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
-    this->Hit_offset = sf::Vector2f(30.0f,0.0f);   // 设置受击偏移位置
+    this->Hit_offset = sf::Vector2f(0.0f,30.0f);   // 设置受击偏移位置
 }
 
 orc_armored::orc_armored(Position position_)

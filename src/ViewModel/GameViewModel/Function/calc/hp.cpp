@@ -22,7 +22,7 @@ void calc::regen(const Store& store, Unit& self){
 }
 
 bool calc::is_dead(const Unit& self){
-    return self.health.hp <= 0 || self.animations[0].current_state == State::Death;
+    return self.animations[0].current_state == State::Death;
 }
 
 bool calc::should_remove(const Store& store, const Unit& self){

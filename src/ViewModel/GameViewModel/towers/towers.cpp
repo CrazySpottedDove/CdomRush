@@ -382,18 +382,28 @@ void Barracks::pending_update()
 }
 void Barracks::layer_update(bool flag)
 {
-    if (animations[0].current_state == State::DoorOpen)
+    if (flag)
         animations[2].current_state = State::DoorOpen;
-    if (animations[0].current_state == State::DoorClose)
+    else if (animations[0].current_state == State::DoorClose)
         animations[2].current_state = State::DoorClose;
+    return ;
 }
 void Barracks::Update(Store& store)
 {
+    pending_update();
+    for(auto it = soldiers.begin();it!=soldiers.end();){
+        if(store.GetSoldier(*it)==nullptr){
+            soldiers.erase(it);
+        }
+        else{
+            it++;
+        }
+    }
     bool solider_size_changed = false;
-    ;
     while (soldiers.size() < 3) {
         animations[0].current_state = State::DoorOpen;
         Soldier* soldierx           = store.template_manager.CreateSoldier(return_soldier_type());
+        soldierx->position = position + return_offset();
         store.QueueSoldier(soldierx);
         soldiers.push_back(soldierx->id);
         solider_size_changed = true;
@@ -408,13 +418,14 @@ void Barracks::Update(Store& store)
             if (i == 2) si->rally_point_offset = sf::Vector2f(0, 20);
         }
         animations[0].current_state = State::DoorOpen;
+        layer_update(1);
     }
     if (animations[0].current_state == State::DoorOpen) {
-        if (animations[2].pending) {
+        if (!animations[2].pending) {
             animations[0].current_state = State::DoorClose;
-            animations[2].pending       = true;
         }
     }
+    layer_update(0);
 }
 
 Barracks1::Barracks1(Position position_, int total_price_)
@@ -422,6 +433,17 @@ Barracks1::Barracks1(Position position_, int total_price_)
     type        = TowerType::Barrack1;
     position    = position_;
     total_price = total_price_;
+    heading = tower_heading::Down;
 }
-Barracks2::Barracks2(Position position_, int total_price_) {}
-Barracks3::Barracks3(Position position_, int total_price_) {}
+Barracks2::Barracks2(Position position_, int total_price_) {
+    type        = TowerType::Barrack2;
+    position    = position_;
+    total_price = total_price_;
+    heading = tower_heading::Down;
+}
+Barracks3::Barracks3(Position position_, int total_price_) {
+    type        = TowerType::Barrack3;
+    position    = position_;
+    total_price = total_price_;
+    heading = tower_heading::Down;
+}

@@ -181,13 +181,16 @@ public:
 
 class Barracks : public Tower{
 public:
-    Position rally_point;
+    Position rally_point = position + sf::Vector2f(0,-60);
     std::vector<ID> soldiers;
 
     void layer_update(bool flag) override;
     void Update(Store& store) override;
     virtual SoldierType return_soldier_type() = 0;
     void pending_update() override;
+    Position return_offset(){
+        return sf::Vector2f(0.0,-30.0);
+    }
 };
 class Barracks1 : public Barracks{
 public:

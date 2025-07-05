@@ -1,8 +1,10 @@
 #include "UIManager.h"
 #include "Common/action.h"
+#include "Common/animation.h"
 #include "Common/macros.h"
 #include "Common/viewData.h"
 #include "View/mapPosition.h"
+#include "ViewModel/GameViewModel/fx/fx.h"
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -26,10 +28,10 @@ void UIManager::Render(const ViewData& view_data)
     for (size_t layer_index = 0; layer_index < view_data.animations->size(); ++layer_index) {
         Animation&           animation = (*view_data.animations)[layer_index];
         if (!animation.hidden) {
-            INFO("Rendering animation: " + animation.prefix + " at layer " +
-                 std::to_string(layer_index) + ", current state: " +
-                 std::to_string(static_cast<int>(animation.current_state)) +
-                 ", frame ID: " + std::to_string(animation.frame_id));
+            // INFO("Rendering animation: " + animation.prefix + " at layer " +
+            //      std::to_string(layer_index) + ", current state: " +
+            //      std::to_string(static_cast<int>(animation.current_state)) +
+            //      ", frame ID: " + std::to_string(animation.frame_id));
             const AnimationGroup animation_group =
                 animation_group_map->at(animation.prefix).at(animation.current_state);
 
@@ -67,10 +69,8 @@ void UIManager::Render(const ViewData& view_data)
 
             sprite.setRotation(sf::degrees(animation.rotation));
 
-
             window->draw(sprite);
-            //else
-                //INFO("Animation " + animation.prefix + " is hidden, not rendering.");
+
             ++animation.frame_id;
 
             if (animation.frame_id > animation_group.to) {
@@ -166,7 +166,7 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
         ERROR("Animation group map or sprite frame data map is not initialized.");
     }
 
-    const Animation& animation = (*view_data.animations)[0];   // 只处理第0层
+    const Animation& animation = (*view_data.animations)[(*view_data.animations).size() == 1 ? 0 : 1];   // 只处理第0层
 
     const auto& animation_group =
         animation_group_map->at(animation.prefix).at(animation.current_state);
@@ -174,14 +174,24 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
         sprite_frame_data_map->at(animation.prefix).at(animation_group.to - 1);
 
     // 计算边界矩形...
-    float left = view_data.position.x - sprite_frame_data.displaySize.x * animation.scale_x;
-    float top  = view_data.position.y - sprite_frame_data.displaySize.y * animation.scale_y;
+    const Position before_map_position =
+        Position{view_data.position.x + animation.offset.x -
+                     sprite_frame_data.displaySize.x * animation.anchor_x * animation.scale_x,
+                 view_data.position.y + animation.offset.y -
+                     sprite_frame_data.displaySize.y * animation.anchor_y * animation.scale_y};
 
-    sf::FloatRect bounds(MapPosition(sf::Vector2f(left, top)),
-                         sf::Vector2f(2.0*sprite_frame_data.displaySize.x * animation.scale_x,
-                                      2.0*sprite_frame_data.displaySize.y * animation.scale_y));
+    sf::FloatRect bounds(before_map_position,
+                         sf::Vector2f(sprite_frame_data.displaySize.x * animation.scale_x,
+                                      sprite_frame_data.displaySize.y * animation.scale_y));
 
-    return bounds.contains(click_position);
+    const Position click_position_back = MapPositionBack(click_position);
+    INFO("Check Bounds With Prefix: " + animation.prefix);
+    INFO("Click position back: (" + std::to_string(click_position_back.x) + ", " +
+         std::to_string(click_position_back.y) + ")");
+    INFO("Bounds: (" + std::to_string(bounds.position.x) + ", " + std::to_string(bounds.position.y) + ") - (" +
+         std::to_string(bounds.position.x + bounds.size.x) + ", " +
+         std::to_string(bounds.position.y + bounds.size.y) + ")" << std::endl);
+    return bounds.contains(click_position_back);
 }
 
 /**
@@ -196,7 +206,11 @@ void UIManager::HandleClick()
         const auto& event = event_opt.value();
         if (event.is<sf::Event::MouseButtonPressed>()) {
             const auto& mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
-
+            const Position click_position{
+                static_cast<float>(mouse_event.position.x),
+                static_cast<float>(mouse_event.position.y)};
+            INFO("Click position: (" + std::to_string(click_position.x) + ", " +
+                 std::to_string(click_position.y) + ")");
             if (mouse_event.button == sf::Mouse::Button::Left) {
 
                 // 遍历所有ViewData，寻找被点击对象
@@ -205,32 +219,23 @@ void UIManager::HandleClick()
                 for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
                     const ViewData& view_data = *it;
                     if ((*view_data.animations)[0].actions.empty()) {
-                        // if (view_data.animation->actions.empty()) {
                         continue;
                     }
-                    sf::Vector2f click_position(static_cast<float>(mouse_event.position.x),
-                                                static_cast<float>(mouse_event.position.y));
-                    INFO("Click position: (" + std::to_string(click_position.x) + ", " +
-                         std::to_string(click_position.y) + ")");
 
                     if (IsClickHit(view_data, click_position)) {
                         (*view_data.animations)[0].clicked = true;
-
-                        // 如果有关联的actions，准备触发
-                        INFO("Object has " +
-                             std::to_string((*view_data.animations)[0].actions.size()) +
-                             " actions available");
-
                         hit_found = true;
                         break;
                     }
                 }
 
                 if (!hit_found) {
-                    INFO("No objects hit at click position");
+                    WARNING("No objects hit at click position");
+                }else{
+                    SUCCESS("Object hit at click position");
                 }
             }
+            action_queue.push(Action{ActionType::Delete, std::monostate{}});
         }
-        action_queue.push(Action{ActionType::Delete, std::monostate{}});
     }
 }

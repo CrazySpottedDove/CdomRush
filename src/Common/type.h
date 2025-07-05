@@ -40,7 +40,8 @@ enum class FxType
     EnemyStatusWidget,
     TowerStatusWidget,
     Map,
-    None
+    None,
+    UpgradeToArcherButton,
 };
 
 enum class SoldierType

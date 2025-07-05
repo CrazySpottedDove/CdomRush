@@ -39,6 +39,9 @@ TemplateManager::TemplateManager()
         {SoldierType::SoldierMeleelv2, new SoldierMeleelv2()},
         {SoldierType::SoldierMeleelv3, new SoldierMeleelv3()}
     };
+    action_fx_map = {
+        {FxType::UpgradeToArcherButton, new UpgradeToArcherButton()}
+    };
 }
 
 Bullet* TemplateManager::CreateBullet(const BulletType type) const

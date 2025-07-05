@@ -84,7 +84,15 @@ void ResourceManager::LoadSoundGroups(const std::string& file_path, const Resour
             0, group["stream"].get_or(false)};
         sound_group_level_map[level].insert(sound_group_name);
         INFO("Loading sound group: " << sound_group_name);
-        // sound_buffer_map[sound_group_name] 
+        // for (const auto& sound_file : sound_group_map[sound_group_name].sound_files) {
+        //     const std::string full_path = SOUNDS_PATH + sound_file;
+        //     if (sound_buffer_map.find(full_path) == sound_buffer_map.end()) {
+        //         sound_buffer_map[sound_file] = Sound(full_path, sound_group_map[sound_group_name].stream);
+        //         DEBUG_CODE(SUCCESS("Successfully loaded sound: " << full_path);)
+        //     } else {
+        //         DEBUG_CODE(WARNING("Sound already loaded: " << full_path);)
+        //     }
+        // }
     }
 }
 

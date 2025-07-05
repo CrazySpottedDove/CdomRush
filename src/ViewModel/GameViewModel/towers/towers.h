@@ -57,6 +57,7 @@ public:
     Tower* Clone() override {
         return new None(*this);
     }
+    bool Insert(Store& store) override;
     void pending_update() override ;
 };
 

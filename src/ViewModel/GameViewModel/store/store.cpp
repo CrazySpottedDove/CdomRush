@@ -374,7 +374,7 @@ void Store::QueueFx(Fx* fx)
     fx->Insert(*this);
 }
 
-void Store::QueueActionFx(Fx* action_fx)
+void Store::QueueActionFx(ActionFx* action_fx)
 {
     action_fx->id       = next_id;
     action_fxs[next_id] = action_fx;

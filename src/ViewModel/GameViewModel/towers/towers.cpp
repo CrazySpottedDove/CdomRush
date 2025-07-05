@@ -1,6 +1,7 @@
 #include "ViewModel/GameViewModel/towers/towers.h"
 #include "Common/action.h"
 #include "Common/macros.h"
+#include "Common/type.h"
 #include "ViewModel/GameViewModel/components/ranged.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
 #include "ViewModel/GameViewModel/store/store.h"
@@ -43,7 +44,7 @@ void Tower::Update(Store& store)
     return;
 }
 
-void None::pending_update(){}
+void None::pending_update() {}
 
 None::None(Position position_)
 {
@@ -54,16 +55,31 @@ None::None(Position position_)
     type        = TowerType::None;
     position    = position_;
     total_price = 0;
-    animations[0].actions.push_back(
-        Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Archer1, 70}));
-    animations[0].actions.push_back(
-        Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Engineer1, 125}));
-    animations[0].actions.push_back(
-        Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Mage1, 100}));
+
+    // animations[0].actions.push_back(
+    //     Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Archer1, 70}));
+    // animations[0].actions.push_back(
+    //     Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Engineer1, 125}));
+    // animations[0].actions.push_back(
+    //     Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Mage1, 100}));
 }
 
-void Archer::pending_update(){
-    animations[0].pending =animations[3].pending || animations[4].pending;   // 更新动画的 pending 状态
+bool None::Insert(Store& store)
+{
+    animations[0].actions.emplace_back(Action(ActionType::CreateActionFx,
+                                              CreateActionFxParams{
+                                                  FxType::UpgradeToArcherButton,
+                                                  position,
+                                                  id,
+                                                  Position{20, 20},
+                                              }));
+    return true;
+}
+
+void Archer::pending_update()
+{
+    animations[0].pending =
+        animations[3].pending || animations[4].pending;   // 更新动画的 pending 状态
 }
 void Archer::layer_update(bool flag)
 {
@@ -162,7 +178,8 @@ Archer3::Archer3(Position position_, int total_price_)
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
 
-void Engineer::pending_update(){
+void Engineer::pending_update()
+{
     animations[0].pending = animations[2].pending;
 }
 void Engineer::layer_update(bool flag)
@@ -176,7 +193,7 @@ void Engineer::layer_update(bool flag)
         animations[7].current_state = State::Idle;   // 设置工程师的闲置
         animations[8].current_state = State::Idle;   // 设置工程师的闲置
     }
-    else if(flag){
+    else if (flag) {
         animations[2].current_state = State::Shoot;   // 设置工程师的闲置
         animations[3].current_state = State::Shoot;   // 设置工程师的闲置
         animations[4].current_state = State::Shoot;   // 设置工程师的闲置
@@ -195,13 +212,20 @@ Engineer1::Engineer1(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0001", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0001", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer1", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer2", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer3", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer4", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer5", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer6", Position{0.0f, 41.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl1_layer7", Position{0.0f, 41.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl1_layer1", Position{0.0f, 41.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl1_layer2", Position{0.0f, 41.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl1_layer3", Position{0.0f, 41.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl1_layer4", Position{0.0f, 41.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl1_layer5", Position{0.0f, 41.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl1_layer6", Position{0.0f, 41.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl1_layer7", Position{0.0f, 41.0f}));
     animations[0].actions.push_back(
         Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Engineer2, 220}));
     animations[0].actions.push_back(
@@ -219,13 +243,20 @@ Engineer2::Engineer2(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0002", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0002", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer1", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer2", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer3", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer4", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer5", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer6", Position{0.0f, 42.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl2_layer7", Position{0.0f, 42.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl2_layer1", Position{0.0f, 42.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl2_layer2", Position{0.0f, 42.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl2_layer3", Position{0.0f, 42.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl2_layer4", Position{0.0f, 42.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl2_layer5", Position{0.0f, 42.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl2_layer6", Position{0.0f, 42.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl2_layer7", Position{0.0f, 42.0f}));
     animations[0].actions.push_back(
         Action(ActionType::UpgradeTower, UpgradeTowerParams{id, TowerType::Engineer3, 320}));
     animations[0].actions.push_back(
@@ -243,13 +274,20 @@ Engineer3::Engineer3(Position position_, int total_price_)
     animations.push_back(
         Animation(State::Idle, "terrain_artillery_0003", Position{0.0f, 15.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_artillery_0003", Position{0.0f, 15.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer1", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer2", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer3", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer4", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer5", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer6", Position{0.0f, 43.0f}));
-    animations.push_back(Animation(State::Idle, "tower_artillery_lvl3_layer7", Position{0.0f, 43.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl3_layer1", Position{0.0f, 43.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl3_layer2", Position{0.0f, 43.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl3_layer3", Position{0.0f, 43.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl3_layer4", Position{0.0f, 43.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl3_layer5", Position{0.0f, 43.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl3_layer6", Position{0.0f, 43.0f}));
+    animations.push_back(
+        Animation(State::Idle, "tower_artillery_lvl3_layer7", Position{0.0f, 43.0f}));
     animations[0].actions.push_back(
         Action(ActionType::SellTower, UpgradeTowerParams{id, TowerType::None, -total_price}));
     ranged.attacks.push_back(
@@ -258,7 +296,8 @@ Engineer3::Engineer3(Position position_, int total_price_)
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 };
 
-void Mage::pending_update(){
+void Mage::pending_update()
+{
     animations[0].pending = animations[3].pending;
 }
 void Mage::layer_update(bool flag)
@@ -337,7 +376,8 @@ Mage3::Mage3(Position position_, int total_price_)
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
 
-void Barracks::pending_update(){
+void Barracks::pending_update()
+{
     animations[0].pending = animations[2].pending;
 }
 void Barracks::layer_update(bool flag)

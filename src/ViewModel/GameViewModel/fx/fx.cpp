@@ -1,6 +1,9 @@
 #include "ViewModel/GameViewModel/fx/fx.h"
+#include "Common/action.h"
 #include "Common/animation.h"
+#include "Common/macros.h"
 #include "Common/state.h"
+#include "Common/type.h"
 
 
 LevelFlag::LevelFlag(){
@@ -21,4 +24,15 @@ CommonUpgradeIcon::CommonUpgradeIcon(){
 
 Explosion::Explosion(){
     animations.emplace_back(Animation(State::Hit, "explosion_big"));
+}
+
+UpgradeToArcherButton::UpgradeToArcherButton(){
+    animations.emplace_back(Animation(State::Disabled, "icon_archer"));
+    animations[0].actions.emplace_back(
+        Action(ActionType::UpgradeTower, UpgradeTowerParams{
+            INVALID_ID,
+            TowerType::Archer1,
+            70
+        })
+    );
 }

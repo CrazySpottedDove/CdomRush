@@ -92,10 +92,7 @@ void UIManager::Render(const ViewData& view_data)
                 case ActionType::CreateActionFx:
                 {
                     animation.clicked = false;
-                    Action create_action = animation.actions[i];
-                    auto&  params        = std::get<CreateActionFxParams>(create_action.param);
-                    params.position      = view_data.position + params.offset; // to be fixed
-                    action_queue.push(create_action);
+                    action_queue.push(animation.actions[i]);
                     break;
                 }
                 case ActionType::UpgradeTower:

@@ -153,9 +153,9 @@ void App::HandleAction(Action& action)
     case ActionType::CreateActionFx:
     {
         CreateActionFxParams& fx_params = std::get<CreateActionFxParams>(action.param);
-        Fx*                   action_fx = store.template_manager.CreateFx(fx_params.fx_type);
-        action_fx->position             = fx_params.position;
-        // action_fx->id                   = fx_params.id;
+        ActionFx*                   action_fx = store.template_manager.CreateActionFx(fx_params.fx_type);
+        action_fx->position             = fx_params.position + fx_params.offset;
+        action_fx->source_id = fx_params.id;
         break;
     }
     case ActionType::Delete:{
@@ -182,7 +182,7 @@ void App::HandleAction(Action& action)
     {
         SellTowerParams& params = std::get<SellTowerParams>(action.param);
         Tower* tower = store.GetTower(params.tower_id);
-        
+
         break;
     }
     }

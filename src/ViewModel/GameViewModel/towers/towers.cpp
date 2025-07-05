@@ -63,7 +63,6 @@ None::None(Position position_)
 void Archer::pending_update(){
     animations[0].pending =animations[3].pending || animations[4].pending;   // 更新动画的 pending 状态
 }
-
 void Archer::layer_update(bool flag)
 {
     INFO("animation[0].current_state: " << (int)animations[0].current_state);
@@ -165,6 +164,11 @@ Archer3::Archer3(Position position_, int total_price_)
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
 
+void Engineer::pending_update(){
+    animations[0].pending = animations[2].pending | animations[3].pending | animations[4].pending |
+                            animations[5].pending | animations[6].pending | animations[7].pending |
+                            animations[8].pending;
+}
 void Engineer::layer_update(bool flag)
 {
     if (animations[0].current_state == State::Idle) {
@@ -258,6 +262,9 @@ Engineer3::Engineer3(Position position_, int total_price_)
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 };
 
+void Mage::pending_update(){
+    animations[0].pending = animations[2].pending | animations[3].pending;
+}
 void Mage::layer_update(bool flag)
 {
     if (animations[0].current_state == State::Idle && heading == tower_heading::Down) {
@@ -334,6 +341,9 @@ Mage3::Mage3(Position position_, int total_price_)
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
 
+void Barracks::pending_update(){
+    animations[0].pending = animations[2].pending;
+}
 void Barracks::layer_update(bool flag)
 {
     if (animations[0].current_state == State::DoorOpen)

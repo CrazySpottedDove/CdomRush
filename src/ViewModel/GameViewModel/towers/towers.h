@@ -47,9 +47,7 @@ public:
         return sf::Vector2f(0, 0); // 默认偏移位置为 (0, 0)
     }
 
-    virtual void pending_update(){
-
-    }
+    virtual void pending_update() = 0;
 };
 
 class None : public Tower {
@@ -106,6 +104,7 @@ class Engineer : public Tower {
 public:
     Engineer() = default; // 显式声明为public
     void layer_update(bool flag) override;
+    void pending_update() override;
 };
 class Engineer1 : public Engineer {
 public:
@@ -142,6 +141,7 @@ class Mage : public Tower {
 public:
     Mage() = default; // 显式声明为public
     void layer_update(bool flag) override;
+    void pending_update() override;
 };
 class Mage1 : public Mage {
 public:
@@ -185,6 +185,7 @@ public:
     void layer_update(bool flag) override;
     void Update(Store& store) override;
     virtual SoldierType return_soldier_type() = 0;
+    void pending_update() override;
 };
 class Barracks1 : public Barracks{
 public:

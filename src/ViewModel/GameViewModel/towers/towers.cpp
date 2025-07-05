@@ -179,7 +179,7 @@ void Engineer::layer_update(bool flag)
         animations[7].current_state = State::Idle;   // 设置工程师的闲置
         animations[8].current_state = State::Idle;   // 设置工程师的闲置
     }
-    else {
+    else if(flag){
         animations[2].current_state = State::Shoot;   // 设置工程师的闲置
         animations[3].current_state = State::Shoot;   // 设置工程师的闲置
         animations[4].current_state = State::Shoot;   // 设置工程师的闲置
@@ -274,11 +274,11 @@ void Mage::layer_update(bool flag)
         animations[2].current_state = State::Idle;     // 设置朝上的动画状态
         animations[3].current_state = State::IdleUp;   // 设置朝上的动画
     }
-    else if (animations[0].current_state == State::Shoot && heading == tower_heading::Down) {
+    else if (flag && heading == tower_heading::Down) {
         animations[2].current_state = State::Shoot;          // 设置射击朝下的动画状态
         animations[3].current_state = State::ShootingDown;   // 设置射击朝下的动画
     }
-    else if (animations[0].current_state == State::Shoot && heading == tower_heading::Up) {
+    else if (flag && heading == tower_heading::Up) {
         animations[2].current_state = State::Shoot;        // 设置射击朝上的动画状态
         animations[3].current_state = State::ShootingUp;   // 设置射击朝上的动画
     }

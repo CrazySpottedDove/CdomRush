@@ -34,7 +34,7 @@ public:
     bool Remove(Store& store) override {
         return true;
     }
-    virtual void layer_update() = 0; // 每个 Tower 都需要实现自己的图层更新逻辑
+    virtual void layer_update(bool flag) = 0; // 每个 Tower 都需要实现自己的图层更新逻辑
 
     void Update(Store& store) override;
 
@@ -51,7 +51,7 @@ public:
 class None : public Tower {
 public:
     None(Position position = sf::Vector2f(0,0));
-    void layer_update() override{};
+    void layer_update(bool flag) override{};
     Tower* Clone() override {
         return new None(*this);
     }
@@ -61,7 +61,7 @@ class Archer : public Tower {
 public:
     bool shooter = 1;
     Archer() = default; // 显式声明为public
-    void layer_update() override;
+    void layer_update(bool flag) override;
 };
 class Archer1 : public Archer {
 public:
@@ -100,7 +100,7 @@ public:
 class Engineer : public Tower {
 public:
     Engineer() = default; // 显式声明为public
-    void layer_update() override;
+    void layer_update(bool flag) override;
 };
 class Engineer1 : public Engineer {
 public:
@@ -136,7 +136,7 @@ public:
 class Mage : public Tower {
 public:
     Mage() = default; // 显式声明为public
-    void layer_update() override;
+    void layer_update(bool flag) override;
 };
 class Mage1 : public Mage {
 public:
@@ -177,7 +177,7 @@ public:
     Position rally_point;
     std::vector<ID> soldiers;
 
-    void layer_update() override;
+    void layer_update(bool flag) override;
     void Update(Store& store) override;
     virtual SoldierType return_soldier_type() = 0;
 };

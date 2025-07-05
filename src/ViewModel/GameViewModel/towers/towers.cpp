@@ -166,9 +166,7 @@ Archer3::Archer3(Position position_, int total_price_)
 }
 
 void Engineer::pending_update(){
-    animations[0].pending = animations[2].pending | animations[3].pending | animations[4].pending |
-                            animations[5].pending | animations[6].pending | animations[7].pending |
-                            animations[8].pending;
+    animations[0].pending = animations[2].pending;
 }
 void Engineer::layer_update(bool flag)
 {

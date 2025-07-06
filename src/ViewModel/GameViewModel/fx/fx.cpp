@@ -116,3 +116,12 @@ void GoldStat::QueueViewData(Store& store){
         ViewData(std::to_string(store.gold),position ,UI_UPPER_LAYER )
     );
 }
+
+TopLeft::TopLeft()
+{
+    animations.emplace_back(Animation(State::Idle, "top_left"));
+    animations[0].anchor_x = 0.0;
+    animations[0].anchor_y = 0.0;
+    position.x             = -157.5;
+    position.y             = 768;
+}

@@ -77,6 +77,8 @@ void App::Run()
                 Fx* gold_fx = store.template_manager.CreateFx(FxType::GoldStat);
                 store.QueueFx(gold_fx);
                 store.QueueSoundData(SoundData(store.current_level_prepare_music));
+                Fx* top_left_fx = store.template_manager.CreateFx(FxType::TopLeft);
+                store.QueueFx(top_left_fx);
                 last_state                  = GameState::GameStart;
                 store.current_subwave_index = 0;
                 store.current_wave_index    = 0;

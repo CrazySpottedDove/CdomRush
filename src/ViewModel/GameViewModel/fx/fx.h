@@ -94,3 +94,9 @@ public:
     Fx* Clone() override { return new GoldStat(*this); }
     void QueueViewData(Store& store) override;
 };
+
+class TopLeft: public Fx{
+public:
+    TopLeft();
+    Fx* Clone() override { return new TopLeft(*this); }
+};

@@ -124,7 +124,7 @@ void ResourceManager::LoadSoundGroups(const std::string& file_path, const Resour
         const sol::table  group            = pair.second.as<sol::table>();
 
         sound_group_map[sound_group_name] = SoundGroup{
-            group["files"].get<std::vector<std::string>>(), 0, group["gain"].get<float>() * 100.0f, group["stream"].get_or(false)};
+            group["files"].get<std::vector<std::string>>(), 0, group["gain"].get_or(1.0f) * 100.0f, group["stream"].get_or(false)};
         sound_group_level_map[level].insert(sound_group_name);
         INFO("Loading sound group: " << sound_group_name);
         for (const auto& sound_file : sound_group_map[sound_group_name].sound_files) {

@@ -603,5 +603,11 @@ return {
             to = 10,
             from = 1
         }
+    },
+    top_left = {
+        idle = {
+            to = 1,
+            from = 1
+        } -- 头部信息栏
     }
 }

@@ -423,9 +423,9 @@ ViewDataQueue* Store::GetViewDataQueue()
     return &view_data_queue;
 }
 
-void Store::InitLevel(const std::string& level_name)
+void Store::InitLevel()
 {
-    resource_manager.LoadLevelResources(level_name);
+    resource_manager.LoadLevelResources(current_level_name, current_level_prepare_music, current_level_fight_music);
     InitTowers();
 }
 

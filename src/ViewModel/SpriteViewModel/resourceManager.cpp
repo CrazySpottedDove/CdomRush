@@ -1,10 +1,10 @@
 #include "ViewModel/SpriteViewModel/resourceManager.h"
 #include "Common/animation.h"
 #include "Common/macros.h"
+#include "Common/resourceLevel.h"
 #include "Common/sound.h"
 #include "Common/towerEssential.h"
 #include "ViewModel/SpriteViewModel/readLua.h"
-#include "ViewModel/level.h"
 #include <SFML/Audio/Music.hpp>
 #include <string>
 #include <vector>
@@ -169,22 +169,19 @@ void ResourceManager::LoadAnimationGroups()
     }
 };
 
-void ResourceManager::LoadLevelAssets(const std::string& level_name)
+void ResourceManager::LoadLevelAssets(const std::string& level_name, std::string& level_prepare_music, std::string& level_fight_music)
 {
     const std::string file_path         = std::string(LEVEL_DATA_PATH) + level_name + ".lua";
     const sol::table  level_data_map    = ReadLua(file_path);
     const sol::table  required_textures = level_data_map["required_textures"];
     const sol::table  required_sounds   = level_data_map["required_sounds"];
-    LevelAssets       level_assets;
     for (const auto& [key, value] : required_textures) {
         const std::string& required_texture = IMAGES_PATH + value.as<std::string>();
         LoadTexturesAndSpriteFrameDatas(required_texture, ResourceLevel::Specific);
     }
-    for (const auto& [key, value] : required_sounds) {
-        const std::string& sound_file = SOUNDS_PATH + value.as<std::string>();
-        level_assets.required_sounds.push_back(value.as<std::string>());
-        // WARNING("To be done: Load sound file: " << sound_file);
-    }
+
+    level_prepare_music = level_data_map["prepare_music"].get<std::string>();
+    level_fight_music   = level_data_map["fight_music"].get<std::string>();
 };
 
 void ResourceManager::LoadTowerEssentials(const std::string& file_name)
@@ -305,9 +302,13 @@ ResourceManager::ResourceManager()
     LoadAnimationGroups();
 }
 
-void ResourceManager::LoadLevelResources(const std::string& level_name)
+void ResourceManager::LoadLevelResources(const std::string& level_name,
+                                         std::string&       level_prepare_music,
+                                         std::string&       level_fight_music)
 {
-    LoadLevelAssets(level_name);
+    LoadLevelAssets(level_name, level_prepare_music, level_fight_music);
+
+    LoadSoundGroups(LEVEL_SPECIFIC_SOUNDS_PATH + level_name + ".lua",ResourceLevel::Specific);
     LoadPaths(PATH_PATH + level_name + ".lua");
     LoadWaves(WAVE_PATH + level_name + ".lua");
     LoadTowerEssentials(TOWER_PATH + level_name + ".lua");

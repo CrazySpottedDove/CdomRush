@@ -7,6 +7,7 @@
 #define LEVEL_MAP_FILE "data/level_map.lua"
 #define LEVEL_DATA_PATH "data/levels/"
 #define SOUNDS_PATH "assets/sounds/"
+#define LEVEL_SPECIFIC_SOUNDS_PATH "assets/sounds/levelSpecific/"
 #define PATH_PATH "data/paths/"
 #define WAVE_PATH "data/waves/"
 #define TOWER_PATH "data/towers/"

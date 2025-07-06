@@ -14,7 +14,9 @@ class ResourceManager
 {
 public:
     ResourceManager();
-    void                         LoadLevelResources(const std::string& level_name);
+    void                         LoadLevelResources(const std::string& level_name,
+                                                    std::string&       level_prepare_music,
+                                                    std::string&       level_fight_music);
     TextureMap*                  GetTextureMap() { return &texture_map; }
     SpriteFrameDataMap*          GetSpriteFrameDataMap() { return &sprite_frame_data_map; }
     AnimationGroupMap*           GetAnimationGroupMap() { return &animation_group_map; }
@@ -49,7 +51,8 @@ private:
                          const ResourceLevel level = ResourceLevel::Common);
     void UnloadSpecificSoundGroups();
     void LoadAnimationGroups();
-    void LoadLevelAssets(const std::string& level_name);
+    void LoadLevelAssets(const std::string& level_name, std::string& level_prepare_music,
+                         std::string& level_fight_music);
     void LoadTowerEssentials(const std::string& file_name);
     void LoadPaths(const std::string& file_path);
     void LoadWaves(const std::string& file_path);

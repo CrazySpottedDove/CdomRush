@@ -3,8 +3,6 @@ return {
         "enemies/go_enemies_acaroth.lua",
         "maps/acaroth.lua"
     },
-    required_sounds = {
-        "background/MusicBattlePreparationsForest.ogg",
-        "background/MusicBattleUnderAttackForest1.ogg"
-    }
+    prepare_music = "MusicBattlePrep_14",
+    fight_music = "MusicBattle_14",
 }

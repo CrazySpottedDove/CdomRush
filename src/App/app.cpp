@@ -63,7 +63,7 @@ void App::Run()
         case GameState::Loading:
             if (last_state != GameState::Loading) {
                 store.Clear();
-                store.InitLevel(store.current_level_name);
+                store.InitLevel();
                 last_state = GameState::Loading;
                 game_state = GameState::GameStart;
                 INFO("State Changed to Loading");
@@ -79,6 +79,7 @@ void App::Run()
                 Fx* fx                   = store.template_manager.CreateFx(FxType::Map);
                 fx->animations[0].prefix = store.current_level_name;
                 store.QueueFx(fx);
+                store.QueueSoundData(SoundData(store.current_level_prepare_music));
                 last_state                  = GameState::GameStart;
                 store.current_subwave_index = 0;
                 store.current_wave_index    = 0;
@@ -90,6 +91,7 @@ void App::Run()
             store.UpdateFxs();
             store.UpdateActionFxs();
             ui_manager.PrecessUI();
+            sound_manager.PlayAll();
             store.time += FRAME_LENGTH;
             break;
 
@@ -97,6 +99,7 @@ void App::Run()
             if (last_state != GameState::GamePlaying) {
                 last_state              = GameState::GamePlaying;
                 store.current_wave_time = 0;
+                store.QueueSoundData(SoundData(store.current_level_fight_music));
                 INFO("State Changed to GamePlaying");
             }
             store.SpawnWaves();
@@ -108,6 +111,7 @@ void App::Run()
             store.UpdateSoldiers();
             store.UpdateActionFxs();
             ui_manager.PrecessUI();
+            sound_manager.PlayAll();
             store.time += FRAME_LENGTH;
             if (store.life <= 0) {
                 game_state = GameState::GameOver;

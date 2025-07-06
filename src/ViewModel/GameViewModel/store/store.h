@@ -38,6 +38,8 @@ public:
     std::size_t current_subwave_index = 0;
     double      current_wave_time     = 0.0;
     std::string current_level_name;
+    std::string current_level_prepare_music;
+    std::string current_level_fight_music;
     bool        preparing = true;
 
     const std::unordered_map<ID, Enemy*>&   GetEnemies() const { return enemies; }
@@ -102,7 +104,7 @@ public:
      * @brief 在进入关卡时调用，更新一个关卡的全部数据
      * @note 在调用前，保证 Clear() 已经被调用，保证 Store 中的数据是干净的。
      */
-    void InitLevel(const std::string& level_name);
+    void InitLevel();
 
 private:
     std::unordered_map<ID, Enemy*>    enemies;

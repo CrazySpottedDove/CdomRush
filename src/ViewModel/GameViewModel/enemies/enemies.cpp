@@ -9,7 +9,7 @@ void PassiveEnemy::Update(Store& store)
     if (animations[0].current_state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
     if (this->health.hp <= 0) {
         this->animations[0].current_state = State::Death;   // 如果生命值为0，进入死亡状态
-        death_action();   // 执行死亡行为
+        death_action(store);   // 执行死亡行为
         health.death_time = store.time;
         store.gold += gold;                     // 增加金币
         return;
@@ -26,7 +26,7 @@ void ActiveEnemyMelee::Update(Store& store)
     if (animations[0].current_state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
     if (this->health.hp <= 0) {
         this->animations[0].current_state = State::Death;   // 如果生命值为0，进入死亡状态
-        death_action();   // 执行死亡行为
+        this->death_action(store);   // 执行死亡行为
         health.death_time = store.time;
         store.gold += gold;                     // 增加金币
         return;
@@ -92,7 +92,7 @@ void ActiveEnemyRange::Update(Store& store)
     if (animations[0].current_state == State::Death) return;   // 如果敌人处于死亡状态，跳过更新
     if (this->health.hp <= 0) {
         this->animations[0].current_state = State::Death;   // 如果生命值为0，进入死亡状态
-        death_action();   // 执行死亡行为
+        death_action(store);   // 执行死亡行为
         health.death_time = store.time;
         store.gold += gold;                     // 增加金币
         return;
@@ -200,4 +200,17 @@ orc_wolf_rider::orc_wolf_rider(Position position_)
     this->position = position_;                   // 设置初始位置
     this->Hit_offset = sf::Vector2f(0.0f,23.0f);   // 设置受击偏移位置
     this->health_bar_offset = sf::Vector2f(0.0f,48.0f);
+}
+
+void ForestTroll::death_action(Store& store)
+{
+    store.QueueSoundData(SoundData("DeathBig"));
+}
+void orc_armored::death_action(Store& store)
+{
+    store.QueueSoundData(SoundData("DeathOrc"));
+}
+void orc_wolf_rider::death_action(Store& store)
+{
+    store.QueueSoundData(SoundData("DeathPuff"));
 }

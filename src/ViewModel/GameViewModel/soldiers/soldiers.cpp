@@ -7,7 +7,7 @@ void SoldierMelee::Update(Store& store){
     if(animations[0].current_state == State::Death) return ;
     if(health.hp<=0){
         animations[0].current_state = State::Death;
-        death_action();
+        death_action(store);
         health.death_time = store.time;
         return ;
     }
@@ -74,7 +74,7 @@ void SoldierMelee::Update(Store& store){
             return ;
         }
     }
-    
+
     if(animations[0].current_state == State::Attack){
         if(animations[0].pending == true) return ;
         animations[0].current_state = State::Idle;

@@ -15,6 +15,7 @@ struct SoundGroup
 {
     std::vector<std::string> sound_files; // 同属于声音组的声音文件
     size_t                   next_sound_id = 0;   // 下次播放的音乐在声音组中的索引
+    float gain = 100.0f;
     bool is_stream = false;
 };
 
@@ -38,11 +39,9 @@ enum class SoundGroupMode{
 struct SoundData{
     std::string group_name;
     SoundGroupMode mode;
-    float gain = 1.0f; // 音量倍率
-    // size_t sound_id = 0; // 播放的音乐在声音组中的索引
-    SoundData(const std::string& group_name, const float gain = 1.0f,
+    SoundData(const std::string& group_name,
               const SoundGroupMode mode = SoundGroupMode::Sequence)
-        : group_name(group_name), gain(gain), mode(mode) {}
+        : group_name(group_name), mode(mode) {}
 };
 
 // SoundData 的队列

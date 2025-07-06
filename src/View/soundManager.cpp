@@ -71,9 +71,8 @@ void SoundManager::Play(const SoundData& sound_data)
             WARNING("Failed to open music file: " << SOUNDS_PATH + *music_it);
             return;
         })
-        current_music.setVolume(sound_data.gain * 100);
+        current_music.setVolume(sound_group.gain);
         current_music.play();
-        SUCCESS("Playing music: " << *music_it << " with gain: " << sound_data.gain);
     }
     else {
         auto buffer_it = sound_buffer_map->find(sound_file);
@@ -89,7 +88,7 @@ void SoundManager::Play(const SoundData& sound_data)
             return;
         }
         sf::Sound* sound = new sf::Sound(sound_buffer);
-        sound->setVolume(sound_data.gain);
+        sound->setVolume(sound_group.gain);
         sound->play();
         sound_pool.push_back(sound);
     }
@@ -98,7 +97,6 @@ void SoundManager::Play(const SoundData& sound_data)
 void SoundManager::ClearPlayedSounds()
 {
     for (auto it = sound_pool.begin(); it != sound_pool.end();) {
-
         if ((*it)->getStatus() == sf::Sound::Status::Stopped) {
             delete *it;  // 删除已停止的声音
             it = sound_pool.erase(it);  // 从池中移除

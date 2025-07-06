@@ -36,11 +36,23 @@ struct SelectLevelParams
     std::string level_name;
 };
 
+
+using CreateActionFxProps = std::variant<UpgradeTowerParams>;
+
 struct CreateActionFxParams{
     FxType fx_type;
     Position position; // 在 View 层被赋值
-    ID id; // 任何拥有 CreateActionFx 事件的实体，都应该把它的 ID 赋给这个参数
+    // ID id; // 任何拥有 CreateActionFx 事件的实体，都应该把它的 ID 赋给这个参数
     Position offset;
+    CreateActionFxProps props;
+    template<typename PropType>
+    CreateActionFxParams(const FxType fx_type, const Position& position, const Position& offset,
+                         const PropType& props)
+        : fx_type(fx_type)
+        , position(position)
+        , offset(offset)
+        , props(props)
+    {}
 };
 
 // Delete Action 不带任何参数，就是让 ViewModel 层删除所有的 ActionFx 实体。
@@ -48,18 +60,18 @@ struct CreateActionFxParams{
 struct CheckSoldierStatusParams
 {
     ID soldier_id; // 要检查的士兵 ID
-    //Status? 士兵状态 
+    //Status? 士兵状态
 };
 
 struct CheckEnemyStatusParams
 {
-    ID enemy_id; 
+    ID enemy_id;
     //Status? 敌人状态
 };
 
 struct CheckTowerStatusParams
 {
-    ID tower_id; 
+    ID tower_id;
     //Status? 塔状态
     // 可能还需要其他信息，比如塔的等级、攻击力、金钱等
 };
@@ -67,14 +79,14 @@ struct CheckTowerStatusParams
 struct ChangeRallyPointParams
 {
     ID        soldier_id; // 要改变集结点的士兵 ID
-    Position  new_rally_point; 
+    Position  new_rally_point;
 };
 
 struct SellTowerParams
 {
     ID        tower_id; // 要出售的塔的 ID
     int       price; //出售的价格
-    TowerType tower_type; 
+    TowerType tower_type;
     //Position  offset; // 出售有无效果需要渲染？
 };
 

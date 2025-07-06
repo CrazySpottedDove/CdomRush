@@ -609,5 +609,15 @@ return {
             to = 1,
             from = 1
         } -- 头部信息栏
-    }
+    },
+    common_upgrade_button = {
+        enabled = {
+            to = 1,
+            from = 1
+        },
+        disabled = {
+            to = 2,
+            from = 2
+        }
+    },
 }

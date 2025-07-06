@@ -9,9 +9,7 @@
 
 void Fx::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(
-        ViewData(&animations, position, FX_LAYER)
-    );
+    store.GetViewDataQueue()->emplace(ViewData(&animations, position, FX_LAYER));
 }
 
 LevelFlag::LevelFlag()
@@ -19,10 +17,9 @@ LevelFlag::LevelFlag()
     animations.emplace_back(Animation(State::Idle, "map_flag"));
 }
 
-void ActionFx::QueueViewData(Store& store){
-    store.GetViewDataQueue()->emplace(
-        ViewData(&animations, position, UI_UPPER_LAYER)
-    );
+void ActionFx::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(ViewData(&animations, position, UI_UPPER_LAYER));
 }
 
 Map::Map()
@@ -34,15 +31,27 @@ Map::Map()
     position.y             = 768;
 }
 
-void Map::QueueViewData(Store& store){
-    store.GetViewDataQueue()->emplace(
-        ViewData(&animations, position,MAP_LAYER)
-    );
+void Map::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(ViewData(&animations, position, MAP_LAYER));
 }
 
-CommonUpgradeIcon::CommonUpgradeIcon()
+CommonUpgradeButton::CommonUpgradeButton(const UpgradeTowerParams& params)
 {
-    // animations.emplace_back(Animation(State::Enabled,))
+    price = params.cost;
+    animations.emplace_back(Animation(State::Disabled, "common_upgrade_button"));
+    animations[0].actions.emplace_back(
+        Action(ActionType::UpgradeTower, params));
+}
+
+void CommonUpgradeButton::Update(Store& store)
+{
+    if (store.gold < price) {
+        animations[0].current_state = State::Disabled;
+    }
+    else {
+        animations[0].current_state = State::Enabled;
+    }
 }
 
 Explosion::Explosion()
@@ -52,14 +61,14 @@ Explosion::Explosion()
 
 BloodSplat::BloodSplat()
 {
-    animations.emplace_back(Animation(State::Hit,"fx_blood_splat_red"));
+    animations.emplace_back(Animation(State::Hit, "fx_blood_splat_red"));
 }
 
-UpgradeToArcherButton::UpgradeToArcherButton()
+UpgradeToArcherButton::UpgradeToArcherButton(const UpgradeTowerParams& params)
 {
     animations.emplace_back(Animation(State::Disabled, "icon_archer"));
     animations[0].actions.emplace_back(
-        Action(ActionType::UpgradeTower, UpgradeTowerParams{INVALID_ID, TowerType::Archer1, 70}));
+        Action(ActionType::UpgradeTower, params));
 }
 
 void UpgradeToArcherButton::Update(Store& store)
@@ -72,11 +81,11 @@ void UpgradeToArcherButton::Update(Store& store)
     }
 }
 
-UpgradeToMageButton::UpgradeToMageButton()
+UpgradeToMageButton::UpgradeToMageButton(const UpgradeTowerParams& params)
 {
     animations.emplace_back(Animation(State::Disabled, "icon_mage"));
     animations[0].actions.emplace_back(
-        Action(ActionType::UpgradeTower, UpgradeTowerParams{INVALID_ID, TowerType::Mage1, 100}));
+        Action(ActionType::UpgradeTower, params));
 }
 
 void UpgradeToMageButton::Update(Store& store)
@@ -89,11 +98,12 @@ void UpgradeToMageButton::Update(Store& store)
     }
 }
 
-UpgradeToEngineerButton::UpgradeToEngineerButton()
+UpgradeToEngineerButton::UpgradeToEngineerButton(const UpgradeTowerParams& params)
+
 {
     animations.emplace_back(Animation(State::Disabled, "icon_engineer"));
     animations[0].actions.emplace_back(
-        Action(ActionType::UpgradeTower, UpgradeTowerParams{INVALID_ID, TowerType::Engineer1, 125}));
+        Action(ActionType::UpgradeTower, params));
 }
 
 void UpgradeToEngineerButton::Update(Store& store)
@@ -106,37 +116,43 @@ void UpgradeToEngineerButton::Update(Store& store)
     }
 }
 
-GoldStat::GoldStat(){
+GoldStat::GoldStat()
+{
     position.x = -20;
     position.y = 745;
 }
 
-void GoldStat::QueueViewData(Store& store){
+void GoldStat::QueueViewData(Store& store)
+{
     store.GetViewDataQueue()->emplace(
-        ViewData(std::to_string((int)store.gold),position ,UI_UPPER_LAYER )
-    );
+        ViewData(std::to_string((int)store.gold), position, UI_UPPER_LAYER));
 }
 
-LifeStat::LifeStat(){
+LifeStat::LifeStat()
+{
     position.x = -80;
     position.y = 745;
 }
 
-void LifeStat::QueueViewData(Store& store){
+void LifeStat::QueueViewData(Store& store)
+{
     store.GetViewDataQueue()->emplace(
-        ViewData(std::to_string(store.life),position ,UI_UPPER_LAYER )
-    );
+        ViewData(std::to_string(store.life), position, UI_UPPER_LAYER));
 }
 
-WaveStat::WaveStat(){
+WaveStat::WaveStat()
+{
     position.x = 90;
     position.y = 745;
 }
 
-void WaveStat::QueueViewData(Store& store){
+void WaveStat::QueueViewData(Store& store)
+{
     store.GetViewDataQueue()->emplace(
-        ViewData(std::to_string(store.current_wave_index + 1) + "/" + std::to_string(store.resource_manager.GetWaves()->size()), position, UI_UPPER_LAYER)
-    );
+        ViewData(std::to_string(store.current_wave_index + 1) + "/" +
+                     std::to_string(store.resource_manager.GetWaves()->size()),
+                 position,
+                 UI_UPPER_LAYER));
 }
 
 TopLeft::TopLeft()
@@ -150,7 +166,5 @@ TopLeft::TopLeft()
 
 void TopLeft::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(
-        ViewData(&animations, position, UI_LOWER_LAYER)
-    );
+    store.GetViewDataQueue()->emplace(ViewData(&animations, position, UI_LOWER_LAYER));
 }

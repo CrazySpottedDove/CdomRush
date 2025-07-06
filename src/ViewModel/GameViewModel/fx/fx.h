@@ -1,6 +1,8 @@
 #pragma once
 #include "Common/macros.h"
+#include "Common/type.h"
 #include "ViewModel/GameViewModel/templates/entity.h"
+#include <cstddef>
 
 class Fx : public Entity
 {
@@ -8,15 +10,15 @@ public:
     bool        Insert(Store& store) override { return true; }
     void        Update(Store& store) override {}
     virtual Fx* Clone() = 0;
-    void QueueViewData(Store& store) override;
+    void        QueueViewData(Store& store) override;
     bool        Remove(Store& store) override { return true; }
 };
 
 class ActionFx : public Fx
 {
 public:
-    ID source_id;
-    void QueueViewData(Store& store) override;
+    ID                source_id;
+    void              QueueViewData(Store& store) override;
     virtual ActionFx* Clone() override = 0;
 };
 
@@ -25,7 +27,7 @@ class Map : public Fx
 public:
     Map();
     void QueueViewData(Store& store) override;
-    Fx* Clone() override { return new Map(*this); }
+    Fx*  Clone() override { return new Map(*this); }
 };
 
 class LevelFlag : public Fx
@@ -35,11 +37,13 @@ public:
     Fx* Clone() override { return new LevelFlag(*this); }
 };
 
-class CommonUpgradeIcon : public ActionFx
+class CommonUpgradeButton : public ActionFx
 {
 public:
-    CommonUpgradeIcon();
-    ActionFx* Clone() override { return new CommonUpgradeIcon(*this); }
+    std::size_t price = 0;
+    CommonUpgradeButton(const UpgradeTowerParams& params);
+    ActionFx* Clone() override { return new CommonUpgradeButton(*this); }
+    void      Update(Store& store) override;
 };
 
 class Explosion : public Fx
@@ -53,21 +57,21 @@ class BloodSplat : public Fx
 {
 public:
     BloodSplat();
-    Fx* Clone() override {return new BloodSplat(*this);}
+    Fx* Clone() override { return new BloodSplat(*this); }
 };
 
 class UpgradeToArcherButton : public ActionFx
 {
 public:
-    UpgradeToArcherButton();
+    UpgradeToArcherButton(const UpgradeTowerParams& params);
     ActionFx* Clone() override { return new UpgradeToArcherButton(*this); }
-    void Update(Store& store)override;
+    void      Update(Store& store) override;
 };
 
 class UpgradeToMageButton : public ActionFx
 {
 public:
-    UpgradeToMageButton();
+    UpgradeToMageButton(const UpgradeTowerParams& params);
     ActionFx* Clone() override { return new UpgradeToMageButton(*this); }
     void      Update(Store& store) override;
 };
@@ -75,7 +79,7 @@ public:
 class UpgradeToEngineerButton : public ActionFx
 {
 public:
-    UpgradeToEngineerButton();
+    UpgradeToEngineerButton(const UpgradeTowerParams& params);
     ActionFx* Clone() override { return new UpgradeToEngineerButton(*this); }
     void      Update(Store& store) override;
 };
@@ -88,24 +92,27 @@ public:
 //     void      Update(Store& store) override;
 // };
 
-class GoldStat: public Fx{
+class GoldStat : public Fx
+{
 public:
     GoldStat();
-    Fx* Clone() override { return new GoldStat(*this); }
+    Fx*  Clone() override { return new GoldStat(*this); }
     void QueueViewData(Store& store) override;
 };
 
-class LifeStat:public Fx{
+class LifeStat : public Fx
+{
 public:
     LifeStat();
-    Fx* Clone() override { return new LifeStat(*this); }
+    Fx*  Clone() override { return new LifeStat(*this); }
     void QueueViewData(Store& store) override;
 };
 
-class WaveStat: public Fx{
+class WaveStat : public Fx
+{
 public:
     WaveStat();
-    Fx* Clone() override { return new WaveStat(*this); }
+    Fx*  Clone() override { return new WaveStat(*this); }
     void QueueViewData(Store& store) override;
 };
 
@@ -113,6 +120,7 @@ class TopLeft : public Fx
 {
 public:
     TopLeft();
-    Fx* Clone() override { return new TopLeft(*this); }
+    Fx*  Clone() override { return new TopLeft(*this); }
     void QueueViewData(Store& store) override;
 };
+

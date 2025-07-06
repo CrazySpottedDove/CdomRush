@@ -74,6 +74,7 @@ public:
     Tower* Clone() override {
         return new Archer1(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         if(shooter) return sf::Vector2f(-10, 50); // 特定偏移位置
         else return sf::Vector2f(10, 50); // 特定偏移位置
@@ -85,6 +86,7 @@ public:
     Tower* Clone() override {
         return new Archer2(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         if(shooter) return sf::Vector2f(-10, 50); // 特定偏移位置
         else return sf::Vector2f(10, 50); // 特定偏移位置
@@ -114,6 +116,7 @@ public:
     Tower* Clone() override {
         return new Engineer1(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         return sf::Vector2f(0, 50); // 特定偏移位置
     }
@@ -124,6 +127,7 @@ public:
     Tower* Clone() override {
         return new Engineer2(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         return sf::Vector2f(0,53); // 特定偏移位置
     }
@@ -151,6 +155,7 @@ public:
     Tower* Clone() override {
         return new Mage1(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         if(heading == tower_heading::Up) return sf::Vector2f(8, 66); // 特定偏移位置
         else return sf::Vector2f(-5, 62); // 特定偏移位置
@@ -162,6 +167,7 @@ public:
     Tower* Clone() override {
         return new Mage2(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         if(heading == tower_heading::Up) return sf::Vector2f(8, 66); // 特定偏移位置
         else return sf::Vector2f(-5, 64); // 特定偏移位置
@@ -179,7 +185,7 @@ public:
     }
 };
 
-class Barracks : public Tower{
+class Barrack : public Tower{
 public:
     Position rally_point = position + sf::Vector2f(0,-60);
     std::vector<ID> soldiers;
@@ -192,31 +198,33 @@ public:
         return sf::Vector2f(0.0,-30.0);
     }
 };
-class Barracks1 : public Barracks{
+class Barrack1 : public Barrack{
 public:
-    Barracks1(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
+    Barrack1(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
     Tower* Clone() override {
-        return new Barracks1(*this);
+        return new Barrack1(*this);
     }
+    // bool        Insert(Store& store) override;
     SoldierType return_soldier_type() override{
         return SoldierType::SoldierMeleelv1;
     }
 };
-class Barracks2 : public Barracks{
+class Barrack2 : public Barrack{
 public:
-    Barracks2(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
+    Barrack2(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
     Tower* Clone() override {
-        return new Barracks2(*this);
+        return new Barrack2(*this);
     }
+    // bool        Insert(Store& store) override;
     SoldierType return_soldier_type() override{
         return SoldierType::SoldierMeleelv1;
     }
 };
-class Barracks3 : public Barracks{
+class Barrack3 : public Barrack{
 public:
-    Barracks3(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
+    Barrack3(Position position_ = sf::Vector2f(0,0), int total_price_ = 0);
     Tower* Clone() override {
-        return new Barracks3(*this);
+        return new Barrack3(*this);
     }
     SoldierType return_soldier_type() override{
         return SoldierType::SoldierMeleelv1;

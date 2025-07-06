@@ -35,7 +35,6 @@ enum class FxType
 {
     Explosion,
     LevelFlag,
-    CommonUpgradeIcon,
     SoldierStatusWidget,
     EnemyStatusWidget,
     TowerStatusWidget,
@@ -45,11 +44,12 @@ enum class FxType
     UpgradeToEngineerButton,
     UpgradeToMageButton,
     UpgradeToBarrackButton,
+    CommonUpgradeButton,
     BloodSplat,
     GoldStat,
     TopLeft,
     LifeStat,
-    WaveStat
+    WaveStat,
 };
 
 enum class SoldierType

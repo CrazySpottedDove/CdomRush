@@ -444,6 +444,7 @@ void Store::ClearFxs()
 void Store::ClearActionFxs()
 {
     for (auto& pair : action_fxs) {
+        INFO("Clearing action fx with ID: " << pair.first);
         delete pair.second;
     }
     action_fxs.clear();

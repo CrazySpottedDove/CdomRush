@@ -4391,5 +4391,21 @@ return {
             f_quad = {1305, 118, 520, 101}
         }
 
+    },
+    common_upgrade_button = {
+        [1] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {1534, 639, 82, 73}
+        },
+        [2] = {
+            a_name = "gui_common-2.png",
+            size = {82, 74},
+            trim = {0, 0, 0, 1},
+            a_size = {2048, 2048},
+            f_quad = {1622, 639, 82, 73}
+        }
     }
 }

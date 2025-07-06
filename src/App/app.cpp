@@ -10,6 +10,7 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowEnums.hpp>
 #include <chrono>
+#include <cstddef>
 #include <thread>
 
 App::App()
@@ -157,28 +158,64 @@ void App::HandleAction(Action& action)
     {
         INFO("Creating ActionFx with type: " << static_cast<int>(action.type));
         CreateActionFxParams& fx_params = std::get<CreateActionFxParams>(action.param);
-        ActionFx*                   action_fx = store.template_manager.CreateActionFx(fx_params.fx_type);
-        action_fx->position             = fx_params.position + fx_params.offset;
-        action_fx->source_id = fx_params.id;
-        std::get<UpgradeTowerParams>(action_fx->animations[0].actions[0].param).tower_id = fx_params.id;
-        store.QueueActionFx(action_fx);
+        const FxType fx_type = fx_params.fx_type;
+        switch (fx_type) {
+        case FxType::CommonUpgradeButton:
+        {
+            ActionFx* action_fx =
+                new CommonUpgradeButton(std::get<UpgradeTowerParams>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
+            break;
+        }
+        case FxType::UpgradeToArcherButton:
+        {
+            ActionFx* action_fx =
+                new UpgradeToArcherButton(std::get<UpgradeTowerParams>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
+            break;
+        }
+        case FxType::UpgradeToMageButton:{
+            ActionFx* action_fx =
+                new UpgradeToMageButton(std::get<UpgradeTowerParams>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
+            break;
+        }
+
+        case FxType::UpgradeToEngineerButton:{
+            ActionFx* action_fx =
+                new UpgradeToEngineerButton(std::get<UpgradeTowerParams>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
+            break;
+        }
+        case FxType::UpgradeToBarrackButton:{
+            // ActionFx* action_fx =
+            //     new UpgradeToBarrackButton(std::get<UpgradeTowerParams>(fx_params.props));
+            // store.QueueActionFx(action_fx);
+            break;
+        }
+        }
         break;
     }
-    case ActionType::Delete:{
+    case ActionType::Delete:
+    {
         store.ClearActionFxs();
         break;
     }
     case ActionType::UpgradeTower:
     {
         UpgradeTowerParams& params = std::get<UpgradeTowerParams>(action.param);
-        if(store.gold < params.cost){
+        if (store.gold < params.cost) {
             WARNING("Not enough gold to upgrade tower.");
             break;
         }
         store.gold -= params.cost;
-        Tower* old_tower = store.GetTower(params.tower_id);
-        Tower* new_tower = store.template_manager.CreateTower(params.new_tower_type);
-        new_tower->position = old_tower->position;
+        Tower* old_tower       = store.GetTower(params.tower_id);
+        Tower* new_tower       = store.template_manager.CreateTower(params.new_tower_type);
+        new_tower->position    = old_tower->position;
         new_tower->total_price = old_tower->total_price + params.cost;
         store.DequeueTower(old_tower->id);
         store.QueueTower(new_tower);
@@ -187,7 +224,7 @@ void App::HandleAction(Action& action)
     case ActionType::SellTower:
     {
         SellTowerParams& params = std::get<SellTowerParams>(action.param);
-        Tower* tower = store.GetTower(params.tower_id);
+        Tower*           tower  = store.GetTower(params.tower_id);
 
         break;
     }

@@ -597,5 +597,11 @@ return {
             to = 20,
             from = 3
         }
+    },
+    fx_blood_splat_red = {
+        hit = {
+            to = 10,
+            from = 1
+        }
     }
 }

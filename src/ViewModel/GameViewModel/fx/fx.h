@@ -56,8 +56,6 @@ public:
     Fx* Clone() override {return new BloodSplat(*this);}
 };
 
-
-
 class UpgradeToArcherButton : public ActionFx
 {
 public:

@@ -35,6 +35,6 @@ public:
     virtual ~Unit() = default;
     bool  is_moving();
     State        walkjudge();
-    virtual void death_action() = 0;   // 纯虚函数，用于处理unit死亡后的行为
+    virtual void death_action(Store& store) = 0;   // 纯虚函数，用于处理unit死亡后的行为
     void         QueueViewData(Store& store) override;
 };

@@ -17,15 +17,6 @@ public:
     Position rally_point_offset;
     double range;
     ID target_enemy = INVALID_ID;
-
-    bool Insert(Store& store) override{
-        return true;
-    }
-
-    bool Remove(Store& store) override{
-        return true;
-    }
-
     virtual Soldier* Clone() = 0;
 };
 

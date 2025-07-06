@@ -71,8 +71,29 @@ bool None::Insert(Store& store)
                                                   FxType::UpgradeToArcherButton,
                                                   position,
                                                   id,
-                                                  Position{-100, 100},
+                                                  Position{-80, 80},
                                               }));
+    animations[0].actions.emplace_back(Action(ActionType::CreateActionFx,
+                                              CreateActionFxParams{
+                                                  FxType::UpgradeToMageButton,
+                                                  position,
+                                                  id,
+                                                  Position{80, 80},
+                                              }));
+    animations[0].actions.emplace_back(Action(ActionType::CreateActionFx,
+                                              CreateActionFxParams{
+                                                  FxType::UpgradeToEngineerButton,
+                                                  position,
+                                                  id,
+                                                  Position{-80, -80},
+                                              }));
+    // animations[0].actions.emplace_back(Action(ActionType::CreateActionFx,
+    //                                           CreateActionFxParams{
+    //                                               FxType::UpgradeToBarrackButton,
+    //                                               position,
+    //                                               id,
+    //                                               Position{-80, -80},
+    //                                           }));
     return true;
 }
 
@@ -386,16 +407,16 @@ void Barracks::layer_update(bool flag)
         animations[2].current_state = State::DoorOpen;
     else if (animations[0].current_state == State::DoorClose)
         animations[2].current_state = State::DoorClose;
-    return ;
+    return;
 }
 void Barracks::Update(Store& store)
 {
     pending_update();
-    for(auto it = soldiers.begin();it!=soldiers.end();){
-        if(store.GetSoldier(*it)==nullptr){
+    for (auto it = soldiers.begin(); it != soldiers.end();) {
+        if (store.GetSoldier(*it) == nullptr) {
             soldiers.erase(it);
         }
-        else{
+        else {
             it++;
         }
     }
@@ -403,7 +424,7 @@ void Barracks::Update(Store& store)
     while (soldiers.size() < 3) {
         animations[0].current_state = State::DoorOpen;
         Soldier* soldierx           = store.template_manager.CreateSoldier(return_soldier_type());
-        soldierx->position = position + return_offset();
+        soldierx->position          = position + return_offset();
         store.QueueSoldier(soldierx);
         soldiers.push_back(soldierx->id);
         solider_size_changed = true;
@@ -433,17 +454,19 @@ Barracks1::Barracks1(Position position_, int total_price_)
     type        = TowerType::Barrack1;
     position    = position_;
     total_price = total_price_;
-    heading = tower_heading::Down;
+    heading     = tower_heading::Down;
 }
-Barracks2::Barracks2(Position position_, int total_price_) {
+Barracks2::Barracks2(Position position_, int total_price_)
+{
     type        = TowerType::Barrack2;
     position    = position_;
     total_price = total_price_;
-    heading = tower_heading::Down;
+    heading     = tower_heading::Down;
 }
-Barracks3::Barracks3(Position position_, int total_price_) {
+Barracks3::Barracks3(Position position_, int total_price_)
+{
     type        = TowerType::Barrack3;
     position    = position_;
     total_price = total_price_;
-    heading = tower_heading::Down;
+    heading     = tower_heading::Down;
 }

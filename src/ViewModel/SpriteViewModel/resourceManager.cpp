@@ -5,6 +5,7 @@
 #include "Common/towerEssential.h"
 #include "ViewModel/SpriteViewModel/readLua.h"
 #include "ViewModel/level.h"
+#include <SFML/Audio/Music.hpp>
 #include <string>
 #include <vector>
 
@@ -79,22 +80,34 @@ void ResourceManager::LoadSoundGroups(const std::string& file_path, const Resour
         const std::string sound_group_name = pair.first.as<std::string>();
         const sol::table  group            = pair.second.as<sol::table>();
 
-        sound_group_map[sound_group_name]  = SoundGroup{
-            group["files"].get<std::vector<std::string>>(),
-            0, group["stream"].get_or(false)};
+        sound_group_map[sound_group_name] = SoundGroup{
+            group["files"].get<std::vector<std::string>>(), 0, group["stream"].get_or(false)};
         sound_group_level_map[level].insert(sound_group_name);
         INFO("Loading sound group: " << sound_group_name);
-        // for (const auto& sound_file : sound_group_map[sound_group_name].sound_files) {
-        //     const std::string full_path = SOUNDS_PATH + sound_file;
-        //     if (sound_buffer_map.find(full_path) == sound_buffer_map.end()) {
-        //         sound_buffer_map[sound_file] = Sound(full_path, sound_group_map[sound_group_name].stream);
-        //         DEBUG_CODE(SUCCESS("Successfully loaded sound: " << full_path);)
-        //     } else {
-        //         DEBUG_CODE(WARNING("Sound already loaded: " << full_path);)
-        //     }
-        // }
+        for (const auto& sound_file : sound_group_map[sound_group_name].sound_files) {
+            const std::string full_path = SOUNDS_PATH + sound_file;
+            if (sound_group_map[sound_group_name].is_stream) {
+                if (music_map.find(sound_file) == music_map.end()) {
+                    music_map[sound_file] = sf::Music(full_path);
+                    SUCCESS("Successfully loaded music: " << full_path);
+                }
+                else {
+                    WARNING("Music already loaded: " << full_path);
+                }
+            }
+            else {
+                if (sound_buffer_map.find(full_path) == sound_buffer_map.end()) {
+                    sound_buffer_map[sound_file] = sf::SoundBuffer(full_path);
+                    SUCCESS("Successfully loaded sound: " << full_path);
+                }
+                else {
+                    WARNING("Sound already loaded: " << full_path);
+                }
+            }
+        }
     }
 }
+
 
 void ResourceManager::LoadAnimationGroups()
 {
@@ -143,11 +156,8 @@ void ResourceManager::LoadTowerEssentials(const std::string& file_name)
         Position position{tower_position_table["pos"]["x"].get<float>(),
                           tower_position_table["pos"]["y"].get<float>()};
 
-        // MapPosition(position);
-
         Position rally_point{tower_position_table["rally_point"]["x"].get<float>(),
                              tower_position_table["rally_point"]["y"].get<float>()};
-        // MapPosition(rally_point);
 
         tower_essentials.emplace_back(TowerEssential{position, type, rally_point});
     }
@@ -234,22 +244,22 @@ ResourceManager::ResourceManager()
         }
     }
 
-    // for (const auto& entry : std::filesystem::directory_iterator("assets/sounds/common")) {
-    //     if (entry.is_regular_file()) {
-    //         const auto& path = entry.path();
+    for (const auto& entry : std::filesystem::directory_iterator("assets/sounds/common")) {
+        if (entry.is_regular_file()) {
+            const auto& path = entry.path();
 
-    //         // 只处理 .lua 文件
-    //         if (path.extension() == ".lua") {
-    //             try {
-    //                 LoadSoundGroups(path.string());
-    //             }
-    //             catch (const std::exception& e) {
-    //                 std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
-    //                           << std::endl;
-    //             }
-    //         }
-    //     }
-    // }
+            // 只处理 .lua 文件
+            if (path.extension() == ".lua") {
+                try {
+                    LoadSoundGroups(path.string());
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
+                              << std::endl;
+                }
+            }
+        }
+    }
 
     LoadAnimationGroups();
 }

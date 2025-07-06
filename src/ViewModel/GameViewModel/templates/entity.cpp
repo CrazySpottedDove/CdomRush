@@ -1,0 +1,11 @@
+#include "ViewModel/GameViewModel/templates/entity.h"
+#include "ViewModel/GameViewModel/store/store.h"
+
+bool Entity::Insert(Store& store)
+{
+    return true;
+}
+void Entity::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(&animations, position, 0);
+}

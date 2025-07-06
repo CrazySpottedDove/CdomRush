@@ -37,7 +37,10 @@ TemplateManager::TemplateManager()
     soldier_map   = {{SoldierType::SoldierMeleelv1, new SoldierMeleelv1()},
                      {SoldierType::SoldierMeleelv2, new SoldierMeleelv2()},
                      {SoldierType::SoldierMeleelv3, new SoldierMeleelv3()}};
-    action_fx_map = {{FxType::UpgradeToArcherButton, new UpgradeToArcherButton()}};
+    action_fx_map = {{FxType::UpgradeToArcherButton, new UpgradeToArcherButton()},
+                     {FxType::UpgradeToEngineerButton, new UpgradeToEngineerButton()},
+                     {FxType::UpgradeToMageButton, new UpgradeToMageButton()},
+                     };
 }
 
 Bullet* TemplateManager::CreateBullet(const BulletType type) const

@@ -43,10 +43,6 @@ void Store::UpdateEnemies()
     while (it != enemies.end()) {
         Enemy* enemy = it->second;
         if (calc::is_dead(*enemy) && calc::should_remove(*this, *enemy)) {
-            DEBUG_CODE(std::cout << "Removing enemy with ID: " << enemy->id << std::endl;
-                       std::cout << enemy->health.dead_lifetime << std::endl;
-                       std::cout << enemy->health.death_time << std::endl;
-                       std::cout << time << std::endl;)
             it = DequeueEnemy(it);
             continue;
         }
@@ -57,7 +53,8 @@ void Store::UpdateEnemies()
             continue;
         }
         enemy->Update(*this);
-        QueueViewDataFromEntity(enemy);
+        // QueueViewDataFromEntity(enemy);
+        enemy->QueueViewData(*this);
         ++it;
     }
 }
@@ -76,7 +73,7 @@ void Store::UpdateBullets()
             continue;
         }
         bullet->Update(*this);
-        QueueViewDataFromEntity(bullet);
+        bullet->QueueViewData(*this);
         ++it;
     }
 }
@@ -91,7 +88,7 @@ void Store::UpdateSoldiers()
             continue;
         }
         soldier->Update(*this);
-        QueueViewDataFromEntity(soldier);
+        soldier->QueueViewData(*this);
         ++it;
     }
 }
@@ -107,7 +104,7 @@ void Store::UpdateTowers()
     while (it != towers.end()) {
         Tower* tower = it->second;
         tower->Update(*this);
-        QueueViewDataFromEntity(tower);
+        tower->QueueViewData(*this);
         ++it;
     }
 }
@@ -126,7 +123,7 @@ void Store::UpdateFxs()
             continue;
         }
         fx->Update(*this);
-        QueueViewDataFromEntity(fx);
+        fx->QueueViewData(*this);
         ++it;
     }
 }
@@ -136,16 +133,8 @@ void Store::UpdateActionFxs()
     auto it = action_fxs.begin();
     while (it != action_fxs.end()) {
         ActionFx* action_fx = it->second;
-        // if (action_fx->animations[0].current_state == State::Hit &&
-        //     resource_manager.GetAnimationGroupMap()
-        //             ->at(action_fx->animations[0].prefix)
-        //             .at(action_fx->animations[0].current_state)
-        //             .to <= action_fx->animations[0].frame_id) {
-        //     it = DequeueActionFx(it);
-        //     continue;
-        // }
         action_fx->Update(*this);
-        QueueViewDataFromEntity(action_fx);
+        action_fx->QueueViewData(*this);
         ++it;
     }
 }
@@ -217,11 +206,6 @@ void Store::SpawnWaves()
     }
 }
 
-void Store::QueueViewDataFromEntity(Entity* entity)
-{
-    view_data_queue.emplace(ViewData{&entity->animations, entity->position});
-}
-
 std::unordered_map<ID, Enemy*>::iterator Store::DequeueEnemy(
     std::unordered_map<ID, Enemy*>::iterator& it)
 {
@@ -282,6 +266,7 @@ void Store::DequeueTower(const ID id)
     DEBUG_CODE(if (it == towers.end()) {
         throw std::runtime_error("Attempted to dequeue a non-existent tower.");
     })
+    WARNING("Dequeueing tower with ID: " << id << "Type: " << (int)it->second->type);
     Tower* tower = it->second;
     tower->Remove(*this);
     delete tower;

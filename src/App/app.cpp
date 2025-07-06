@@ -2,6 +2,7 @@
 #include "Common/action.h"
 #include "Common/macros.h"
 #include "ViewModel/GameViewModel/fx/fx.h"
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/VideoMode.hpp>
@@ -23,6 +24,13 @@ App::App()
 
 void App::Run()
 {
+    // sf::Font font("assets/fonts/msyh.ttc");
+    // sf::Text text(font,"fuck斑鸠" , 16);
+    // text.setFillColor(sf::Color::Red);
+    // text.setPosition({100,100});
+    // window.draw(text);
+    // window.display();
+    // while(true);
     while (window.isOpen()) {
         ui_manager.HandleClick();
         switch (game_state) {
@@ -50,9 +58,26 @@ void App::Run()
             window.display();
 
             break;
+        case GameState::Loading:
+            store.ClearViewDataQueue();
+
+            if (last_state != GameState::Loading) {
+                store.Clear();
+                store.InitLevel(store.current_level_name);
+                last_state = GameState::Loading;
+                game_state = GameState::GameStart;
+                INFO("State Changed to Loading");
+            }
+            window.clear();
+            store.UpdateFxs();
+
+            ui_manager.RenderAll();
+            window.display();
+            break;
         case GameState::GameStart:
             store.ClearViewDataQueue();
             if (last_state != GameState::GameStart) {
+                store.gold = 70;
                 store.time = 0;
                 store.ClearFxs();
                 Fx* fx                   = store.template_manager.CreateFx(FxType::Map);
@@ -73,26 +98,7 @@ void App::Run()
             window.display();
             store.time += FRAME_LENGTH;
             break;
-        case GameState::Loading:
-            store.ClearViewDataQueue();
 
-            if (last_state != GameState::Loading) {
-                store.Clear();
-                // Fx* fx = store.template_manager.CreateFx(FxType::Map);
-                // fx->animation.prefix = current_level_name;
-                // store.QueueFx(fx);
-                store.resource_manager.LoadLevelResources(store.current_level_name);
-                store.InitLevel(store.current_level_name);
-                last_state = GameState::Loading;
-                game_state = GameState::GameStart;
-                INFO("State Changed to Loading");
-            }
-            window.clear();
-            store.UpdateFxs();
-
-            ui_manager.RenderAll();
-            window.display();
-            break;
         case GameState::GamePlaying:
             store.ClearViewDataQueue();
 

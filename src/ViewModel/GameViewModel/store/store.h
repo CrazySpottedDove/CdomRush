@@ -123,5 +123,4 @@ private:
      *
      */
     void InitTowers();
-    void QueueViewDataFromEntity(Entity* entity);
 };

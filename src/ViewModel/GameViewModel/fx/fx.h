@@ -53,3 +53,27 @@ public:
     ActionFx* Clone() override { return new UpgradeToArcherButton(*this); }
     void Update(Store& store)override;
 };
+
+class UpgradeToMageButton : public ActionFx
+{
+public:
+    UpgradeToMageButton();
+    ActionFx* Clone() override { return new UpgradeToMageButton(*this); }
+    void      Update(Store& store) override;
+};
+
+class UpgradeToEngineerButton : public ActionFx
+{
+public:
+    UpgradeToEngineerButton();
+    ActionFx* Clone() override { return new UpgradeToEngineerButton(*this); }
+    void      Update(Store& store) override;
+};
+
+// class UpgradeToBarrackButton : public ActionFx
+// {
+// public:
+//     UpgradeToBarrackButton();
+//     ActionFx* Clone() override { return new UpgradeToBarrackButton(*this); }
+//     void      Update(Store& store) override;
+// };

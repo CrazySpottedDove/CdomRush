@@ -42,6 +42,9 @@ enum class FxType
     Map,
     None,
     UpgradeToArcherButton,
+    UpgradeToEngineerButton,
+    UpgradeToMageButton,
+    UpgradeToBarrackButton,
 };
 
 enum class SoldierType

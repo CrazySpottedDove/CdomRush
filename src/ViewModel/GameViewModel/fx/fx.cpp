@@ -46,3 +46,37 @@ void UpgradeToArcherButton::Update(Store& store)
         animations[0].current_state = State::Enabled;
     }
 }
+
+UpgradeToMageButton::UpgradeToMageButton()
+{
+    animations.emplace_back(Animation(State::Disabled, "icon_mage"));
+    animations[0].actions.emplace_back(
+        Action(ActionType::UpgradeTower, UpgradeTowerParams{INVALID_ID, TowerType::Mage1, 100}));
+}
+
+void UpgradeToMageButton::Update(Store& store)
+{
+    if (store.gold < 100) {
+        animations[0].current_state = State::Disabled;
+    }
+    else {
+        animations[0].current_state = State::Enabled;
+    }
+}
+
+UpgradeToEngineerButton::UpgradeToEngineerButton()
+{
+    animations.emplace_back(Animation(State::Disabled, "icon_engineer"));
+    animations[0].actions.emplace_back(
+        Action(ActionType::UpgradeTower, UpgradeTowerParams{INVALID_ID, TowerType::Engineer1, 125}));
+}
+
+void UpgradeToEngineerButton::Update(Store& store)
+{
+    if (store.gold < 125) {
+        animations[0].current_state = State::Disabled;
+    }
+    else {
+        animations[0].current_state = State::Enabled;
+    }
+}

@@ -168,6 +168,7 @@ ForestTroll::ForestTroll(Position position_)
     this->slot     = sf::Vector2f(35.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
     this->Hit_offset = sf::Vector2f(0.0f,30.0f);   // 设置受击偏移位置
+    this->health_bar_offset = sf::Vector2f(0.0f,76.0f);
 }
 
 orc_armored::orc_armored(Position position_)
@@ -183,6 +184,7 @@ orc_armored::orc_armored(Position position_)
     this->slot     = sf::Vector2f(18.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
     this->Hit_offset = sf::Vector2f(0.0f,14.0f);   // 设置受击偏移位置
+    this->health_bar_offset = sf::Vector2f(0.0f,36.0f);
 }
 
 orc_wolf_rider::orc_wolf_rider(Position position_)
@@ -198,4 +200,5 @@ orc_wolf_rider::orc_wolf_rider(Position position_)
     this->slot     = sf::Vector2f(30.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
     this->Hit_offset = sf::Vector2f(0.0f,23.0f);   // 设置受击偏移位置
+    this->health_bar_offset = sf::Vector2f(0.0f,48.0f);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common/macros.h"
+#include "Common/sound.h"
 #include "Common/viewData.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/components/damage.h"
@@ -37,15 +38,16 @@ public:
     std::size_t current_subwave_index = 0;
     double      current_wave_time     = 0.0;
     std::string current_level_name;
+    std::string current_level_prepare_music;
+    std::string current_level_fight_music;
     bool        preparing = true;
 
-    const std::unordered_map<ID, Enemy*>& GetEnemies() const { return enemies; }
-
-    const std::unordered_map<ID, Tower*>& GetTowers() const { return towers; }
-
-    const std::unordered_map<ID, Bullet*>& GetBullets() const { return bullets; }
-
+    const std::unordered_map<ID, Enemy*>&   GetEnemies() const { return enemies; }
+    const std::unordered_map<ID, Tower*>&   GetTowers() const { return towers; }
+    const std::unordered_map<ID, Bullet*>&  GetBullets() const { return bullets; }
     const std::unordered_map<ID, Soldier*>& GetSoldiers() const { return soldiers; }
+    ViewDataQueue*                          GetViewDataQueue();
+    SoundDataQueue*                         GetSoundDataQueue() { return &sound_data_queue; }
 
     void QueueEnemy(Enemy* enemy);
     void QueueTower(Tower* tower);
@@ -55,6 +57,7 @@ public:
     void QueueDamageEvent(const DamageEvent& event) { damage_events.push_back(event); }
     void QueueFx(Fx* fx);
     void QueueActionFx(ActionFx* action_fx);
+    void QueueSoundData(const SoundData& sound_data) { sound_data_queue.push(sound_data); }
 
     std::unordered_map<ID, Enemy*>::iterator DequeueEnemy(
         std::unordered_map<ID, Enemy*>::iterator& it);
@@ -65,17 +68,17 @@ public:
     std::unordered_map<ID, Soldier*>::iterator DequeueSoldier(
         std::unordered_map<ID, Soldier*>::iterator& it);
     std::unordered_map<ID, Fx*>::iterator DequeueFx(std::unordered_map<ID, Fx*>::iterator& it);
-    void DequeueEnemy(const ID id);
-    void DequeueTower(const ID id);
-    void DequeueBullet(const ID id);
-    void DequeueSoldier(const ID id);
-    void DequeueFx(const ID id);
+    void                                  DequeueEnemy(const ID id);
+    void                                  DequeueTower(const ID id);
+    void                                  DequeueBullet(const ID id);
+    void                                  DequeueSoldier(const ID id);
+    void                                  DequeueFx(const ID id);
 
-    Enemy* GetEnemy(const ID id) const;
-    Tower* GetTower(const ID id) const;
-    Bullet* GetBullet(const ID id) const;
+    Enemy*   GetEnemy(const ID id) const;
+    Tower*   GetTower(const ID id) const;
+    Bullet*  GetBullet(const ID id) const;
     Soldier* GetSoldier(const ID id) const;
-    Fx* GetFx(const ID id) const;
+    Fx*      GetFx(const ID id) const;
 
     TemplateManager template_manager;
     ResourceManager resource_manager;
@@ -92,18 +95,16 @@ public:
      *
      */
     void SpawnWaves();
-
-    ViewDataQueue* GetViewDataQueue();
-    void           ClearViewDataQueue();
-    void           ClearFxs();
-    void           ClearActionFxs();
-    void           Clear();
+    void ClearViewDataQueue();
+    void ClearFxs();
+    void ClearActionFxs();
+    void Clear();
 
     /**
      * @brief 在进入关卡时调用，更新一个关卡的全部数据
      * @note 在调用前，保证 Clear() 已经被调用，保证 Store 中的数据是干净的。
      */
-    void InitLevel(const std::string& level_name);
+    void InitLevel();
 
 private:
     std::unordered_map<ID, Enemy*>    enemies;
@@ -117,7 +118,7 @@ private:
     std::vector<DamageEvent> damage_events;
     ViewDataQueue            view_data_queue;
     PendingEnemyQueue        pending_enemy_queue;
-
+    SoundDataQueue           sound_data_queue;
     /**
      * @brief 在开启新的关卡时调用，初始化塔位
      *

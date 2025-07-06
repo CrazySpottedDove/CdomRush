@@ -1,6 +1,7 @@
 #include "App/app.h"
 #include "Common/action.h"
 #include "Common/macros.h"
+#include "Common/sound.h"
 #include "ViewModel/GameViewModel/fx/fx.h"
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -20,6 +21,10 @@ App::App()
     ui_manager.SetSpriteFrameDataMap(*store.resource_manager.GetSpriteFrameDataMap());
     ui_manager.SetAnimationGroupMap(*store.resource_manager.GetAnimationGroupMap());
     ui_manager.SetViewData(*store.GetViewDataQueue());
+    sound_manager.SetSoundDataQueue(store.GetSoundDataQueue());
+    sound_manager.SetSoundBufferMap(store.resource_manager.GetSoundBufferMap());
+    sound_manager.SetSoundGroupMap(store.resource_manager.GetSoundGroupMap());
+    sound_manager.SetMusicSet(store.resource_manager.GetMusicSet());
 }
 
 void App::Run()
@@ -32,12 +37,11 @@ void App::Run()
     // window.display();
     // while(true);
     while (window.isOpen()) {
-        ui_manager.HandleClick();
         switch (game_state) {
         case GameState::Begin:
-            store.ClearViewDataQueue();
             if (last_state != GameState::Begin) {
                 store.Clear();
+                store.QueueSoundData(SoundData(BACKGROUND_SOUND));
                 for (const auto& level : *store.resource_manager.GetLevels()) {
                     Fx* fx       = store.template_manager.CreateFx(FxType::LevelFlag);
                     fx->position = level.second;
@@ -52,30 +56,22 @@ void App::Run()
                 INFO("State Changed to Begin");
             }
             DEBUG_CODE(store.current_level_name = "acaroth"; game_state = GameState::Loading;)
-            window.clear();
             store.UpdateFxs();
-            ui_manager.RenderAll();
-            window.display();
-
+            ui_manager.PrecessUI();
+            sound_manager.PlayAll();
             break;
         case GameState::Loading:
-            store.ClearViewDataQueue();
-
             if (last_state != GameState::Loading) {
                 store.Clear();
-                store.InitLevel(store.current_level_name);
+                store.InitLevel();
                 last_state = GameState::Loading;
                 game_state = GameState::GameStart;
                 INFO("State Changed to Loading");
             }
-            window.clear();
             store.UpdateFxs();
-
-            ui_manager.RenderAll();
-            window.display();
+            ui_manager.PrecessUI();
             break;
         case GameState::GameStart:
-            store.ClearViewDataQueue();
             if (last_state != GameState::GameStart) {
                 store.gold = 70;
                 store.time = 0;
@@ -83,6 +79,7 @@ void App::Run()
                 Fx* fx                   = store.template_manager.CreateFx(FxType::Map);
                 fx->animations[0].prefix = store.current_level_name;
                 store.QueueFx(fx);
+                store.QueueSoundData(SoundData(store.current_level_prepare_music));
                 last_state                  = GameState::GameStart;
                 store.current_subwave_index = 0;
                 store.current_wave_index    = 0;
@@ -91,23 +88,20 @@ void App::Run()
             DEBUG_CODE(game_state =
                            GameState::GamePlaying;   // For testing purposes, skip loading state
             )
-            window.clear();
             store.UpdateFxs();
             store.UpdateActionFxs();
-            ui_manager.RenderAll();
-            window.display();
+            ui_manager.PrecessUI();
+            sound_manager.PlayAll();
             store.time += FRAME_LENGTH;
             break;
 
         case GameState::GamePlaying:
-            store.ClearViewDataQueue();
-
             if (last_state != GameState::GamePlaying) {
                 last_state              = GameState::GamePlaying;
                 store.current_wave_time = 0;
+                store.QueueSoundData(SoundData(store.current_level_fight_music));
                 INFO("State Changed to GamePlaying");
             }
-            window.clear();
             store.SpawnWaves();
             store.UpdateDamageEvents();
             store.UpdateFxs();
@@ -116,8 +110,8 @@ void App::Run()
             store.UpdateTowers();
             store.UpdateSoldiers();
             store.UpdateActionFxs();
-            ui_manager.RenderAll();
-            window.display();
+            ui_manager.PrecessUI();
+            sound_manager.PlayAll();
             store.time += FRAME_LENGTH;
             if (store.life <= 0) {
                 game_state = GameState::GameOver;
@@ -125,17 +119,13 @@ void App::Run()
             }
             break;
         case GameState::GameOver:
-            store.ClearViewDataQueue();
-
             if (last_state != GameState::GameOver) {
                 store.Clear();
                 last_state = GameState::GameOver;
                 INFO("State Changed to GameOver");
             }
-            window.clear();
             store.UpdateFxs();
-            ui_manager.RenderAll();
-            window.display();
+            ui_manager.PrecessUI();
             break;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
@@ -151,6 +141,7 @@ void App::Run()
 
 void App::HandleAction(Action& action)
 {
+    INFO("Handling action: " << static_cast<int>(action.type));
     switch (action.type) {
     case ActionType::SelectLevel:
     {

@@ -1,10 +1,10 @@
 #include "ViewModel/SpriteViewModel/resourceManager.h"
 #include "Common/animation.h"
 #include "Common/macros.h"
+#include "Common/resourceLevel.h"
 #include "Common/sound.h"
 #include "Common/towerEssential.h"
 #include "ViewModel/SpriteViewModel/readLua.h"
-#include "ViewModel/level.h"
 #include <SFML/Audio/Music.hpp>
 #include <string>
 #include <vector>
@@ -36,6 +36,47 @@ void ResourceManager::UnloadSpecificTexturesAndSpriteFrameDatas()
     }
     prefix_level_map[ResourceLevel::Specific].clear();
     texture_level_map[ResourceLevel::Specific].clear();
+}
+
+void ResourceManager::UnloadSpecificSoundGroups()
+{
+    for (const auto& sound_group_name : sound_group_level_map[ResourceLevel::Specific]) {
+        auto it = sound_group_map.find(sound_group_name);
+        DEBUG_CODE(
+            if (it == sound_group_map.end()) {
+                ERROR("Try to unload not exist sound group: " << sound_group_name);
+            } else {
+                SUCCESS("Unloading sound group: " << sound_group_name);
+            }
+        )
+        if(it->second.is_stream){
+            for(const auto& sound_file : it->second.sound_files) {
+                auto music_it = music_set.find(sound_file);
+                DEBUG_CODE(
+                    if (music_it == music_set.end()) {
+                        ERROR("Try to unload not exist music: " << sound_file);
+                    } else {
+                        SUCCESS("Unloading music: " << sound_file);
+                    }
+                )
+                music_set.erase(music_it);
+            }
+        }else{
+            for (const auto& sound_file : it->second.sound_files) {
+                auto sound_it = sound_buffer_map.find(sound_file);
+                DEBUG_CODE(
+                    if (sound_it == sound_buffer_map.end()) {
+                        ERROR("Try to unload not exist sound: " << sound_file);
+                    } else {
+                        SUCCESS("Unloading sound: " << sound_file);
+                    }
+                )
+                sound_buffer_map.erase(sound_it);
+            }
+        }
+        sound_group_map.erase(sound_group_name);
+    }
+    sound_group_level_map[ResourceLevel::Specific].clear();
 }
 
 void ResourceManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed,
@@ -87,12 +128,12 @@ void ResourceManager::LoadSoundGroups(const std::string& file_path, const Resour
         for (const auto& sound_file : sound_group_map[sound_group_name].sound_files) {
             const std::string full_path = SOUNDS_PATH + sound_file;
             if (sound_group_map[sound_group_name].is_stream) {
-                if (music_map.find(sound_file) == music_map.end()) {
-                    music_map[sound_file] = sf::Music(full_path);
-                    SUCCESS("Successfully loaded music: " << full_path);
+                if (music_set.find(sound_file) == music_set.end()) {
+                    music_set.insert(sound_file);
+                    SUCCESS("Successfully tracked music: " << full_path);
                 }
                 else {
-                    WARNING("Music already loaded: " << full_path);
+                    WARNING("Music already tracked: " << full_path);
                 }
             }
             else {
@@ -128,22 +169,18 @@ void ResourceManager::LoadAnimationGroups()
     }
 };
 
-void ResourceManager::LoadLevelAssets(const std::string& level_name)
+void ResourceManager::LoadLevelAssets(const std::string& level_name, std::string& level_prepare_music, std::string& level_fight_music)
 {
     const std::string file_path         = std::string(LEVEL_DATA_PATH) + level_name + ".lua";
     const sol::table  level_data_map    = ReadLua(file_path);
     const sol::table  required_textures = level_data_map["required_textures"];
-    const sol::table  required_sounds   = level_data_map["required_sounds"];
-    LevelAssets       level_assets;
     for (const auto& [key, value] : required_textures) {
         const std::string& required_texture = IMAGES_PATH + value.as<std::string>();
         LoadTexturesAndSpriteFrameDatas(required_texture, ResourceLevel::Specific);
     }
-    for (const auto& [key, value] : required_sounds) {
-        const std::string& sound_file = SOUNDS_PATH + value.as<std::string>();
-        level_assets.required_sounds.push_back(value.as<std::string>());
-        // WARNING("To be done: Load sound file: " << sound_file);
-    }
+
+    level_prepare_music = level_data_map["prepare_music"].get<std::string>();
+    level_fight_music   = level_data_map["fight_music"].get<std::string>();
 };
 
 void ResourceManager::LoadTowerEssentials(const std::string& file_name)
@@ -264,9 +301,13 @@ ResourceManager::ResourceManager()
     LoadAnimationGroups();
 }
 
-void ResourceManager::LoadLevelResources(const std::string& level_name)
+void ResourceManager::LoadLevelResources(const std::string& level_name,
+                                         std::string&       level_prepare_music,
+                                         std::string&       level_fight_music)
 {
-    LoadLevelAssets(level_name);
+    LoadLevelAssets(level_name, level_prepare_music, level_fight_music);
+
+    LoadSoundGroups(LEVEL_SPECIFIC_SOUNDS_PATH + level_name + ".lua",ResourceLevel::Specific);
     LoadPaths(PATH_PATH + level_name + ".lua");
     LoadWaves(WAVE_PATH + level_name + ".lua");
     LoadTowerEssentials(TOWER_PATH + level_name + ".lua");

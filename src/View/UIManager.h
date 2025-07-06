@@ -18,7 +18,11 @@ public:
      */
     ~UIManager() = default;
 
-    void RenderAll();
+    /**
+     * @brief 确保所有的 ViewData 都进入 view_data_queue 中后使用，处理所有的渲染和点击事件。
+     *
+     */
+    void PrecessUI();
     void ClearViewData();
     void SetViewData(std::multiset<ViewData, ViewDataComparator>& view_data_queue)
     {
@@ -46,6 +50,9 @@ public:
         return &action_queue;
     }
 
+private:
+    void Render(const ViewData& view_data);
+
     /**
      * @brief 处理SFML鼠标点击
      * @param event SFML事件对象
@@ -53,9 +60,6 @@ public:
      * @param click_position 鼠标点击的世界坐标位置
      */
     void HandleClick();
-
-private:
-    void Render(const ViewData& view_data);
 
     /**
      * @brief 检查点击位置是否在ViewData的边界内

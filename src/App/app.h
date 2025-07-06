@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common/action.h"
+#include "View/soundManager.h"
 #include "View/UIManager.h"
 #include "ViewModel/GameViewModel/store/store.h"
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -23,6 +24,7 @@ private:
     void HandleAction(Action& action);
     Store store;
     UIManager ui_manager;
+    SoundManager sound_manager;
     GameState last_state = GameState::None;
     GameState game_state = GameState::Begin;
     sf::RenderWindow window;

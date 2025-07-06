@@ -7,6 +7,7 @@
 #define LEVEL_MAP_FILE "data/level_map.lua"
 #define LEVEL_DATA_PATH "data/levels/"
 #define SOUNDS_PATH "assets/sounds/"
+#define LEVEL_SPECIFIC_SOUNDS_PATH "assets/sounds/levelSpecific/"
 #define PATH_PATH "data/paths/"
 #define WAVE_PATH "data/waves/"
 #define TOWER_PATH "data/towers/"
@@ -27,6 +28,7 @@
 #define ANSI_COLOR_DIM "\x1b[2m"
 #define WIDTH_FACTOR 1.428571f
 #define HEIGHT_FACTOR 1.40625f
+#define BACKGROUND_SOUND "MusicMap1"
 
 #ifdef DEBUG
 #    include <iostream>

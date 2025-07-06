@@ -174,7 +174,6 @@ void ResourceManager::LoadLevelAssets(const std::string& level_name, std::string
     const std::string file_path         = std::string(LEVEL_DATA_PATH) + level_name + ".lua";
     const sol::table  level_data_map    = ReadLua(file_path);
     const sol::table  required_textures = level_data_map["required_textures"];
-    const sol::table  required_sounds   = level_data_map["required_sounds"];
     for (const auto& [key, value] : required_textures) {
         const std::string& required_texture = IMAGES_PATH + value.as<std::string>();
         LoadTexturesAndSpriteFrameDatas(required_texture, ResourceLevel::Specific);

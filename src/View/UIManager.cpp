@@ -142,6 +142,44 @@ void UIManager::Render(const ViewData& view_data)
                     }
                 }
             }
+            break;
+        }
+        case ViewDataType::HealthBar:{
+            const float bar_width        = 32.0f;
+            const float bar_height       = 4.0f;
+            const float border_thickness = 1.0f;
+
+            // 血条位置（在实体上方）
+            const float bar_x = view_data.position.x - bar_width / 2.0f;
+            const float bar_y = view_data.position.y;   // 在实体上方20像素
+
+            // 将位置转换为屏幕坐标
+            const sf::Vector2f screen_pos = MapPosition(Position{bar_x, bar_y});
+
+            // 1. 绘制背景（红色）
+            sf::RectangleShape background;
+            background.setSize(sf::Vector2f(bar_width, bar_height));
+            background.setPosition(screen_pos);
+            background.setFillColor(sf::Color::Red);
+            window->draw(background);
+
+            // 2. 绘制血量（绿色）
+            if (view_data.health_rate > 0.0f) {
+                sf::RectangleShape health_bar;
+                health_bar.setSize(sf::Vector2f(bar_width * view_data.health_rate, bar_height));
+                health_bar.setPosition(screen_pos);
+                health_bar.setFillColor(sf::Color::Green);
+                window->draw(health_bar);
+            }
+
+            // 3. 绘制边框（黑色）
+            sf::RectangleShape border;
+            border.setSize(sf::Vector2f(bar_width, bar_height));
+            border.setPosition(screen_pos);
+            border.setFillColor(sf::Color::Transparent);
+            border.setOutlineThickness(border_thickness);
+            border.setOutlineColor(sf::Color::Black);
+            window->draw(border);
         }
     }
 
@@ -153,11 +191,6 @@ void UIManager::PrecessUI()
     window->clear();
     for (auto it = view_data_queue->begin(); it != view_data_queue->end();++it) {
         Render(*it);
-        // if ((*it).animations->empty()) {
-        //     it = view_data_queue->erase(it);  // 删除已渲染的ViewData
-        // } else {
-        //     ++it;  // 继续下一个
-        // }
     }
     window->display();
     HandleClick();

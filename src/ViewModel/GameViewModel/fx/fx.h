@@ -8,13 +8,23 @@ public:
     bool        Insert(Store& store) override { return true; }
     void        Update(Store& store) override {}
     virtual Fx* Clone() = 0;
+    void QueueViewData(Store& store) override;
     bool        Remove(Store& store) override { return true; }
+};
+
+class ActionFx : public Fx
+{
+public:
+    ID source_id;
+    void QueueViewData(Store& store) override;
+    virtual ActionFx* Clone() override = 0;
 };
 
 class Map : public Fx
 {
 public:
     Map();
+    void QueueViewData(Store& store) override;
     Fx* Clone() override { return new Map(*this); }
 };
 
@@ -25,11 +35,11 @@ public:
     Fx* Clone() override { return new LevelFlag(*this); }
 };
 
-class CommonUpgradeIcon : public Fx
+class CommonUpgradeIcon : public ActionFx
 {
 public:
     CommonUpgradeIcon();
-    Fx* Clone() override { return new CommonUpgradeIcon(*this); }
+    ActionFx* Clone() override { return new CommonUpgradeIcon(*this); }
 };
 
 class Explosion : public Fx
@@ -45,12 +55,7 @@ class BloodSplat : public Fx
     Fx* Clone() override {return new BloodSplat(*this);}
 };
 
-class ActionFx: public Fx
-{
-public:
-    ID source_id;
-    virtual ActionFx* Clone() = 0;
-};
+
 
 class UpgradeToArcherButton : public ActionFx
 {

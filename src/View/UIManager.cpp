@@ -180,10 +180,17 @@ void UIManager::Render(const ViewData& view_data)
             border.setOutlineThickness(border_thickness);
             border.setOutlineColor(sf::Color::Black);
             window->draw(border);
+            break;
+        }
+        case ViewDataType::Text:{
+            sf::Text text(*font, view_data.text, 16);
+            text.setPosition(MapPosition(view_data.position));
+            text.setFillColor(sf::Color::Black);
+            text.setStyle(sf::Text::Bold);
+            window->draw(text);
+            break;
         }
     }
-
-
 }
 
 void UIManager::PrecessUI()

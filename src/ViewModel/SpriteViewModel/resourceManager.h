@@ -8,26 +8,26 @@
 #include "ViewModel/level.h"
 #include "ViewModel/wave.h"
 #include "sol/sol.hpp"
+#include <SFML/Graphics/Font.hpp>
 #include <vector>
 
 class ResourceManager
 {
 public:
     ResourceManager();
-    void                         LoadLevelResources(const std::string& level_name,
-                                                    std::string&       level_prepare_music,
-                                                    std::string&       level_fight_music);
-    TextureMap*                  GetTextureMap() { return &texture_map; }
+    void        LoadLevelResources(const std::string& level_name, std::string& level_prepare_music,
+                                   std::string& level_fight_music);
+    TextureMap* GetTextureMap() { return &texture_map; }
     SpriteFrameDataMap*          GetSpriteFrameDataMap() { return &sprite_frame_data_map; }
     AnimationGroupMap*           GetAnimationGroupMap() { return &animation_group_map; }
     const Paths*                 GetPaths() const { return &paths; }
     std::vector<LevelData>*      GetLevels() { return &levels; }
     std::vector<Wave>*           GetWaves() { return &waves; }
     std::vector<TowerEssential>* GetTowerEssentials() { return &tower_essentials; }
-    SoundGroupMap*           GetSoundGroupMap() { return &sound_group_map; }
-    SoundBufferMap*         GetSoundBufferMap() { return &sound_buffer_map; }
-    MusicSet*              GetMusicSet() { return &music_set; }
-
+    SoundGroupMap*               GetSoundGroupMap() { return &sound_group_map; }
+    SoundBufferMap*              GetSoundBufferMap() { return &sound_buffer_map; }
+    MusicSet*                    GetMusicSet() { return &music_set; }
+    sf::Font* GetFont() { return &font; }
 private:
     TextureMap                  texture_map;
     TextureLevelMap             texture_level_map;
@@ -38,6 +38,7 @@ private:
     SoundGroupMap               sound_group_map;
     SoundBufferMap              sound_buffer_map;
     SoundGroupLevelMap          sound_group_level_map;
+    sf::Font                    font;
     MusicSet                    music_set;
     std::vector<LevelData>      levels;
     std::vector<Wave>           waves;

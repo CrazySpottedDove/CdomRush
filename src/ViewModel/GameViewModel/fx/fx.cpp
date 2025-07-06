@@ -4,11 +4,25 @@
 #include "Common/macros.h"
 #include "Common/state.h"
 #include "Common/type.h"
+#include "Common/viewData.h"
 #include "ViewModel/GameViewModel/store/store.h"
+
+void Fx::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(
+        ViewData(&animations, position, FX_LAYER)
+    );
+}
 
 LevelFlag::LevelFlag()
 {
     animations.emplace_back(Animation(State::Idle, "map_flag"));
+}
+
+void ActionFx::QueueViewData(Store& store){
+    store.GetViewDataQueue()->emplace(
+        ViewData(&animations, position, UI_UPPER_LAYER)
+    );
 }
 
 Map::Map()
@@ -18,6 +32,12 @@ Map::Map()
     animations[0].anchor_y = 0.0;
     position.x             = -157.5;
     position.y             = 768;
+}
+
+void Map::QueueViewData(Store& store){
+    store.GetViewDataQueue()->emplace(
+        ViewData(&animations, position,MAP_LAYER)
+    );
 }
 
 CommonUpgradeIcon::CommonUpgradeIcon()

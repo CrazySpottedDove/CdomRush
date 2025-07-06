@@ -41,6 +41,7 @@ public:
 
 class BloodSplat : public Fx
 {
+public:
     BloodSplat();
     Fx* Clone() override {return new BloodSplat(*this);}
 };

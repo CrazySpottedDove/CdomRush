@@ -32,7 +32,7 @@ Explosion::Explosion()
 
 BloodSplat::BloodSplat()
 {
-    animations.emplace_back(Animation(State::Hit,"blood_splat_red"));
+    animations.emplace_back(Animation(State::Hit,"fx_blood_splat_red"));
 }
 
 UpgradeToArcherButton::UpgradeToArcherButton()

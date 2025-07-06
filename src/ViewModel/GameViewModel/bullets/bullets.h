@@ -44,7 +44,7 @@ public:
         bullet_type = BulletType::Arrow; // 设置弹道类型为箭矢
         damage_event = DamageEvent(DamageData(0, DamageType::Physical, 0, 0), sourceID, targetID);
         totalDuration_ = 1.0; // 设置总持续时间
-        hit_fx = FxType::None; // 箭矢没有特殊的击中效果
+        hit_fx = FxType::BloodSplat;
         radius = 0.0; // 箭矢没有爆炸半径
         animations.push_back(Animation(State::Flying,"arrow"));
     }; // 默认构造函数
@@ -79,7 +79,7 @@ public:
         bullet_type = BulletType::Bolt; // 设置弹道类型为法球
         damage_event = DamageEvent(DamageData(0.0, DamageType::Magical, 0, 0), sourceID, targetID);
         totalDuration_ = 0.5; // 设置总持续时间
-        hit_fx = FxType::None; // 法球没有特殊的击中效果
+        hit_fx = FxType::None; 
         radius = 0.0; // 法球没有爆炸半径
         animations.push_back(Animation(State::Flying,"bolt"));
     }

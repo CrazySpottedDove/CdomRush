@@ -455,6 +455,7 @@ Barracks1::Barracks1(Position position_, int total_price_)
     position    = position_;
     total_price = total_price_;
     heading     = tower_heading::Down;
+    animations[0].current_state = State::DoorClose;
 }
 Barracks2::Barracks2(Position position_, int total_price_)
 {
@@ -462,6 +463,7 @@ Barracks2::Barracks2(Position position_, int total_price_)
     position    = position_;
     total_price = total_price_;
     heading     = tower_heading::Down;
+    animations[0].current_state = State::DoorClose;
 }
 Barracks3::Barracks3(Position position_, int total_price_)
 {
@@ -469,4 +471,5 @@ Barracks3::Barracks3(Position position_, int total_price_)
     position    = position_;
     total_price = total_price_;
     heading     = tower_heading::Down;
+    animations[0].current_state = State::DoorClose;
 }

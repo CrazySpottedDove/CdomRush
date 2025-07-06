@@ -30,6 +30,11 @@ Explosion::Explosion()
     animations.emplace_back(Animation(State::Hit, "explosion_big"));
 }
 
+BloodSplat::BloodSplat()
+{
+    animations.emplace_back(Animation(State::Hit,"blood_splat_red"));
+}
+
 UpgradeToArcherButton::UpgradeToArcherButton()
 {
     animations.emplace_back(Animation(State::Disabled, "icon_archer"));

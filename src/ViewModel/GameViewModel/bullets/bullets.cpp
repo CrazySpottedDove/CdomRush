@@ -57,6 +57,9 @@ void Arrow::Update(Store& store)
     if (t >= 1.0f) {
         animations[0].current_state = State::Hit;           // 击中了
         store.QueueDamageEvent(damage_event);   // 结算伤害
+        Fx* fx = store.template_manager.CreateFx(hit_fx);
+        fx->position = position;
+        store.QueueFx(fx);
         return;
     }
 

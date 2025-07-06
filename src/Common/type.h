@@ -45,6 +45,7 @@ enum class FxType
     UpgradeToEngineerButton,
     UpgradeToMageButton,
     UpgradeToBarrackButton,
+    BloodSplat
 };
 
 enum class SoldierType

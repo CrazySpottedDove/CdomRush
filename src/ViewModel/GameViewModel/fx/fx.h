@@ -39,6 +39,12 @@ public:
     Fx* Clone() override { return new Explosion(*this); }
 };
 
+class BloodSplat : public Fx
+{
+    BloodSplat();
+    Fx* Clone() override {return new BloodSplat(*this);}
+};
+
 class ActionFx: public Fx
 {
 public:

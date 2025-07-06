@@ -107,13 +107,35 @@ void UpgradeToEngineerButton::Update(Store& store)
 }
 
 GoldStat::GoldStat(){
-    position.x = -130;
-    position.y = 740;
+    position.x = -20;
+    position.y = 745;
 }
 
 void GoldStat::QueueViewData(Store& store){
     store.GetViewDataQueue()->emplace(
-        ViewData(std::to_string(store.gold),position ,UI_UPPER_LAYER )
+        ViewData(std::to_string((int)store.gold),position ,UI_UPPER_LAYER )
+    );
+}
+
+LifeStat::LifeStat(){
+    position.x = -80;
+    position.y = 745;
+}
+
+void LifeStat::QueueViewData(Store& store){
+    store.GetViewDataQueue()->emplace(
+        ViewData(std::to_string(store.life),position ,UI_UPPER_LAYER )
+    );
+}
+
+WaveStat::WaveStat(){
+    position.x = 90;
+    position.y = 745;
+}
+
+void WaveStat::QueueViewData(Store& store){
+    store.GetViewDataQueue()->emplace(
+        ViewData(std::to_string(store.current_wave_index + 1) + "/" + std::to_string(store.resource_manager.GetWaves()->size()), position, UI_UPPER_LAYER)
     );
 }
 
@@ -123,5 +145,12 @@ TopLeft::TopLeft()
     animations[0].anchor_x = 0.0;
     animations[0].anchor_y = 0.0;
     position.x             = -157.5;
-    position.y             = 768;
+    position.y             = 790;
+}
+
+void TopLeft::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(
+        ViewData(&animations, position, UI_LOWER_LAYER)
+    );
 }

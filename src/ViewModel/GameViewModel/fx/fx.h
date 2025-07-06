@@ -95,8 +95,24 @@ public:
     void QueueViewData(Store& store) override;
 };
 
-class TopLeft: public Fx{
+class LifeStat:public Fx{
+public:
+    LifeStat();
+    Fx* Clone() override { return new LifeStat(*this); }
+    void QueueViewData(Store& store) override;
+};
+
+class WaveStat: public Fx{
+public:
+    WaveStat();
+    Fx* Clone() override { return new WaveStat(*this); }
+    void QueueViewData(Store& store) override;
+};
+
+class TopLeft : public Fx
+{
 public:
     TopLeft();
     Fx* Clone() override { return new TopLeft(*this); }
+    void QueueViewData(Store& store) override;
 };

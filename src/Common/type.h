@@ -47,7 +47,9 @@ enum class FxType
     UpgradeToBarrackButton,
     BloodSplat,
     GoldStat,
-    TopLeft
+    TopLeft,
+    LifeStat,
+    WaveStat
 };
 
 enum class SoldierType

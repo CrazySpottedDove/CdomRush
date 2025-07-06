@@ -35,6 +35,8 @@ TemplateManager::TemplateManager()
         {FxType::Explosion, new Explosion()},
         {FxType::BloodSplat, new BloodSplat()},
         {FxType::GoldStat,new GoldStat()},
+        {FxType::LifeStat, new LifeStat()},
+        {FxType::WaveStat, new WaveStat()},
         {FxType::TopLeft, new TopLeft()},
     };
     soldier_map   = {{SoldierType::SoldierMeleelv1, new SoldierMeleelv1()},

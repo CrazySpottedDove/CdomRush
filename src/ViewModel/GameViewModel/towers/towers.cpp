@@ -71,21 +71,21 @@ bool None::Insert(Store& store)
                                                   FxType::UpgradeToArcherButton,
                                                   position,
                                                   id,
-                                                  Position{-80, 80},
+                                                  Position{-50, 50},
                                               }));
     animations[0].actions.emplace_back(Action(ActionType::CreateActionFx,
                                               CreateActionFxParams{
                                                   FxType::UpgradeToMageButton,
                                                   position,
                                                   id,
-                                                  Position{80, 80},
+                                                  Position{50, 50},
                                               }));
     animations[0].actions.emplace_back(Action(ActionType::CreateActionFx,
                                               CreateActionFxParams{
                                                   FxType::UpgradeToEngineerButton,
                                                   position,
                                                   id,
-                                                  Position{-80, -80},
+                                                  Position{-50, -50},
                                               }));
     // animations[0].actions.emplace_back(Action(ActionType::CreateActionFx,
     //                                           CreateActionFxParams{

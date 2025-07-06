@@ -183,9 +183,9 @@ void UIManager::Render(const ViewData& view_data)
             break;
         }
         case ViewDataType::Text:{
-            sf::Text text(*font, view_data.text, 16);
+            sf::Text text(*font, view_data.text, 15);
             text.setPosition(MapPosition(view_data.position));
-            text.setFillColor(sf::Color::Black);
+            text.setFillColor(sf::Color::White);
             text.setStyle(sf::Text::Bold);
             window->draw(text);
             break;

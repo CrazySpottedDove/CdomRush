@@ -3,6 +3,7 @@
 #include "Common/animation.h"
 #include "Common/viewData.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 #include <set>
@@ -45,6 +46,9 @@ public:
         this->texture_map = &texture_map;
     }
 
+    void SetFont(sf::Font* font){
+        this->font = font;
+    }
     std::queue<Action>* GetActionQueue()
     {
         return &action_queue;
@@ -80,4 +84,5 @@ private:
     TextureMap*                                 texture_map = nullptr;
     std::multiset<ViewData, ViewDataComparator>* view_data_queue;
     std::queue<Action>                          action_queue;
+    sf::Font* font;
 };

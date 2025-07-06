@@ -6,8 +6,10 @@
 #include "Common/towerEssential.h"
 #include "ViewModel/SpriteViewModel/readLua.h"
 #include <SFML/Audio/Music.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <string>
 #include <vector>
+
 
 void ResourceManager::LoadTexture(const std::string& file_name, ResourceLevel level)
 {
@@ -255,7 +257,7 @@ void ResourceManager::LoadWaves(const std::string& file_name)
     }
 };
 
-ResourceManager::ResourceManager()
+ResourceManager::ResourceManager(): font(DEFAULT_FONT_FILE)
 {
     const sol::table level_map = ReadLua(LEVEL_MAP_FILE);
     for (const auto& [key, value] : level_map) {

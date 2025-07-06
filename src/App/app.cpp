@@ -21,6 +21,7 @@ App::App()
     ui_manager.SetSpriteFrameDataMap(*store.resource_manager.GetSpriteFrameDataMap());
     ui_manager.SetAnimationGroupMap(*store.resource_manager.GetAnimationGroupMap());
     ui_manager.SetViewData(*store.GetViewDataQueue());
+    ui_manager.SetFont(store.resource_manager.GetFont());
     sound_manager.SetSoundDataQueue(store.GetSoundDataQueue());
     sound_manager.SetSoundBufferMap(store.resource_manager.GetSoundBufferMap());
     sound_manager.SetSoundGroupMap(store.resource_manager.GetSoundGroupMap());

@@ -23,7 +23,7 @@ struct ViewData
     std::string             text;   // 用于文本显示
     ViewDataType            type;
     ViewData(std::vector<Animation>* animations, const Position& position,
-             const size_t layer_index = 0)
+             const size_t layer_index = COMMON_LAYER)
         : animations(animations)
         , position(position)
         , layer_index(layer_index)

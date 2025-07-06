@@ -5,4 +5,5 @@ return {
     },
     prepare_music = "MusicBattlePrep_14",
     fight_music = "MusicBattle_14",
+    gold = 500,
 }

@@ -11,6 +11,7 @@
 class TemplateManager
 {
 public:
+    ~TemplateManager();
     Bullet* CreateBullet(const BulletType type) const ;
     Tower* CreateTower(const TowerType type) const ;
     Enemy* CreateEnemy(const EnemyType type) const ;

@@ -11,6 +11,12 @@
 #include <SFML/System/Vector2.hpp>
 #include <vector>
 
+Store::~Store(){
+    Clear();
+}
+
+
+
 /**
  * @brief 首先考虑结算所有可以结算的伤害事件，尽快完成生命值的更新
  * @note 发现敌人已经死亡或者从 store 中移除时，不执行伤害事件，直接删去
@@ -138,15 +144,6 @@ void Store::UpdateActionFxs()
     }
 }
 
-void Store::InitTowers()
-{
-    for (const auto& tower_essential : *resource_manager.GetTowerEssentials()) {
-        Tower* tower       = template_manager.CreateTower(tower_essential.type);
-        tower->position    = tower_essential.position;
-        tower->rally_point = tower_essential.rally_point;
-        QueueTower(tower);
-    }
-}
 
 void Store::SpawnWaves()
 {
@@ -423,11 +420,6 @@ ViewDataQueue* Store::GetViewDataQueue()
     return &view_data_queue;
 }
 
-void Store::InitLevel()
-{
-    resource_manager.LoadLevelResources(current_level_name, current_level_prepare_music, current_level_fight_music);
-    InitTowers();
-}
 
 void Store::ClearFxs()
 {
@@ -448,4 +440,57 @@ void Store::ClearActionFxs()
         delete pair.second;
     }
     action_fxs.clear();
+}
+
+void Store::IntoBegin()
+{
+    Clear();
+    QueueSoundData(SoundData(BACKGROUND_SOUND));
+    for (const auto& level : *resource_manager.GetLevels()) {
+        Fx* fx       = template_manager.CreateFx(FxType::LevelFlag);
+        fx->position = level.second;
+        fx->animations[0].actions.emplace_back(
+            Action(ActionType::SelectLevel, SelectLevelParams{level.first}));
+        QueueFx(fx);
+    }
+    Fx* map_fx = template_manager.CreateFx(FxType::Map);
+    QueueFx(map_fx);
+}
+
+void Store::IntoLoading()
+{
+    Clear();
+    resource_manager.LoadLevelResources(
+        current_level_name, current_level_prepare_music, current_level_fight_music, gold);
+    for (const auto& tower_essential : *resource_manager.GetTowerEssentials()) {
+        Tower* tower       = template_manager.CreateTower(tower_essential.type);
+        tower->position    = tower_essential.position;
+        tower->rally_point = tower_essential.rally_point;
+        QueueTower(tower);
+    }
+}
+
+void Store::IntoGameStart()
+{
+    time = 0;
+    ClearFxs();
+    Fx* map_fx                   = template_manager.CreateFx(FxType::Map);
+    map_fx->animations[0].prefix = current_level_name;
+    QueueFx(map_fx);
+    Fx* gold_fx = template_manager.CreateFx(FxType::GoldStat);
+    QueueFx(gold_fx);
+    QueueSoundData(SoundData(current_level_prepare_music));
+    Fx* life_fx = template_manager.CreateFx(FxType::LifeStat);
+    QueueFx(life_fx);
+    Fx* wave_fx = template_manager.CreateFx(FxType::WaveStat);
+    QueueFx(wave_fx);
+    Fx* top_left_fx = template_manager.CreateFx(FxType::TopLeft);
+    QueueFx(top_left_fx);
+    current_subwave_index = 0;
+    current_wave_index    = 0;
+}
+
+void Store::IntoGamePlaying(){
+    current_wave_time = 0;
+    QueueSoundData(SoundData(current_level_fight_music));
 }

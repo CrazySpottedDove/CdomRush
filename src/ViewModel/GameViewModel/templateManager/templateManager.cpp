@@ -46,6 +46,28 @@ TemplateManager::TemplateManager()
                      };
 }
 
+TemplateManager::~TemplateManager()
+{
+    for (auto& pair : bullet_map) {
+        delete pair.second;
+    }
+    for (auto& pair : tower_map) {
+        delete pair.second;
+    }
+    for (auto& pair : enemy_map) {
+        delete pair.second;
+    }
+    for (auto& pair : fx_map) {
+        delete pair.second;
+    }
+    for (auto& pair : soldier_map) {
+        delete pair.second;
+    }
+    for (auto& pair : action_fx_map) {
+        delete pair.second;
+    }
+}
+
 Bullet* TemplateManager::CreateBullet(const BulletType type) const
 {
     auto it = bullet_map.find(type);

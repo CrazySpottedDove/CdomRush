@@ -19,6 +19,7 @@ enum class GameState
 class App{
 public:
     App();
+    ~App();
     void Run();
 private:
     void HandleAction(Action& action);

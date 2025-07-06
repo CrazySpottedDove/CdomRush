@@ -30,24 +30,17 @@ App::App()
     sound_manager.SetMusicSet(store.resource_manager.GetMusicSet());
 }
 
+App::~App()
+{
+}
+
 void App::Run()
 {
     while (window.isOpen()) {
         switch (game_state) {
         case GameState::Begin:
             if (last_state != GameState::Begin) {
-                store.Clear();
-                store.QueueSoundData(SoundData(BACKGROUND_SOUND));
-                for (const auto& level : *store.resource_manager.GetLevels()) {
-                    Fx* fx       = store.template_manager.CreateFx(FxType::LevelFlag);
-                    fx->position = level.second;
-                    fx->animations[0].actions.emplace_back(
-                        Action(ActionType::SelectLevel, SelectLevelParams{level.first}));
-                    store.QueueFx(fx);
-                }
-                Fx* map_fx = store.template_manager.CreateFx(FxType::Map);
-
-                store.QueueFx(map_fx);
+                store.IntoBegin();
                 last_state = GameState::Begin;
                 INFO("State Changed to Begin");
             }
@@ -58,8 +51,7 @@ void App::Run()
             break;
         case GameState::Loading:
             if (last_state != GameState::Loading) {
-                store.Clear();
-                store.InitLevel();
+                store.IntoLoading();
                 last_state = GameState::Loading;
                 game_state = GameState::GameStart;
                 INFO("State Changed to Loading");
@@ -69,24 +61,8 @@ void App::Run()
             break;
         case GameState::GameStart:
             if (last_state != GameState::GameStart) {
-                store.gold = 70;
-                store.time = 0;
-                store.ClearFxs();
-                Fx* map_fx                   = store.template_manager.CreateFx(FxType::Map);
-                map_fx->animations[0].prefix = store.current_level_name;
-                store.QueueFx(map_fx);
-                Fx* gold_fx = store.template_manager.CreateFx(FxType::GoldStat);
-                store.QueueFx(gold_fx);
-                store.QueueSoundData(SoundData(store.current_level_prepare_music));
-                Fx* life_fx = store.template_manager.CreateFx(FxType::LifeStat);
-                store.QueueFx(life_fx);
-                Fx* wave_fx = store.template_manager.CreateFx(FxType::WaveStat);
-                store.QueueFx(wave_fx);
-                Fx* top_left_fx = store.template_manager.CreateFx(FxType::TopLeft);
-                store.QueueFx(top_left_fx);
-                last_state                  = GameState::GameStart;
-                store.current_subwave_index = 0;
-                store.current_wave_index    = 0;
+                last_state = GameState::GameStart;
+                store.IntoGameStart();
                 INFO("State Changed to GameStart");
             }
             DEBUG_CODE(game_state =
@@ -94,6 +70,8 @@ void App::Run()
             )
             store.UpdateFxs();
             store.UpdateActionFxs();
+            store.UpdateTowers();
+            store.UpdateSoldiers();
             ui_manager.PrecessUI();
             sound_manager.PlayAll();
             store.time += FRAME_LENGTH;
@@ -102,8 +80,7 @@ void App::Run()
         case GameState::GamePlaying:
             if (last_state != GameState::GamePlaying) {
                 last_state              = GameState::GamePlaying;
-                store.current_wave_time = 0;
-                store.QueueSoundData(SoundData(store.current_level_fight_music));
+                store.IntoGamePlaying();
                 INFO("State Changed to GamePlaying");
             }
             store.SpawnWaves();
@@ -158,7 +135,7 @@ void App::HandleAction(Action& action)
     {
         INFO("Creating ActionFx with type: " << static_cast<int>(action.type));
         CreateActionFxParams& fx_params = std::get<CreateActionFxParams>(action.param);
-        const FxType fx_type = fx_params.fx_type;
+        const FxType          fx_type   = fx_params.fx_type;
         switch (fx_type) {
         case FxType::CommonUpgradeButton:
         {
@@ -176,7 +153,8 @@ void App::HandleAction(Action& action)
             store.QueueActionFx(action_fx);
             break;
         }
-        case FxType::UpgradeToMageButton:{
+        case FxType::UpgradeToMageButton:
+        {
             ActionFx* action_fx =
                 new UpgradeToMageButton(std::get<UpgradeTowerParams>(fx_params.props));
             action_fx->position = fx_params.position + fx_params.offset;
@@ -184,14 +162,16 @@ void App::HandleAction(Action& action)
             break;
         }
 
-        case FxType::UpgradeToEngineerButton:{
+        case FxType::UpgradeToEngineerButton:
+        {
             ActionFx* action_fx =
                 new UpgradeToEngineerButton(std::get<UpgradeTowerParams>(fx_params.props));
             action_fx->position = fx_params.position + fx_params.offset;
             store.QueueActionFx(action_fx);
             break;
         }
-        case FxType::UpgradeToBarrackButton:{
+        case FxType::UpgradeToBarrackButton:
+        {
             // ActionFx* action_fx =
             //     new UpgradeToBarrackButton(std::get<UpgradeTowerParams>(fx_params.props));
             // store.QueueActionFx(action_fx);

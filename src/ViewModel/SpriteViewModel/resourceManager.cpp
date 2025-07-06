@@ -10,6 +10,61 @@
 #include <string>
 #include <vector>
 
+ResourceManager::ResourceManager()
+    : font(DEFAULT_FONT_FILE)
+{
+    const sol::table level_map = ReadLua(LEVEL_MAP_FILE);
+    for (const auto& [key, value] : level_map) {
+        const sol::table level_data = value.as<sol::table>();
+        levels.emplace_back(level_data["name"].get<std::string>(),
+                            Position{level_data["position"]["x"].get<float>(),
+                                     level_data["position"]["y"].get<float>()});
+    }
+    for (const auto& entry : std::filesystem::directory_iterator("assets/images/common")) {
+        if (entry.is_regular_file()) {
+            const auto& path = entry.path();
+
+            // 只处理 .lua 文件
+            if (path.extension() == ".lua") {
+                try {
+                    LoadTexturesAndSpriteFrameDatas(path.string());
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
+                              << std::endl;
+                }
+            }
+        }
+    }
+
+    for (const auto& entry : std::filesystem::directory_iterator("assets/sounds/common")) {
+        if (entry.is_regular_file()) {
+            const auto& path = entry.path();
+
+            // 只处理 .lua 文件
+            if (path.extension() == ".lua") {
+                try {
+                    LoadSoundGroups(path.string());
+                }
+                catch (const std::exception& e) {
+                    std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
+                              << std::endl;
+                }
+            }
+        }
+    }
+
+    LoadAnimationGroups();
+}
+
+ResourceManager::~ResourceManager()
+{
+    texture_map.clear();
+    sprite_frame_data_map.clear();
+    sound_group_map.clear();
+    sound_buffer_map.clear();
+    music_set.clear();
+}
 
 void ResourceManager::LoadTexture(const std::string& file_name, ResourceLevel level)
 {
@@ -171,7 +226,7 @@ void ResourceManager::LoadAnimationGroups()
     }
 };
 
-void ResourceManager::LoadLevelAssets(const std::string& level_name, std::string& level_prepare_music, std::string& level_fight_music)
+void ResourceManager::LoadLevelAssets(const std::string& level_name, std::string& level_prepare_music, std::string& level_fight_music, double& gold)
 {
     const std::string file_path         = std::string(LEVEL_DATA_PATH) + level_name + ".lua";
     const sol::table  level_data_map    = ReadLua(file_path);
@@ -183,6 +238,7 @@ void ResourceManager::LoadLevelAssets(const std::string& level_name, std::string
 
     level_prepare_music = level_data_map["prepare_music"].get<std::string>();
     level_fight_music   = level_data_map["fight_music"].get<std::string>();
+    gold                = level_data_map["gold"].get<double>();
 };
 
 void ResourceManager::LoadTowerEssentials(const std::string& file_name)
@@ -257,57 +313,13 @@ void ResourceManager::LoadWaves(const std::string& file_name)
     }
 };
 
-ResourceManager::ResourceManager(): font(DEFAULT_FONT_FILE)
-{
-    const sol::table level_map = ReadLua(LEVEL_MAP_FILE);
-    for (const auto& [key, value] : level_map) {
-        const sol::table level_data = value.as<sol::table>();
-        levels.emplace_back(level_data["name"].get<std::string>(),
-                            Position{level_data["position"]["x"].get<float>(),
-                                     level_data["position"]["y"].get<float>()});
-    }
-    for (const auto& entry : std::filesystem::directory_iterator("assets/images/common")) {
-        if (entry.is_regular_file()) {
-            const auto& path = entry.path();
 
-            // 只处理 .lua 文件
-            if (path.extension() == ".lua") {
-                try {
-                    LoadTexturesAndSpriteFrameDatas(path.string());
-                }
-                catch (const std::exception& e) {
-                    std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
-                              << std::endl;
-                }
-            }
-        }
-    }
-
-    for (const auto& entry : std::filesystem::directory_iterator("assets/sounds/common")) {
-        if (entry.is_regular_file()) {
-            const auto& path = entry.path();
-
-            // 只处理 .lua 文件
-            if (path.extension() == ".lua") {
-                try {
-                    LoadSoundGroups(path.string());
-                }
-                catch (const std::exception& e) {
-                    std::cerr << "  Failed to load " << path.filename() << ": " << e.what()
-                              << std::endl;
-                }
-            }
-        }
-    }
-
-    LoadAnimationGroups();
-}
 
 void ResourceManager::LoadLevelResources(const std::string& level_name,
                                          std::string&       level_prepare_music,
-                                         std::string&       level_fight_music)
+                                         std::string&       level_fight_music, double& gold)
 {
-    LoadLevelAssets(level_name, level_prepare_music, level_fight_music);
+    LoadLevelAssets(level_name, level_prepare_music, level_fight_music, gold);
 
     LoadSoundGroups(LEVEL_SPECIFIC_SOUNDS_PATH + level_name + ".lua",ResourceLevel::Specific);
     LoadPaths(PATH_PATH + level_name + ".lua");

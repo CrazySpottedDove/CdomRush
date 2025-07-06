@@ -31,6 +31,7 @@ class Store
 {
 public:
     Store()                           = default;
+    ~Store();
     double      time                  = 0.0;
     double      gold                  = 0.0;
     int         life                  = 20;
@@ -100,12 +101,10 @@ public:
     void ClearActionFxs();
     void Clear();
 
-    /**
-     * @brief 在进入关卡时调用，更新一个关卡的全部数据
-     * @note 在调用前，保证 Clear() 已经被调用，保证 Store 中的数据是干净的。
-     */
-    void InitLevel();
-
+    void IntoBegin();
+    void IntoLoading();
+    void IntoGameStart();
+    void IntoGamePlaying();
 private:
     std::unordered_map<ID, Enemy*>    enemies;
     std::unordered_map<ID, Tower*>    towers;
@@ -119,9 +118,4 @@ private:
     ViewDataQueue            view_data_queue;
     PendingEnemyQueue        pending_enemy_queue;
     SoundDataQueue           sound_data_queue;
-    /**
-     * @brief 在开启新的关卡时调用，初始化塔位
-     *
-     */
-    void InitTowers();
 };

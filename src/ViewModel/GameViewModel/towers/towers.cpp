@@ -148,7 +148,7 @@ bool Archer1::Insert(Store& store){
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 50),
+                                    Position(0, 80),
                                     UpgradeTowerParams{id, TowerType::Archer2, 110})));
     return true;
 }
@@ -175,7 +175,7 @@ bool Archer2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 50),
+                                    Position(0, 80),
                                     UpgradeTowerParams{id, TowerType::Archer3, 160})));
     return true;
 }
@@ -258,7 +258,7 @@ bool Engineer1::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 50),
+                                    Position(0, 80),
                                     UpgradeTowerParams{id, TowerType::Engineer2, 220})));
     return true;
 }
@@ -297,7 +297,7 @@ bool Engineer2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 50),
+                                    Position(0, 80),
                                     UpgradeTowerParams{id, TowerType::Engineer3, 320})));
     return true;
 }
@@ -375,7 +375,7 @@ bool Mage1::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 50),
+                                    Position(0, 80),
                                     UpgradeTowerParams{id, TowerType::Mage2, 160})));
     return true;
 }
@@ -402,7 +402,7 @@ bool Mage2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 50),
+                                    Position(0, 80),
                                     UpgradeTowerParams{id, TowerType::Mage3, 240})));
     return true;
 }

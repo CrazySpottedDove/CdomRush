@@ -27,6 +27,7 @@
 #define ANSI_COLOR_DIM "\x1b[2m"
 #define WIDTH_FACTOR 1.428571f
 #define HEIGHT_FACTOR 1.40625f
+#define BACKGROUND_SOUND "MusicMap1"
 
 #ifdef DEBUG
 #    include <iostream>

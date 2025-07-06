@@ -22,6 +22,9 @@ public:
     std::vector<LevelData>*      GetLevels() { return &levels; }
     std::vector<Wave>*           GetWaves() { return &waves; }
     std::vector<TowerEssential>* GetTowerEssentials() { return &tower_essentials; }
+    SoundGroupMap*           GetSoundGroupMap() { return &sound_group_map; }
+    SoundBufferMap*         GetSoundBufferMap() { return &sound_buffer_map; }
+    MusicSet*              GetMusicSet() { return &music_set; }
 
 private:
     TextureMap                  texture_map;
@@ -33,7 +36,7 @@ private:
     SoundGroupMap               sound_group_map;
     SoundBufferMap              sound_buffer_map;
     SoundGroupLevelMap          sound_group_level_map;
-    MusicMap                    music_map;
+    MusicSet                    music_set;
     std::vector<LevelData>      levels;
     std::vector<Wave>           waves;
     std::vector<TowerEssential> tower_essentials;
@@ -42,12 +45,13 @@ private:
     void                        LoadTexturesAndSpriteFrameDatas(const std::string&  file_path,
                                                                 const ResourceLevel level = ResourceLevel::Common);
     // 加载声音组和声音组中的声音资源
-    void LoadSoundGroups(const std::string& file_path, const ResourceLevel level = ResourceLevel::Common);
-    // void UnloadSpecificSoundGroups();
-    void                        LoadAnimationGroups();
-    void                        LoadLevelAssets(const std::string& level_name);
-    void                        LoadTowerEssentials(const std::string& file_name);
-    void                        LoadPaths(const std::string& file_path);
-    void                        LoadWaves(const std::string& file_path);
+    void LoadSoundGroups(const std::string&  file_path,
+                         const ResourceLevel level = ResourceLevel::Common);
+    void UnloadSpecificSoundGroups();
+    void LoadAnimationGroups();
+    void LoadLevelAssets(const std::string& level_name);
+    void LoadTowerEssentials(const std::string& file_name);
+    void LoadPaths(const std::string& file_path);
+    void LoadWaves(const std::string& file_path);
     void ParseSpriteFrameData(const sol::table& frame_data_unparsed, SpriteFrameData& frame_data);
 };

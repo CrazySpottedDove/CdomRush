@@ -1,5 +1,4 @@
 #include "ViewModel/GameViewModel/store/store.h"
-#include "Common/action.h"
 #include "Common/macros.h"
 #include "Common/viewData.h"
 #include "ViewModel/GameViewModel/Function/calc/damage.h"

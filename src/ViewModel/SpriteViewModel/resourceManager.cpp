@@ -38,6 +38,47 @@ void ResourceManager::UnloadSpecificTexturesAndSpriteFrameDatas()
     texture_level_map[ResourceLevel::Specific].clear();
 }
 
+void ResourceManager::UnloadSpecificSoundGroups()
+{
+    for (const auto& sound_group_name : sound_group_level_map[ResourceLevel::Specific]) {
+        auto it = sound_group_map.find(sound_group_name);
+        DEBUG_CODE(
+            if (it == sound_group_map.end()) {
+                ERROR("Try to unload not exist sound group: " << sound_group_name);
+            } else {
+                SUCCESS("Unloading sound group: " << sound_group_name);
+            }
+        )
+        if(it->second.is_stream){
+            for(const auto& sound_file : it->second.sound_files) {
+                auto music_it = music_set.find(sound_file);
+                DEBUG_CODE(
+                    if (music_it == music_set.end()) {
+                        ERROR("Try to unload not exist music: " << sound_file);
+                    } else {
+                        SUCCESS("Unloading music: " << sound_file);
+                    }
+                )
+                music_set.erase(music_it);
+            }
+        }else{
+            for (const auto& sound_file : it->second.sound_files) {
+                auto sound_it = sound_buffer_map.find(sound_file);
+                DEBUG_CODE(
+                    if (sound_it == sound_buffer_map.end()) {
+                        ERROR("Try to unload not exist sound: " << sound_file);
+                    } else {
+                        SUCCESS("Unloading sound: " << sound_file);
+                    }
+                )
+                sound_buffer_map.erase(sound_it);
+            }
+        }
+        sound_group_map.erase(sound_group_name);
+    }
+    sound_group_level_map[ResourceLevel::Specific].clear();
+}
+
 void ResourceManager::ParseSpriteFrameData(const sol::table& frame_data_unparsed,
                                            SpriteFrameData&  frame_data)
 {
@@ -87,12 +128,12 @@ void ResourceManager::LoadSoundGroups(const std::string& file_path, const Resour
         for (const auto& sound_file : sound_group_map[sound_group_name].sound_files) {
             const std::string full_path = SOUNDS_PATH + sound_file;
             if (sound_group_map[sound_group_name].is_stream) {
-                if (music_map.find(sound_file) == music_map.end()) {
-                    music_map[sound_file] = sf::Music(full_path);
-                    SUCCESS("Successfully loaded music: " << full_path);
+                if (music_set.find(sound_file) == music_set.end()) {
+                    music_set.insert(sound_file);
+                    SUCCESS("Successfully tracked music: " << full_path);
                 }
                 else {
-                    WARNING("Music already loaded: " << full_path);
+                    WARNING("Music already tracked: " << full_path);
                 }
             }
             else {

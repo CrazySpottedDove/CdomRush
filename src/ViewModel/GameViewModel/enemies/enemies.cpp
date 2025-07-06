@@ -154,11 +154,10 @@ void ActiveEnemyRange::Update(Store& store)
 
 ForestTroll::ForestTroll(Position position_)
 {
-    this->health          = Health(4000, 4000);   // 设置生命值
-    // this->health = Health(100,100);
+    // this->health          = Health(4000, 4000);   // 设置生命值
+    this->health = Health(100,100);
     this->armor           = Armor(0, 0);          // 设置护甲
-    // this->speed           = 36;                   // 设置速度
-    this->speed = 100;
+    this->speed           = 36;                   // 设置速度
     this->gold            = 200;                  // 设置击杀奖励
     this->life_cost       = 5;                    // 设置生命损失
     this->animations.push_back(Animation(State::Idle,"forest_troll"));

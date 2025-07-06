@@ -81,66 +81,66 @@ void UIManager::Render(const ViewData& view_data)
                     }
                 }
 
-                // 对于第零层，处理action
-                if (layer_index == 0 && animation.clicked) {
-                    for (size_t i = 0; i < animation.actions.size(); ++i) {
-                        switch (animation.actions[i].type) {
-                        case ActionType::SelectLevel:
-                        {
-                            animation.clicked = false;
-                            action_queue.push(animation.actions[i]);
-                            SUCCESS("Action: SelectLevel Triggered");
-                            break;
-                        }
-                        case ActionType::CreateActionFx:
-                        {
-                            animation.clicked = false;
-                            action_queue.push(animation.actions[i]);
-                            break;
-                        }
-                        case ActionType::UpgradeTower:
-                        {
-                            animation.clicked = false;
-                            action_queue.push(animation.actions[i]);
-                            SUCCESS("Action: UpgradeTower Triggered");
-                            break;
-                        }
-                        case ActionType::CheckSoldierStatus:
-                        {
-                            animation.clicked = false;
-                            action_queue.push(animation.actions[i]);
-                            break;
-                        }
-                        case ActionType::CheckEnemyStatus:
-                        {
-                            animation.clicked = false;
-                            action_queue.push(animation.actions[i]);
-                            break;
-                        }
-                        case ActionType::CheckTowerStatus:
-                        {
-                            animation.clicked = false;
-                            action_queue.push(animation.actions[i]);
-                            break;
-                        }
-                        case ActionType::ChangeRallyPoint:
-                        {
+                // // 对于第零层，处理action
+                // if (layer_index == 0 && animation.clicked) {
+                //     for (size_t i = 0; i < animation.actions.size(); ++i) {
+                //         switch (animation.actions[i].type) {
+                //         case ActionType::SelectLevel:
+                //         {
+                //             animation.clicked = false;
+                //             action_queue.push(animation.actions[i]);
+                //             SUCCESS("Action: SelectLevel Triggered");
+                //             break;
+                //         }
+                //         case ActionType::CreateActionFx:
+                //         {
+                //             animation.clicked = false;
+                //             action_queue.push(animation.actions[i]);
+                //             break;
+                //         }
+                //         case ActionType::UpgradeTower:
+                //         {
+                //             animation.clicked = false;
+                //             action_queue.push(animation.actions[i]);
+                //             SUCCESS("Action: UpgradeTower Triggered");
+                //             break;
+                //         }
+                //         case ActionType::CheckSoldierStatus:
+                //         {
+                //             animation.clicked = false;
+                //             action_queue.push(animation.actions[i]);
+                //             break;
+                //         }
+                //         case ActionType::CheckEnemyStatus:
+                //         {
+                //             animation.clicked = false;
+                //             action_queue.push(animation.actions[i]);
+                //             break;
+                //         }
+                //         case ActionType::CheckTowerStatus:
+                //         {
+                //             animation.clicked = false;
+                //             action_queue.push(animation.actions[i]);
+                //             break;
+                //         }
+                //         case ActionType::ChangeRallyPoint:
+                //         {
 
-                            animation.clicked = false;
-                            action_queue.push(animation.actions[i]);
-                            SUCCESS("Action: ChangeRallyPoint Triggered");
-                            break;
-                        }
-                        case ActionType::SellTower:
-                        {
-                            animation.clicked = false;
-                            action_queue.push(animation.actions[i]);
-                            SUCCESS("Action: SellTower Triggered");
-                            break;
-                        }
-                        }
-                    }
-                }
+                //             animation.clicked = false;
+                //             action_queue.push(animation.actions[i]);
+                //             SUCCESS("Action: ChangeRallyPoint Triggered");
+                //             break;
+                //         }
+                //         case ActionType::SellTower:
+                //         {
+                //             animation.clicked = false;
+                //             action_queue.push(animation.actions[i]);
+                //             SUCCESS("Action: SellTower Triggered");
+                //             break;
+                //         }
+                //         }
+                //     }
+                // }
             }
             break;
         }
@@ -269,7 +269,7 @@ void UIManager::HandleClick()
             INFO("Click position: (" + std::to_string(click_position.x) + ", " +
                  std::to_string(click_position.y) + ")");
             if (mouse_event.button == sf::Mouse::Button::Left) {
-
+                action_queue.push(Action{ActionType::Delete, std::monostate{}});
                 // 遍历所有ViewData，寻找被点击对象
                 bool hit_found = false;
 
@@ -283,7 +283,10 @@ void UIManager::HandleClick()
                     }
 
                     if (IsClickHit(view_data, click_position)) {
-                        (*view_data.animations)[0].clicked = true;
+                        // (*view_data.animations)[0].clicked = true;
+                        for (size_t i = 0; i < (*view_data.animations)[0].actions.size(); ++i) {
+                            action_queue.push((*view_data.animations)[0].actions[i]);
+                        }
                         hit_found = true;
                         break;
                     }
@@ -295,7 +298,6 @@ void UIManager::HandleClick()
                     SUCCESS("Object hit at click position");
                 }
             }
-            action_queue.push(Action{ActionType::Delete, std::monostate{}});
         }
     }
 }

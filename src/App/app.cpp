@@ -2,6 +2,7 @@
 #include "Common/action.h"
 #include "Common/macros.h"
 #include "Common/sound.h"
+#include "Common/type.h"
 #include "ViewModel/GameViewModel/fx/fx.h"
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -30,13 +31,6 @@ App::App()
 
 void App::Run()
 {
-    // sf::Font font("assets/fonts/msyh.ttc");
-    // sf::Text text(font,"fuck斑鸠" , 16);
-    // text.setFillColor(sf::Color::Red);
-    // text.setPosition({100,100});
-    // window.draw(text);
-    // window.display();
-    // while(true);
     while (window.isOpen()) {
         switch (game_state) {
         case GameState::Begin:
@@ -77,9 +71,11 @@ void App::Run()
                 store.gold = 70;
                 store.time = 0;
                 store.ClearFxs();
-                Fx* fx                   = store.template_manager.CreateFx(FxType::Map);
-                fx->animations[0].prefix = store.current_level_name;
-                store.QueueFx(fx);
+                Fx* map_fx                   = store.template_manager.CreateFx(FxType::Map);
+                map_fx->animations[0].prefix = store.current_level_name;
+                store.QueueFx(map_fx);
+                Fx* gold_fx = store.template_manager.CreateFx(FxType::GoldStat);
+                store.QueueFx(gold_fx);
                 store.QueueSoundData(SoundData(store.current_level_prepare_music));
                 last_state                  = GameState::GameStart;
                 store.current_subwave_index = 0;

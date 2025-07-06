@@ -113,7 +113,7 @@ void Store::UpdateFxs()
     auto it = fxs.begin();
     while (it != fxs.end()) {
         Fx* fx = it->second;
-        if (fx->animations[0].current_state == State::Hit &&
+        if (fx->animations.size() > 0 && fx->animations[0].current_state == State::Hit &&
             resource_manager.GetAnimationGroupMap()
                     ->at(fx->animations[0].prefix)
                     .at(fx->animations[0].current_state)

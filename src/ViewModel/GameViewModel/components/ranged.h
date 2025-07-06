@@ -15,8 +15,8 @@ public:
     BulletType bullet_type; // 弹道类型
     Position bullet_start_offset; // 子弹起始偏移位置
     std::string prefix = "";
-    RangedAttack(double cooldown, double range, BulletType bullet_type_, double radius_, double value_, std::string prefix_, double chance = 1.0)
-        : Attack(cooldown, chance)
+    RangedAttack(double cooldown, double range, BulletType bullet_type_, double radius_, double value_, std::string prefix_, double chance = 1.0, std::string attack_sound_ = "INVALID_SOUND")
+        : Attack(cooldown, chance, attack_sound_)
         , range(range)
         , bullet_type(bullet_type_)
         , radius(radius_)

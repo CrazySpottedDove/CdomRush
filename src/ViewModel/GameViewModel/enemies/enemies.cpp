@@ -163,7 +163,7 @@ ForestTroll::ForestTroll(Position position_)
     this->life_cost       = 5;                    // 设置生命损失
     this->animations.push_back(Animation(State::Idle,"forest_troll"));
     this->animations[0].anchor_y = 0.79;
-    this->melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
+    this->melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0, 1.0, "AreaAttack"));
     this->melee[0].damage_event.source = id;
     this->slot     = sf::Vector2f(35.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
@@ -179,7 +179,7 @@ orc_armored::orc_armored(Position position_)
     this->gold            = 30;                  // 设置击杀奖励
     this->life_cost       = 5;                    // 设置生命损失
     this->animations.push_back(Animation(State::Idle,"orc_armored"));
-    this->melee.attacks.push_back(MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 6), 0.0, 1.0, 1.0));
+    this->melee.attacks.push_back(MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 6), 0.0, 1.0, 1.0, 1.0, "AreaAttack"));
     this->melee[0].damage_event.source = id;
     this->slot     = sf::Vector2f(18.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
@@ -195,7 +195,7 @@ orc_wolf_rider::orc_wolf_rider(Position position_)
     this->gold            = 25;                  // 设置击杀奖励
     this->life_cost       = 2;                    // 设置生命损失
     this->animations.push_back(Animation(State::Idle,"orc_wolf_rider"));
-    this->melee.attacks.push_back(MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 9), 0.0, 1.0, 1.5));
+    this->melee.attacks.push_back(MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 9), 0.0, 1.0, 1.5, 1.0, "WolfAttack"));
     this->melee[0].damage_event.source = id;
     this->slot     = sf::Vector2f(30.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置

@@ -7,8 +7,8 @@
 
 class MeleeAttack: public Attack{
 public:
-    MeleeAttack(DamageData data,ID sourceID = INVALID_ID,double radius = 50.0, double cooldown = 1.0, double chance = 1.0)
-        : Attack(cooldown, chance), radius(radius) {
+    MeleeAttack(DamageData data,ID sourceID = INVALID_ID,double radius = 50.0, double cooldown = 1.0, double chance = 1.0, std::string attack_sound_ = "INVALID_SOUND")
+        : Attack(cooldown, chance, attack_sound_), radius(radius) {
         damage_event = DamageEvent(data, sourceID, INVALID_ID);
     }
     double radius; // 伤害半径

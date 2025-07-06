@@ -15,4 +15,7 @@ void RangedAttack::Apply(Store& store, ID source, ID target, Position bullet_sta
     store.QueueBullet(bullet);                                       // 将子弹加入存储
 
     SetLastTime(store.time);   // 更新上次攻击时间
+    if(attack_sound!="INVALID_SOUND"){
+        store.QueueSoundData(SoundData(attack_sound));
+    }
 }

@@ -23,4 +23,8 @@ void MeleeAttack::Apply(Store& store, ID source, ID target, SourceType type) noe
         new_event.target = id;   // 设置目标
         store.QueueDamageEvent(new_event);
     }
+
+    if(attack_sound!="INVALID_SOUND"){
+        store.QueueSoundData(SoundData(attack_sound));
+    }
 }

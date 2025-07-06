@@ -48,7 +48,7 @@ public:
         slot = sf::Vector2f(0.0f, 0.0f);   // 初始化近战偏移
     }
     void Update(Store& store) override;
-    void death_action() override {}   // 无害敌人死亡时不执行任何操作
+    void death_action(Store& store) override {}   // 无害敌人死亡时不执行任何操作
     Enemy* Clone() const override{
         return new PassiveEnemy(*this);   // 返回一个新的PassiveEnemy对象
     }
@@ -74,7 +74,7 @@ public:
     Enemy* Clone() const override{
         return new ActiveEnemyMelee(*this);   // 返回一个新的ActiveEnemyMelee对象
     }
-    void death_action() override{}
+    void death_action(Store& store) override{}
 };
 
 class ActiveEnemyRange : public ActiveEnemy
@@ -98,16 +98,25 @@ class ForestTroll : public ActiveEnemyMelee
 {
 public:
     ForestTroll(Position position_ = sf::Vector2f(0,0));
+    void death_action(Store& store) override{
+        store.QueueSoundData(SoundData("DeathBig"));
+    }
 };
 
 class orc_armored : public ActiveEnemyMelee
 {
 public:
     orc_armored(Position position_ = sf::Vector2f(0,0));
+    void death_action(Store& store) override{
+        store.QueueSoundData(SoundData("DeathOrc"));
+    }
 };
 
 class orc_wolf_rider : public ActiveEnemyMelee
 {
 public:
     orc_wolf_rider(Position position_ = sf::Vector2f(0,0));
+    void death_action(Store& store) override{
+        store.QueueSoundData(SoundData("DeathPuff"));
+    }
 };

@@ -105,3 +105,14 @@ void UpgradeToEngineerButton::Update(Store& store)
         animations[0].current_state = State::Enabled;
     }
 }
+
+GoldStat::GoldStat(){
+    position.x = -130;
+    position.y = 740;
+}
+
+void GoldStat::QueueViewData(Store& store){
+    store.GetViewDataQueue()->emplace(
+        ViewData(std::to_string(store.gold),position ,UI_UPPER_LAYER )
+    );
+}

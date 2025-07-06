@@ -87,3 +87,10 @@ public:
 //     ActionFx* Clone() override { return new UpgradeToBarrackButton(*this); }
 //     void      Update(Store& store) override;
 // };
+
+class GoldStat: public Fx{
+public:
+    GoldStat();
+    Fx* Clone() override { return new GoldStat(*this); }
+    void QueueViewData(Store& store) override;
+};

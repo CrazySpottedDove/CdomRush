@@ -45,8 +45,8 @@ struct ViewData
         , text(text)
         , type(ViewDataType::Text)
     {}
-    ViewData(const double range, const Position& position, const size_t layer_index): animations(nullptr),
-    position(position),layer_index(layer_index),type(ViewDataType::TowerRange), range(range){}
+    ViewData(const double range, const Position& position, std::vector<Animation>* animations): animations(animations),
+    position(position),layer_index(UI_LOWER_LAYER),type(ViewDataType::TowerRange), range(range){}
 };
 
 struct ViewDataComparator

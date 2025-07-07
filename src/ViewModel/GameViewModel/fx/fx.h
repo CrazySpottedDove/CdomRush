@@ -216,5 +216,9 @@ class BarrackChangeRallyPointButton: public ActionFx
 {
 public:
     ID tower_id;
-    BarrackChangeRallyPointButton();
+    BarrackChangeRallyPointButton(const ID tower_id);
+    bool Insert(Store& store) override;
+    ActionFx* Clone() override {
+        return new BarrackChangeRallyPointButton(*this);
+    }
 };

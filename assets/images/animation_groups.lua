@@ -751,4 +751,10 @@ return {
             from = 18
         }
     },
+    sub_icons_0001={
+        idle = {
+            to = 1,
+            from = 1
+        }
+    }
 }

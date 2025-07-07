@@ -207,6 +207,21 @@ void App::HandleAction(Action& action)
             store.QueueActionFx(action_fx);
             break;
         }
+        case FxType::ChangeRallyPointButton:
+        {
+            ActionFx* action_fx =
+                new BarrackChangeRallyPointButton(std::get<ID>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
+            break;
+        }
+        case FxType::BarrackRange:
+        {
+            ActionFx* action_fx = new BarrackRangeFx(std::get<ID>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
+            break;
+        }
         }
         break;
     }
@@ -252,12 +267,26 @@ void App::HandleAction(Action& action)
     case ActionType::BackToBegin:
     {
         game_state = GameState::Begin;
+        break;
     }
     case ActionType::EndGameStart:
     {
         if(game_state == GameState::GameStart){
             game_state = GameState::GamePlaying;
         }
+        break;
+    }
+    case ActionType::ChangeRallyPoint:{
+        ChangeRallyPointParams& params = std::get<ChangeRallyPointParams>(action.param);
+        Tower*                  tower  = store.GetTower(params.tower_id);
+        if (tower) {
+            tower->rally_point = params.new_rally_point;
+            INFO("Changed rally point to: (" + std::to_string(tower->rally_point.x) + ", " +
+                 std::to_string(tower->rally_point.y) + ")");
+        } else {
+            WARNING("Tower with ID " + std::to_string(params.tower_id) + " not found.");
+        }
+        break;
     }
     }
 }

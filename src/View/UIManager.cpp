@@ -4,6 +4,7 @@
 #include "Common/macros.h"
 #include "Common/viewData.h"
 #include "View/mapPosition.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -185,7 +186,37 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     if (!animation_group_map || !sprite_frame_data_map) {
         ERROR("Animation group map or sprite frame data map is not initialized.");
     }
+    if(view_data.type == ViewDataType::TowerRange){
+        const Position click_position_back = MapPositionBack(click_position);
 
+        // 计算椭圆的中心点
+        float center_x = view_data.position.x;
+        float center_y = view_data.position.y;
+
+        // 椭圆的半径（长轴和短轴）
+        float radius_x = view_data.range;          // 水平半径
+        float radius_y = view_data.range * 0.7f;   // 垂直半径（对应 scale 0.7f）
+
+        // 计算点到椭圆中心的距离
+        float dx = click_position_back.x - center_x;
+        float dy = click_position_back.y - center_y;
+
+        // 椭圆内部检测公式：(x/a)² + (y/b)² <= 1
+        // 其中 a 是水平半径，b 是垂直半径
+        float ellipse_equation =
+            (dx * dx) / (radius_x * radius_x) + (dy * dy) / (radius_y * radius_y);
+
+        INFO("Check Bounds With Tower Range: " + std::to_string(view_data.range));
+        INFO("Click position back: (" + std::to_string(click_position_back.x) + ", " +
+             std::to_string(click_position_back.y) + ")");
+        INFO("Ellipse center: (" + std::to_string(center_x) + ", " + std::to_string(center_y) +
+             ")");
+        INFO("Ellipse radii: (" + std::to_string(radius_x) + ", " + std::to_string(radius_y) + ")");
+        INFO("Ellipse equation result: " + std::to_string(ellipse_equation));
+
+        // 如果椭圆方程结果 <= 1，则点在椭圆内
+        return ellipse_equation <= 1.0f;
+    }
     const Animation& animation =
         (*view_data.animations)[(*view_data.animations)[0].hidden ? 1 : 0];   // 只处理第0层
 
@@ -240,7 +271,10 @@ void UIManager::HandleClick()
 
                 for (auto it = view_data_queue->rbegin(); it != view_data_queue->rend(); ++it) {
                     const ViewData& view_data = *it;
-                    if (view_data.type != ViewDataType::Animation) {
+                    if (view_data.type == ViewDataType::Text) {
+                        continue;
+                    }
+                    if(view_data.animations == nullptr || view_data.animations->empty()) {
                         continue;
                     }
                     if ((*view_data.animations)[0].actions.empty()) {
@@ -250,6 +284,9 @@ void UIManager::HandleClick()
                     if (IsClickHit(view_data, click_position)) {
                         // (*view_data.animations)[0].clicked = true;
                         for (size_t i = 0; i < (*view_data.animations)[0].actions.size(); ++i) {
+                            if(view_data.type == ViewDataType::TowerRange){
+                                std::get<ChangeRallyPointParams>((*view_data.animations)[0].actions[i].param).new_rally_point = MapPositionBack(click_position);
+                            }
                             action_queue.push((*view_data.animations)[0].actions[i]);
                         }
                         hit_found = true;

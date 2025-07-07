@@ -32,7 +32,7 @@ struct ViewData
     ViewData(const double health_rate, const Position& position)
         : animations(nullptr)
         , position(position)
-        , layer_index(1)
+        , layer_index(HEALTH_BAR_LAYER)
         , health_rate(health_rate)
         , type(ViewDataType::HealthBar)
     {}

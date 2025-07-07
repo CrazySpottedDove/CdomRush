@@ -394,6 +394,12 @@ return {
             from = 1
         }
     },
+    price_tag = {
+        idle = {
+            to = 1,
+            from = 1
+        }
+    },
     archer_tower1 = {
         idle = {
             to = 1,
@@ -482,7 +488,6 @@ return {
             from = 11
         }
 
-
     },
     tower_archer_lvl2_shooter = {
         idleDown = {
@@ -524,19 +529,19 @@ return {
         idle = {
             to = 1,
             from = 1
-        },
+        }
     },
     terrain_archer2 = {
         idle = {
             to = 1,
             from = 1
-        },
+        }
     },
     terrain_archer3 = {
         idle = {
             to = 1,
             from = 1
-        },
+        }
     },
     terrain_artillery_0001 = {
         idle = {
@@ -625,5 +630,5 @@ return {
             to = 2,
             from = 2
         }
-    },
+    }
 }

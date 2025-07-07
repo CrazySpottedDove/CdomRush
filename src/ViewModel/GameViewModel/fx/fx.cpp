@@ -42,6 +42,7 @@ CommonUpgradeButton::CommonUpgradeButton(const UpgradeTowerParams& params)
     animations.emplace_back(Animation(State::Disabled, "common_upgrade_button"));
     animations[0].actions.emplace_back(
         Action(ActionType::UpgradeTower, params));
+    animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
 void CommonUpgradeButton::Update(Store& store)
@@ -69,6 +70,7 @@ UpgradeToArcherButton::UpgradeToArcherButton(const UpgradeTowerParams& params)
     animations.emplace_back(Animation(State::Disabled, "icon_archer"));
     animations[0].actions.emplace_back(
         Action(ActionType::UpgradeTower, params));
+    animations.emplace_back(Animation(State::Idle, "price_tag",Position(0, -30)));
 }
 
 void UpgradeToArcherButton::Update(Store& store)
@@ -86,6 +88,7 @@ UpgradeToMageButton::UpgradeToMageButton(const UpgradeTowerParams& params)
     animations.emplace_back(Animation(State::Disabled, "icon_mage"));
     animations[0].actions.emplace_back(
         Action(ActionType::UpgradeTower, params));
+    animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
 void UpgradeToMageButton::Update(Store& store)
@@ -104,6 +107,7 @@ UpgradeToEngineerButton::UpgradeToEngineerButton(const UpgradeTowerParams& param
     animations.emplace_back(Animation(State::Disabled, "icon_engineer"));
     animations[0].actions.emplace_back(
         Action(ActionType::UpgradeTower, params));
+    animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
 void UpgradeToEngineerButton::Update(Store& store)
@@ -120,6 +124,13 @@ SellTowerButton::SellTowerButton(const SellTowerParams& params){
     animations.emplace_back(Animation(State::Enabled, "icon_sell"));
     animations[0].actions.emplace_back(
         Action(ActionType::SellTower, params));
+    animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
+}
+
+void TextFx::QueueViewData(Store& store){
+    store.GetViewDataQueue()->emplace(
+        ViewData(Stringfy(store),position, TEXT_LAYER)
+    );
 }
 
 GoldStat::GoldStat()
@@ -128,10 +139,8 @@ GoldStat::GoldStat()
     position.y = 745;
 }
 
-void GoldStat::QueueViewData(Store& store)
-{
-    store.GetViewDataQueue()->emplace(
-        ViewData(std::to_string((int)store.gold), position, UI_UPPER_LAYER));
+std::string GoldStat::Stringfy(Store& store){
+    return std::to_string((int)store.gold);
 }
 
 LifeStat::LifeStat()
@@ -140,10 +149,9 @@ LifeStat::LifeStat()
     position.y = 745;
 }
 
-void LifeStat::QueueViewData(Store& store)
+std::string LifeStat::Stringfy(Store& store)
 {
-    store.GetViewDataQueue()->emplace(
-        ViewData(std::to_string(store.life), position, UI_UPPER_LAYER));
+    return std::to_string(store.life);
 }
 
 WaveStat::WaveStat()
@@ -152,13 +160,15 @@ WaveStat::WaveStat()
     position.y = 745;
 }
 
-void WaveStat::QueueViewData(Store& store)
+std::string WaveStat::Stringfy(Store& store)
 {
-    store.GetViewDataQueue()->emplace(
-        ViewData(std::to_string(store.current_wave_index + 1) + "/" +
-                     std::to_string(store.resource_manager.GetWaves()->size()),
-                 position,
-                 UI_UPPER_LAYER));
+    const int current_wave_count =
+        store.current_wave_index + 1; // current_wave_index is 0-based
+    const int total_wave_count =
+        store.resource_manager.GetWaves()->size();
+    return std::to_string(current_wave_count <
+                          total_wave_count? current_wave_count : total_wave_count) +
+           "/" + std::to_string(total_wave_count);
 }
 
 TopLeft::TopLeft()
@@ -173,4 +183,13 @@ TopLeft::TopLeft()
 void TopLeft::QueueViewData(Store& store)
 {
     store.GetViewDataQueue()->emplace(ViewData(&animations, position, UI_LOWER_LAYER));
+}
+
+void ActionTextFx::QueueViewData(Store& store){
+    store.GetViewDataQueue()->emplace(ViewData(Stringfy(store), position, TEXT_LAYER));
+}
+
+PriceTagText::PriceTagText(const std::string& text)
+{
+    this->text = text;
 }

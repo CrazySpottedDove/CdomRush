@@ -33,9 +33,11 @@
 #define MAP_LAYER 0
 #define COMMON_LAYER 1
 #define FX_LAYER 2
-#define UI_LOWER_LAYER 3
-#define UI_MIDDLE_LAYER 4
-#define UI_UPPER_LAYER 5
+#define HEALTH_BAR_LAYER 3
+#define UI_LOWER_LAYER 4
+#define UI_MIDDLE_LAYER 5
+#define UI_UPPER_LAYER 6
+#define TEXT_LAYER 7
 
 #ifdef DEBUG
 #    include <iostream>

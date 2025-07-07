@@ -92,34 +92,42 @@ public:
 //     void      Update(Store& store) override;
 // };
 
-class SellTowerButton: public ActionFx{
-    public:
+class SellTowerButton : public ActionFx
+{
+public:
     SellTowerButton(const SellTowerParams& params);
     ActionFx* Clone() override { return new SellTowerButton(*this); }
 };
 
-class GoldStat : public Fx
+class TextFx : public Fx
+{
+public:
+    virtual std::string Stringfy(Store& store) = 0;
+    void                QueueViewData(Store& store) override;
+};
+
+class GoldStat : public TextFx
 {
 public:
     GoldStat();
-    Fx*  Clone() override { return new GoldStat(*this); }
-    void QueueViewData(Store& store) override;
+    Fx*         Clone() override { return new GoldStat(*this); }
+    std::string Stringfy(Store& store) override;
 };
 
-class LifeStat : public Fx
+class LifeStat : public TextFx
 {
 public:
     LifeStat();
-    Fx*  Clone() override { return new LifeStat(*this); }
-    void QueueViewData(Store& store) override;
+    Fx*         Clone() override { return new LifeStat(*this); }
+    std::string Stringfy(Store& store) override;
 };
 
-class WaveStat : public Fx
+class WaveStat : public TextFx
 {
 public:
     WaveStat();
-    Fx*  Clone() override { return new WaveStat(*this); }
-    void QueueViewData(Store& store) override;
+    Fx*         Clone() override { return new WaveStat(*this); }
+    std::string Stringfy(Store& store) override;
 };
 
 class TopLeft : public Fx
@@ -130,3 +138,20 @@ public:
     void QueueViewData(Store& store) override;
 };
 
+class ActionTextFx : public ActionFx
+{
+public:
+    virtual std::string Stringfy(Store& store) = 0;
+    void                QueueViewData(Store& store) override;
+};
+
+class PriceTagText: public ActionTextFx
+{
+public:
+    PriceTagText(const std::string& text);
+    ActionFx* Clone() override { return new PriceTagText(*this); }
+    std::string text;
+    std::string Stringfy(Store& store) override {
+        return text;
+    };
+};

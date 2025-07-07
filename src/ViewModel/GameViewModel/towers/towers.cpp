@@ -177,6 +177,12 @@ bool Archer1::Insert(Store& store)
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::PlainActionText, position, Position(-10, -65), std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+        CreateActionFxParams(
+            FxType::TowerRange, position, Position(0,0),id
+        ))
+    );
     return true;
 }
 Archer2::Archer2(Position position_, int total_price_)
@@ -217,6 +223,9 @@ bool Archer2::Insert(Store& store)
                                     position,
                                     Position(-10, -65),
                                     std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::TowerRange, position, Position(0, 0), id)));
     return true;
 }
 
@@ -250,6 +259,9 @@ bool Archer3::Insert(Store& store)
                                     position,
                                     Position(-10, -65),
                                     std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::TowerRange, position, Position(0, 0), id)));
     return true;
 }
 
@@ -334,6 +346,9 @@ bool Engineer1::Insert(Store& store)
                                     position,
                                     Position(-10, -65),
                                     std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::TowerRange, position, Position(0, 0), id)));
     return true;
 }
 
@@ -386,6 +401,9 @@ bool Engineer2::Insert(Store& store)
                                     position,
                                     Position(-10, -65),
                                     std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::TowerRange, position, Position(0, 0), id)));
     return true;
 }
 
@@ -435,6 +453,9 @@ bool Engineer3::Insert(Store& store)
                                     position,
                                     Position(-10, -65),
                                     std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::TowerRange, position, Position(0, 0), id)));
     return true;
 }
 
@@ -498,6 +519,9 @@ bool Mage1::Insert(Store& store)
                                     position,
                                     Position(-10, -65),
                                     std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::TowerRange, position, Position(0, 0), id)));
     return true;
 }
 
@@ -538,6 +562,9 @@ bool Mage2::Insert(Store& store)
                                     position,
                                     Position(-10, -65),
                                     std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::TowerRange, position, Position(0, 0), id)));
     return true;
 }
 
@@ -569,6 +596,9 @@ bool Mage3::Insert(Store& store)
                                     position,
                                     Position(-10, -65),
                                     std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::TowerRange, position, Position(0, 0), id)));
     return true;
 }
 
@@ -619,7 +649,7 @@ void Barrack::Update(Store& store)
         }
     }
     last_rally_point = rally_point;
-    
+
     if (solider_size_changed) {
         for (int i = 0; i < 3; i++) {
 

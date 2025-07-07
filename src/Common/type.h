@@ -56,7 +56,9 @@ enum class FxType
     PlainActionText,
     LoadingGrass,
     GameOverFailure,
-    GameOverVictory
+    GameOverVictory,
+    BarrackRange,
+    TowerRange
 };
 
 enum class SoldierType

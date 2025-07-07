@@ -15,8 +15,8 @@ void SoldierMelee::Update(Store& store)
         }
         calc::soldier_move_tick(store, *this, rally_point + rally_point_offset),
         walkjudge();
-        return ;
         last_rally_point = rally_point;
+        return;
     }
     last_rally_point = rally_point;
     Barrack* source = dynamic_cast<Barrack*>(store.GetTower(source_barrack));

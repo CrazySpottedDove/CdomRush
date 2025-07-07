@@ -6,6 +6,7 @@
 #include "Common/type.h"
 #include "Common/viewData.h"
 #include "ViewModel/GameViewModel/store/store.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
 #include <variant>
 
 void Fx::QueueViewData(Store& store)
@@ -41,8 +42,7 @@ CommonUpgradeButton::CommonUpgradeButton(const UpgradeTowerParams& params)
 {
     price = params.cost;
     animations.emplace_back(Animation(State::Disabled, "common_upgrade_button"));
-    animations[0].actions.emplace_back(
-        Action(ActionType::UpgradeTower, params));
+    animations[0].actions.emplace_back(Action(ActionType::UpgradeTower, params));
     animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
@@ -69,9 +69,8 @@ BloodSplat::BloodSplat()
 UpgradeToArcherButton::UpgradeToArcherButton(const UpgradeTowerParams& params)
 {
     animations.emplace_back(Animation(State::Disabled, "icon_archer"));
-    animations[0].actions.emplace_back(
-        Action(ActionType::UpgradeTower, params));
-    animations.emplace_back(Animation(State::Idle, "price_tag",Position(0, -30)));
+    animations[0].actions.emplace_back(Action(ActionType::UpgradeTower, params));
+    animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
 void UpgradeToArcherButton::Update(Store& store)
@@ -87,8 +86,7 @@ void UpgradeToArcherButton::Update(Store& store)
 UpgradeToMageButton::UpgradeToMageButton(const UpgradeTowerParams& params)
 {
     animations.emplace_back(Animation(State::Disabled, "icon_mage"));
-    animations[0].actions.emplace_back(
-        Action(ActionType::UpgradeTower, params));
+    animations[0].actions.emplace_back(Action(ActionType::UpgradeTower, params));
     animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
@@ -106,8 +104,7 @@ UpgradeToEngineerButton::UpgradeToEngineerButton(const UpgradeTowerParams& param
 
 {
     animations.emplace_back(Animation(State::Disabled, "icon_engineer"));
-    animations[0].actions.emplace_back(
-        Action(ActionType::UpgradeTower, params));
+    animations[0].actions.emplace_back(Action(ActionType::UpgradeTower, params));
     animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
@@ -124,8 +121,7 @@ void UpgradeToEngineerButton::Update(Store& store)
 UpgradeToBarrackButton::UpgradeToBarrackButton(const UpgradeTowerParams& params)
 {
     animations.emplace_back(Animation(State::Disabled, "icon_barrack"));
-    animations[0].actions.emplace_back(
-        Action(ActionType::UpgradeTower, params));
+    animations[0].actions.emplace_back(Action(ActionType::UpgradeTower, params));
     animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
@@ -139,17 +135,16 @@ void UpgradeToBarrackButton::Update(Store& store)
     }
 }
 
-SellTowerButton::SellTowerButton(const SellTowerParams& params){
+SellTowerButton::SellTowerButton(const SellTowerParams& params)
+{
     animations.emplace_back(Animation(State::Enabled, "icon_sell"));
-    animations[0].actions.emplace_back(
-        Action(ActionType::SellTower, params));
+    animations[0].actions.emplace_back(Action(ActionType::SellTower, params));
     animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
 }
 
-void TextFx::QueueViewData(Store& store){
-    store.GetViewDataQueue()->emplace(
-        ViewData(Stringfy(store),position, TEXT_LAYER)
-    );
+void TextFx::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(ViewData(Stringfy(store), position, TEXT_LAYER));
 }
 
 GoldStat::GoldStat()
@@ -158,7 +153,8 @@ GoldStat::GoldStat()
     position.y = 745;
 }
 
-std::string GoldStat::Stringfy(Store& store){
+std::string GoldStat::Stringfy(Store& store)
+{
     return std::to_string((int)store.gold);
 }
 
@@ -181,12 +177,10 @@ WaveStat::WaveStat()
 
 std::string WaveStat::Stringfy(Store& store)
 {
-    const int current_wave_count =
-        store.current_wave_index + 1; // current_wave_index is 0-based
-    const int total_wave_count =
-        store.resource_manager.GetWaves()->size();
-    return std::to_string(current_wave_count <
-                          total_wave_count? current_wave_count : total_wave_count) +
+    const int current_wave_count = store.current_wave_index + 1;   // current_wave_index is 0-based
+    const int total_wave_count   = store.resource_manager.GetWaves()->size();
+    return std::to_string(current_wave_count < total_wave_count ? current_wave_count
+                                                                : total_wave_count) +
            "/" + std::to_string(total_wave_count);
 }
 
@@ -195,10 +189,9 @@ PlainTextFx::PlainTextFx(const std::string& text)
     this->text = text;
 }
 
-void GameOverTextFx::QueueViewData(Store& store){
-    store.GetViewDataQueue()->emplace(
-        ViewData(Stringfy(store), position, GAMEOVER_TEXT_LAYER)
-    );
+void GameOverTextFx::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(ViewData(Stringfy(store), position, GAMEOVER_TEXT_LAYER));
 }
 
 TopLeft::TopLeft()
@@ -215,7 +208,8 @@ void TopLeft::QueueViewData(Store& store)
     store.GetViewDataQueue()->emplace(ViewData(&animations, position, UI_LOWER_LAYER));
 }
 
-void ActionTextFx::QueueViewData(Store& store){
+void ActionTextFx::QueueViewData(Store& store)
+{
     store.GetViewDataQueue()->emplace(ViewData(Stringfy(store), position, TEXT_LAYER));
 }
 
@@ -224,7 +218,8 @@ PlainActionTextFx::PlainActionTextFx(const std::string& text)
     this->text = text;
 }
 
-LoadingGrass::LoadingGrass(){
+LoadingGrass::LoadingGrass()
+{
     animations.emplace_back(Animation(State::Idle, "loading_grass"));
     animations[0].anchor_x = 0.0;
     animations[0].anchor_y = 0.0;
@@ -235,8 +230,8 @@ LoadingGrass::LoadingGrass(){
 GameOverFailure::GameOverFailure()
 {
     animations.emplace_back(Animation(State::Idle, "defeat_bg_notxt"));
-    position.x             = X_CENTER;
-    position.y             = Y_CENTER;
+    position.x = X_CENTER;
+    position.y = Y_CENTER;
 }
 
 void GameOverFailure::QueueViewData(Store& store)
@@ -248,13 +243,59 @@ GameOverVictory::GameOverVictory()
 {
     animations.emplace_back(Animation(State::Idle, "victoryBadges_notxt"));
     animations[0].actions.emplace_back(Action(ActionType::BackToBegin, std::monostate{}));
-    position.x             = X_CENTER;
-    position.y             = Y_CENTER;
+    position.x = X_CENTER;
+    position.y = Y_CENTER;
 }
 
 void GameOverVictory::QueueViewData(Store& store)
 {
     store.GetViewDataQueue()->emplace(ViewData(&animations, position, GAMEOVER_BACKGROUND_LAYER));
+    animations[0].actions.emplace_back(Action(ActionType::BackToBegin, std::monostate{}));
+}
+
+TowerRangeFx::TowerRangeFx(const ID tower_id)
+    : tower_id(tower_id)
+{}
+
+void TowerRangeFx::QueueViewData(Store& store)
+{
+    Tower* tower = store.GetTower(tower_id);
+    if (!tower) {
+        return;   // 如果塔不存在，直接返回
+    }
+
+    INFO("Render Tower Range at position: (" +
+         std::to_string(tower->position.x) + ", " +
+         std::to_string(tower->position.y) + ") with range: " +
+         std::to_string(tower->ranged.attacks[0].range));
+    store.GetViewDataQueue()->emplace(
+        ViewData(tower->ranged.attacks[0].range, tower->position, UI_LOWER_LAYER));
+}
+
+BarrackRangeFx::BarrackRangeFx(const ID tower_id)
+    : tower_id(tower_id)
+{
+    animations.emplace_back(Animation());
+    animations[0].hidden = true;
     animations[0].actions.emplace_back(
-        Action(ActionType::BackToBegin, std::monostate{}));
+        Action(ActionType::ChangeRallyPoint, ChangeRallyPointParams{tower_id, Position()})
+    );
+}
+
+void BarrackRangeFx::QueueViewData(Store& store)
+{
+    Tower* tower = store.GetTower(tower_id);
+    if (!tower) {
+        return;   // 如果塔不存在，直接返回
+    }
+
+    store.GetViewDataQueue()->emplace(
+        ViewData(dynamic_cast<Barrack*>(tower)->rally_range, tower->position, UI_LOWER_LAYER));
+}
+
+BarrackChangeRallyPointButton::BarrackChangeRallyPointButton(){
+    animations.emplace_back(Animation(State::Idle, "barrack_change_rally_point_button",Position(0,0)));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx, CreateActionFxParams(FxType::BarrackRange, position, Position(0,0),tower_id))
+    );
 }

@@ -142,14 +142,17 @@ void UIManager::Render(const ViewData& view_data)
         range_circle.setPosition(Position(screen_pos.x - view_data.range, screen_pos.y - view_data.range));
 
         // 设置颜色和样式
-        range_circle.setFillColor(sf::Color::Blue);
+        range_circle.setFillColor(sf::Color(0, 0, 255, 80));   // 蓝色，透明度80/255
+
+        // ✅ 设置边框颜色（稍微不透明一些）
         range_circle.setOutlineThickness(2.0f);
-        range_circle.setOutlineColor(sf::Color::Cyan);
+        range_circle.setOutlineColor(sf::Color(0, 150, 255, 150));   // 青蓝色边框，透明度150/255
 
         // 如果要椭圆效果，可以设置缩放
         range_circle.setScale(sf::Vector2f(1.0f, 0.7f));  // 水平方向正常，垂直方向压缩
 
         window->draw(range_circle);
+        break;
     }
     }
 }

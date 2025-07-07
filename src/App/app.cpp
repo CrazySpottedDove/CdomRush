@@ -197,6 +197,16 @@ void App::HandleAction(Action& action)
             store.QueueActionFx(action_fx);
             break;
         }
+        case FxType::TowerRange:
+        {
+            ActionFx* action_fx = new TowerRangeFx(std::get<ID>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            INFO("Creating TowerRangeFx at position: (" +
+                 std::to_string(action_fx->position.x) + ", " +
+                 std::to_string(action_fx->position.y) + ")");
+            store.QueueActionFx(action_fx);
+            break;
+        }
         }
         break;
     }

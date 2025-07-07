@@ -47,7 +47,7 @@ struct SellTowerParams
     // Position  offset; // 出售有无效果需要渲染？
 };
 
-using CreateActionFxProps = std::variant<std::monostate,UpgradeTowerParams, SellTowerParams, std::string>;
+using CreateActionFxProps = std::variant<std::monostate,UpgradeTowerParams, SellTowerParams, std::string, ID>;
 
 struct CreateActionFxParams{
     FxType fx_type;

@@ -193,5 +193,28 @@ public:
 class TowerRangeFx : public ActionFx
 {
 public:
-    TowerRangeFx();
+    ID tower_id;
+    TowerRangeFx(const ID tower_id);
+    ActionFx* Clone() override {
+        return new TowerRangeFx(*this);
+    }
+    void QueueViewData(Store& store) override;
+};
+
+class BarrackRangeFx : public ActionFx
+{
+public:
+    ID tower_id;
+    BarrackRangeFx(const ID tower_id);
+    ActionFx* Clone() override {
+        return new BarrackRangeFx(*this);
+    }
+    void QueueViewData(Store& store) override;
+};
+
+class BarrackChangeRallyPointButton: public ActionFx
+{
+public:
+    ID tower_id;
+    BarrackChangeRallyPointButton();
 };

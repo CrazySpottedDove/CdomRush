@@ -29,6 +29,7 @@ struct UpgradeTowerParams
     ID        tower_id; // 要替换的塔的 ID
     TowerType new_tower_type; // 新的塔的类型
     int       cost; // 升级的价格
+    std::string sound_name;
 };
 
 struct SelectLevelParams

@@ -63,25 +63,25 @@ bool None::Insert(Store& store)
                CreateActionFxParams(FxType::UpgradeToArcherButton,
                                     position,
                                     Position{-50, 50},
-                                    UpgradeTowerParams{id, TowerType::Archer1, 70})));
+                                    UpgradeTowerParams{id, TowerType::Archer1, 70,"ArcherTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::UpgradeToMageButton,
                                     position,
                                     Position{50, 50},
-                                    UpgradeTowerParams{id, TowerType::Mage1, 100})));
+                                    UpgradeTowerParams{id, TowerType::Mage1, 100,"MageTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::UpgradeToEngineerButton,
                                     position,
                                     Position{-50, -50},
-                                    UpgradeTowerParams{id, TowerType::Engineer1, 125})));
+                                    UpgradeTowerParams{id, TowerType::Engineer1, 125, "EngineerTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::UpgradeToBarrackButton,
                                     position,
                                     Position{50, -50},
-                                    UpgradeTowerParams{id, TowerType::Barrack1, 70})));
+                                    UpgradeTowerParams{id, TowerType::Barrack1, 70,"BarrackTaunt"})));
     return true;
 }
 
@@ -150,7 +150,7 @@ bool Archer1::Insert(Store& store)
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
                                     Position(0, 90),
-                                    UpgradeTowerParams{id, TowerType::Archer2, 110})));
+                                    UpgradeTowerParams{id, TowerType::Archer2, 110, "ArcherTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
@@ -181,7 +181,7 @@ bool Archer2::Insert(Store& store)
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
                                     Position(0, 100),
-                                    UpgradeTowerParams{id, TowerType::Archer3, 160})));
+                                    UpgradeTowerParams{id, TowerType::Archer3, 160, "ArcherTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
@@ -283,7 +283,7 @@ bool Engineer1::Insert(Store& store)
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
                                     Position(0, 100),
-                                    UpgradeTowerParams{id, TowerType::Engineer2, 220})));
+                                    UpgradeTowerParams{id, TowerType::Engineer2, 220,"EngineerTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
@@ -326,7 +326,7 @@ bool Engineer2::Insert(Store& store)
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
                                     Position(0, 100),
-                                    UpgradeTowerParams{id, TowerType::Engineer3, 320})));
+                                    UpgradeTowerParams{id, TowerType::Engineer3, 320, "EngineerTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
@@ -423,7 +423,7 @@ bool Mage1::Insert(Store& store)
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
                                     Position(0, 100),
-                                    UpgradeTowerParams{id, TowerType::Mage2, 160})));
+                                    UpgradeTowerParams{id, TowerType::Mage2, 160,"MageTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
@@ -454,7 +454,7 @@ bool Mage2::Insert(Store& store)
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
                                     Position(0, 100),
-                                    UpgradeTowerParams{id, TowerType::Mage3, 240})));
+                                    UpgradeTowerParams{id, TowerType::Mage3, 240,"MageTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(

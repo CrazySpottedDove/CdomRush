@@ -418,12 +418,12 @@ return {
         source_group = "GUI",
         files = {"Sound_GUIBuyUpgrade.ogg"}
     },
-    -- GUICoins = {
-    --     loop = false,
-    --     gain = 1,
-    --     source_group = "GUI",
-    --     files = {"Sound_Coins.ogg"}
-    -- },
+    GUICoins = {
+        loop = false,
+        gain = 1,
+        source_group = "GUI",
+        files = {"Sound_Coins.ogg"}
+    },
     GUILooseLife = {
         loop = false,
         gain = 1,

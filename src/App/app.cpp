@@ -196,6 +196,7 @@ void App::HandleAction(Action& action)
     case ActionType::UpgradeTower:
     {
         UpgradeTowerParams& params = std::get<UpgradeTowerParams>(action.param);
+        store.QueueSoundData(SoundData(params.sound_name));
         if (store.gold < params.cost) {
             WARNING("Not enough gold to upgrade tower.");
             break;
@@ -211,6 +212,7 @@ void App::HandleAction(Action& action)
     }
     case ActionType::SellTower:
     {
+        store.QueueSoundData(SoundData("GUICoins"));
         SellTowerParams& params = std::get<SellTowerParams>(action.param);
         Tower*           tower  = store.GetTower(params.tower_id);
         if(tower){

@@ -515,6 +515,7 @@ void Barrack::Update(Store& store)
         animations[0].current_state = State::DoorOpen;
         Soldier* soldierx           = store.template_manager.CreateSoldier(return_soldier_type());
         soldierx->position          = position + return_offset();
+        soldierx->source_barrack  =id;
         store.QueueSoldier(soldierx);
         soldiers.push_back(soldierx->id);
         solider_size_changed = true;
@@ -556,6 +557,7 @@ Barrack1::Barrack1(Position position_, int total_price_)
     animations.push_back(Animation(State::Idle, "terrain_barrack_0001", Position{0.0f, 13.0f}));
     animations.push_back(Animation(State::Idle, "tower_barracks_lvl1_layer1_0001", Position{0.0f, 38.0f}));
     animations.push_back(Animation(State::DoorClose, "towerbarracklvl1_door", Position{0.0f, 38.0f}));
+    rally_range = 145;
 }
 bool Barrack1::Insert(Store& store){
     animations[0].actions.push_back(
@@ -587,6 +589,7 @@ Barrack2::Barrack2(Position position_, int total_price_)
     animations.push_back(Animation(State::Idle, "terrain_barrack_0002", Position{0.0f, 13.0f}));
     animations.push_back(Animation(State::Idle, "tower_barracks_lvl2_layer1_0001", Position{0.0f, 38.0f}));
     animations.push_back(Animation(State::DoorClose, "towerbarracklvl2_door", Position{0.0f, 38.0f}));
+    rally_range = 150;
 }
 bool Barrack2::Insert(Store& store){
     animations[0].actions.push_back(
@@ -616,6 +619,7 @@ Barrack3::Barrack3(Position position_, int total_price_)
     animations.push_back(Animation(State::Idle, "terrain_barrack_0003", Position{0.0f, 13.0f}));
     animations.push_back(Animation(State::Idle, "tower_barracks_lvl3_layer1_0001", Position{0.0f, 38.0f}));
     animations.push_back(Animation(State::DoorClose, "towerbarracklvl3_door", Position{0.0f, 38.0f}));
+    rally_range = 155;
 }
 bool Barrack3::Insert(Store& store){
     animations[0].actions.emplace_back(

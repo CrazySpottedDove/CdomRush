@@ -9,13 +9,13 @@
 #include "Common/type.h"
 #include "Common/macros.h"
 
-
 class Soldier: public Unit{
 public:
     sf::Vector2f slot; // 用于近战偏移
     Position rally_point;
     Position rally_point_offset;
     double range;
+    ID source_barrack;
     ID target_enemy = INVALID_ID;
     virtual Soldier* Clone() = 0;
 };
@@ -23,7 +23,6 @@ public:
 class SoldierMelee: public Soldier{
 public:
     Melee melee;
-
     void Update(Store& store) override;
 };
 

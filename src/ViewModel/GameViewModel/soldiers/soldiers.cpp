@@ -1,9 +1,12 @@
 #include "soldiers.h"
 #include "ViewModel/GameViewModel/store/store.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
+#include "ViewModel/GameViewModel/towers/towers.h"
 
 
 void SoldierMelee::Update(Store& store){
+    Barrack* source = dynamic_cast<Barrack*>(store.GetTower(source_barrack));
+    if(source == nullptr) return ;
     if(animations[0].current_state == State::Death) return ;
     if(health.hp<=0){
         animations[0].current_state = State::Death;
@@ -42,6 +45,12 @@ void SoldierMelee::Update(Store& store){
             }
         }
         else{
+            if((rally_point - position).lengthSquared() > source->rally_range){
+                health.last_regen_time = store.time;
+                calc::soldier_move_tick(store,*this,rally_point+rally_point_offset);
+                walkjudge();
+                return ;
+            }
             target_enemy = calc::find_foremost_enemy(store,rally_point,range,true);
             if(target_enemy != INVALID_ID){
                 ActiveEnemy* enemy_ptr = dynamic_cast<ActiveEnemy*>(store.GetEnemy(target_enemy));
@@ -90,32 +99,46 @@ SoldierMeleelv1:: SoldierMeleelv1(Position position_,Position rally_point_,Posit
     position = position_;
     rally_point = rally_point_;
     rally_point_offset = offset_;
-    speed = 30;
-    animations.push_back(Animation(State::Idle,"soldier_lvl1"));
-    melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
+    speed = 75;
+    health = Health(50,50);
+    health.dead_lifetime = 10;
+    health_bar_offset = Position(0,25.16);
+    animations.push_back(Animation(State::Idle,"soldiermilitia"));
+    animations[0].anchor_y = 0.83;
+    melee.attacks.push_back(MeleeAttack(DamageData(2.0, DamageType::Physical, 0.0, 5), -1, 60.0, 1.0, 1.0, "MeleeSword"));
     melee[0].damage_event.source = id;
-    slot  = sf::Vector2f(-35.0f, 0.0f);   // 初始化近战偏移
-    Hit_offset = sf::Vector2f(30.0f,0.0f);   // 设置受击偏移位置
+    slot  = sf::Vector2f(5.0f, 0.0f);   // 初始化近战偏移
+    Hit_offset = sf::Vector2f(0.0f,12.0f);   // 设置受击偏移位置
 }
 SoldierMeleelv2:: SoldierMeleelv2(Position position_,Position rally_point_,Position offset_){
     position = position_;
     rally_point = rally_point_;
     rally_point_offset = offset_;
-    speed = 30;
-    animations.push_back(Animation(State::Idle,"soldier_lvl2"));
-    melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
+    speed = 75;
+    health = Health(100,100);
+    armor = Armor(0.15,0);
+    health.dead_lifetime = 10;
+    health_bar_offset = Position(0,25.16);
+    animations.push_back(Animation(State::Idle,"soldiermilitia"));
+    animations[0].anchor_y = 0.83;
+    melee.attacks.push_back(MeleeAttack(DamageData(4.0, DamageType::Physical, 0.0, 5), -1, 60.0, 1.3, 1.0, "MeleeSword"));
     melee[0].damage_event.source = id;
-    slot  = sf::Vector2f(-35.0f, 0.0f);   // 初始化近战偏移
-    Hit_offset = sf::Vector2f(30.0f,0.0f);   // 设置受击偏移位置
+    slot  = sf::Vector2f(5.0f, 0.0f);   // 初始化近战偏移
+    Hit_offset = sf::Vector2f(0.0f,12.0f);   // 设置受击偏移位置
 }
 SoldierMeleelv3:: SoldierMeleelv3(Position position_,Position rally_point_,Position offset_){
     position = position_;
     rally_point = rally_point_;
     rally_point_offset = offset_;
-    speed = 30;
-    animations.push_back(Animation(State::Idle,"soldier_lvl3"));
-    melee.attacks.push_back(MeleeAttack(DamageData(100.0, DamageType::Physical, 0.0, 15), 50.0, 1.0, 1.0));
+    speed = 75;
+    health = Health(150,150);
+    armor = Armor(0.3,0);
+    health.dead_lifetime = 10;
+    health_bar_offset = Position(0,25.16);
+    animations.push_back(Animation(State::Idle,"soldierknight"));
+    animations[0].anchor_y = 0.83;
+    melee.attacks.push_back(MeleeAttack(DamageData(9.0, DamageType::Physical, 0.0, 5), -1, 60.0, 1.3, 1.0, "MeleeSword"));
     melee[0].damage_event.source = id;
-    slot  = sf::Vector2f(-35.0f, 0.0f);   // 初始化近战偏移
-    Hit_offset = sf::Vector2f(30.0f,0.0f);   // 设置受击偏移位置
+    slot  = sf::Vector2f(5.0f, 0.0f);   // 初始化近战偏移
+    Hit_offset = sf::Vector2f(0.0f,12.0f);   // 设置受击偏移位置
 }

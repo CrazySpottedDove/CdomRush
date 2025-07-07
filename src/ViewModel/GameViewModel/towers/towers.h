@@ -190,6 +190,7 @@ public:
 
 class Barrack : public Tower{
 public:
+    double rally_range = 0;
     Position rally_point = position + sf::Vector2f(0,-60);
     std::vector<ID> soldiers;
 

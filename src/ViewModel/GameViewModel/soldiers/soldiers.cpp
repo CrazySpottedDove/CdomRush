@@ -16,6 +16,7 @@ void SoldierMelee::Update(Store& store)
         calc::soldier_move_tick(store, *this, rally_point + rally_point_offset),
         walkjudge();
         last_rally_point = rally_point;
+        store.QueueSoundData(SoundData("BarrackTaunt"));
         return;
     }
     last_rally_point = rally_point;

@@ -647,6 +647,7 @@ void Barrack::Update(Store& store)
             Soldier* si = store.GetSoldier(soldiers[i]);
             si->rally_point = rally_point;
         }
+        store.QueueSoundData(SoundData("BarrackTaunt"));
     }
     last_rally_point = rally_point;
 

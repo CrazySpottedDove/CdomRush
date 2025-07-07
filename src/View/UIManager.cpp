@@ -4,6 +4,7 @@
 #include "Common/macros.h"
 #include "Common/viewData.h"
 #include "View/mapPosition.h"
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -128,6 +129,27 @@ void UIManager::Render(const ViewData& view_data)
         text.setStyle(sf::Text::Bold);
         window->draw(text);
         break;
+    }
+    case ViewDataType::TowerRange:{
+        // 将世界坐标转换为屏幕坐标
+        sf::Vector2f screen_pos = MapPosition(view_data.position);
+
+        // 创建圆形（可以设置为椭圆）
+        sf::CircleShape range_circle;
+        range_circle.setRadius(view_data.range);
+
+        // 设置圆心位置
+        range_circle.setPosition(Position(screen_pos.x - view_data.range, screen_pos.y - view_data.range));
+
+        // 设置颜色和样式
+        range_circle.setFillColor(sf::Color::Blue);
+        range_circle.setOutlineThickness(2.0f);
+        range_circle.setOutlineColor(sf::Color::Cyan);
+
+        // 如果要椭圆效果，可以设置缩放
+        range_circle.setScale(sf::Vector2f(1.0f, 0.7f));  // 水平方向正常，垂直方向压缩
+
+        window->draw(range_circle);
     }
     }
 }

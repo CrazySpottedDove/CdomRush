@@ -11,6 +11,7 @@ enum class ViewDataType
     Animation,   // 动画
     HealthBar,   // 血条
     Text,        // 文本
+    TowerRange // 塔的范围
 };
 
 // Animations[0] 确定了指示状态，储存所有可以触发的点击事件
@@ -20,6 +21,7 @@ struct ViewData
     Position                position;
     size_t                  layer_index;   // index 越大，越靠上显示
     double                  health_rate = 1.0;
+    double range = 0.0;
     std::string             text;   // 用于文本显示
     ViewDataType            type;
     ViewData(std::vector<Animation>* animations, const Position& position,

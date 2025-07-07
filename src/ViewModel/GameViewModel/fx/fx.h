@@ -189,3 +189,9 @@ public:
     Fx* Clone() override { return new GameOverVictory(*this); }
     void QueueViewData(Store& store) override;
 };
+
+class TowerRangeFx : public ActionFx
+{
+public:
+    TowerRangeFx();
+};

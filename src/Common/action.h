@@ -88,7 +88,7 @@ struct CheckTowerStatusParams
 
 struct ChangeRallyPointParams
 {
-    ID        soldier_id; // 要改变集结点的士兵 ID
+    ID        tower_id; // 要改变集结点的塔 ID
     Position  new_rally_point;
 };
 

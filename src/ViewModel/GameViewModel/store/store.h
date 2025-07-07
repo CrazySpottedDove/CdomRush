@@ -105,6 +105,7 @@ public:
     void IntoLoading();
     void IntoGameStart();
     void IntoGamePlaying();
+    void IntoGameOver();
 private:
     std::unordered_map<ID, Enemy*>    enemies;
     std::unordered_map<ID, Tower*>    towers;

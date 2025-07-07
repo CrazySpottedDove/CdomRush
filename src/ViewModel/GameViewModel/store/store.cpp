@@ -6,6 +6,7 @@
 #include "ViewModel/GameViewModel/Function/calc/motion.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
+#include "ViewModel/GameViewModel/fx/fx.h"
 #include "ViewModel/GameViewModel/soldiers/soldiers.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -14,8 +15,6 @@
 Store::~Store(){
     Clear();
 }
-
-
 
 /**
  * @brief 首先考虑结算所有可以结算的伤害事件，尽快完成生命值的更新
@@ -58,7 +57,6 @@ void Store::UpdateEnemies()
             continue;
         }
         enemy->Update(*this);
-        // QueueViewDataFromEntity(enemy);
         enemy->QueueViewData(*this);
         ++it;
     }
@@ -460,6 +458,8 @@ void Store::IntoBegin()
 void Store::IntoLoading()
 {
     Clear();
+    Fx* loading_fx = template_manager.CreateFx(FxType::LoadingGrass);
+    QueueFx(loading_fx);
     resource_manager.LoadLevelResources(
         current_level_name, current_level_prepare_music, current_level_fight_music, gold);
     for (const auto& tower_essential : *resource_manager.GetTowerEssentials()) {
@@ -493,4 +493,22 @@ void Store::IntoGameStart()
 void Store::IntoGamePlaying(){
     current_wave_time = 0;
     QueueSoundData(SoundData(current_level_fight_music));
+}
+
+void Store::IntoGameOver(){
+    if(life <= 0){
+        Fx* gameover_background_fx = template_manager.CreateFx(FxType::GameOverFailure);
+        QueueFx(gameover_background_fx);
+        Fx* gameover_text_fx = new GameOverTextFx("You Lose! Click To Continue...");
+        gameover_text_fx->position = sf::Vector2f(X_CENTER - 80, Y_CENTER);
+        QueueFx(gameover_text_fx);
+        QueueSoundData(SoundData("GUIQuestFailed"));
+    }else{
+        Fx* gameover_background_fx = template_manager.CreateFx(FxType::GameOverVictory);
+        QueueFx(gameover_background_fx);
+        Fx* gameover_text_fx = new GameOverTextFx("You Win! Click To Continue...");
+        gameover_text_fx->position = sf::Vector2f(X_CENTER - 80, Y_CENTER);
+        QueueFx(gameover_text_fx);
+        QueueSoundData(SoundData("GUIQuestCompleted"));
+    }
 }

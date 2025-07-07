@@ -839,5 +839,17 @@ return {
         loop = true,
         stream = true,
         files = {"MusicMap.ogg"}
-    }
+    },
+    GUIQuestCompleted = {
+        loop = false,
+        gain = 1,
+        source_group = "GUI",
+        files = {"Sound_QuestCompleted.ogg"}
+    },
+    GUIQuestFailed = {
+        loop = false,
+        gain = 1,
+        source_group = "GUI",
+        files = {"Sound_QuestFailed.ogg"}
+    },
 }

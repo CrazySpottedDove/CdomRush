@@ -44,7 +44,7 @@ void App::Run()
                 last_state = GameState::Begin;
                 INFO("State Changed to Begin");
             }
-            DEBUG_CODE(store.current_level_name = "acaroth"; game_state = GameState::Loading;)
+            // DEBUG_CODE(store.current_level_name = "acaroth"; game_state = GameState::Loading;)
             store.UpdateFxs();
             ui_manager.PrecessUI();
             sound_manager.PlayAll();
@@ -65,9 +65,9 @@ void App::Run()
                 store.IntoGameStart();
                 INFO("State Changed to GameStart");
             }
-            DEBUG_CODE(game_state =
-                           GameState::GamePlaying;   // For testing purposes, skip loading state
-            )
+            // DEBUG_CODE(game_state =
+            //                GameState::GamePlaying;   // For testing purposes, skip loading state
+            // )
             store.UpdateFxs();
             store.UpdateActionFxs();
             store.UpdateTowers();
@@ -94,19 +94,23 @@ void App::Run()
             ui_manager.PrecessUI();
             sound_manager.PlayAll();
             store.time += FRAME_LENGTH;
-            if (store.life <= 0) {
+            if (store.life <= 0 || (store.current_wave_index >= store.resource_manager.GetWaves()->size() &&
+                                    store.GetEnemies().empty())) {
                 game_state = GameState::GameOver;
-                INFO("Game Over! Your life is smaller than 0.");
             }
             break;
         case GameState::GameOver:
             if (last_state != GameState::GameOver) {
-                store.Clear();
+                store.IntoGameOver();
                 last_state = GameState::GameOver;
                 INFO("State Changed to GameOver");
             }
             store.UpdateFxs();
+            store.UpdateTowers();
+            store.UpdateSoldiers();
+            store.UpdateActionFxs();
             ui_manager.PrecessUI();
+            sound_manager.PlayAll();
             break;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(FRAME_LENGTH_IN_MILLISECONDS));
@@ -185,9 +189,9 @@ void App::HandleAction(Action& action)
             store.QueueActionFx(action_fx);
             break;
         }
-        case FxType::PriceTagText:
+        case FxType::PlainActionText:
         {
-            ActionFx* action_fx = new PriceTagText(std::get<std::string>(fx_params.props));
+            ActionFx* action_fx = new PlainActionTextFx(std::get<std::string>(fx_params.props));
             action_fx->position = fx_params.position + fx_params.offset;
             store.QueueActionFx(action_fx);
             break;
@@ -231,6 +235,16 @@ void App::HandleAction(Action& action)
             INFO("Tower sold for " << tower->total_price * 0.5 << " gold.");
         }
         break;
+    }
+    case ActionType::BackToBegin:
+    {
+        game_state = GameState::Begin;
+    }
+    case ActionType::EndGameStart:
+    {
+        if(game_state == GameState::GameStart){
+            game_state = GameState::GamePlaying;
+        }
     }
     }
 }

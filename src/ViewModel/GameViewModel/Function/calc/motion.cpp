@@ -93,6 +93,50 @@ void calc::soldier_move_tick(const Store& store, Soldier& self, Position target_
     }
 
     self.position += movement*direction;
+
+    if (displacement.x > 0) {
+        if (displacement.y > 0) {
+            if (displacement.x > displacement.y) {
+                self.heading = Heading::Right;
+                self.animations[0].flip = false;
+            }
+            else {
+                self.heading = Heading::Up;
+                self.animations[0].flip = false;
+            }
+        }
+        else {
+            if( displacement.x > -displacement.y) {
+                self.heading = Heading::Right;
+                self.animations[0].flip = false;
+            }
+            else {
+                self.heading = Heading::Down;
+                self.animations[0].flip = false;
+            }
+        }
+    }else {
+        if (displacement.y > 0) {
+            if (-displacement.x > displacement.y) {
+                self.heading = Heading::Left;
+                self.animations[0].flip = true;
+            }
+            else {
+                self.heading = Heading::Up;
+                self.animations[0].flip = false;
+            }
+        }
+        else {
+            if (-displacement.x > -displacement.y) {
+                self.heading = Heading::Left;
+                self.animations[0].flip = true;
+            }
+            else {
+                self.heading = Heading::Down;
+                self.animations[0].flip = false;
+            }
+        }
+    }
     return ;
 }
 

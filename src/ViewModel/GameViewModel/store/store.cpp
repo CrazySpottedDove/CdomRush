@@ -526,4 +526,6 @@ void Store::IntoGameOver()
         QueueFx(gameover_text_fx);
         QueueSoundData(SoundData("GUIQuestCompleted"));
     }
+    // resource_manager.UnloadSpecificSoundGroups();
+    // resource_manager.UnloadSpecificTexturesAndSpriteFrameDatas();
 }

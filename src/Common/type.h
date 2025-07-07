@@ -58,7 +58,8 @@ enum class FxType
     GameOverFailure,
     GameOverVictory,
     BarrackRange,
-    TowerRange
+    TowerRange,
+    ChangeRallyPointButton
 };
 
 enum class SoldierType

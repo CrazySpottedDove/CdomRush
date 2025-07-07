@@ -29,6 +29,9 @@ public:
     SoundBufferMap*              GetSoundBufferMap() { return &sound_buffer_map; }
     MusicSet*                    GetMusicSet() { return &music_set; }
     sf::Font* GetFont() { return &font; }
+    void                         UnloadSpecificTexturesAndSpriteFrameDatas();
+    void                         UnloadSpecificSoundGroups();
+
 private:
     TextureMap                  texture_map;
     TextureLevelMap             texture_level_map;
@@ -45,13 +48,13 @@ private:
     std::vector<Wave>           waves;
     std::vector<TowerEssential> tower_essentials;
     void                        LoadTexture(const std::string& file_path, ResourceLevel level);
-    void                        UnloadSpecificTexturesAndSpriteFrameDatas();
+
     void                        LoadTexturesAndSpriteFrameDatas(const std::string&  file_path,
                                                                 const ResourceLevel level = ResourceLevel::Common);
     // 加载声音组和声音组中的声音资源
     void LoadSoundGroups(const std::string&  file_path,
                          const ResourceLevel level = ResourceLevel::Common);
-    void UnloadSpecificSoundGroups();
+
     void LoadAnimationGroups();
     void LoadLevelAssets(const std::string& level_name, std::string& level_prepare_music,
                          std::string& level_fight_music, double& gold);

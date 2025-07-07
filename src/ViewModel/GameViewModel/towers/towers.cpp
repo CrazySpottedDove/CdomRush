@@ -706,10 +706,22 @@ bool Barrack1::Insert(Store& store){
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
-    // animations[0].actions.emplace_back(
-    //     Action(ActionType::ChangeRallyPoint,
-    //             CreateActionFxParams(
-    //                 FxType::ChangeRallyPointButton,position, Position(30,0),0)));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PlainActionText, position, Position(-10, 75), "110")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PlainActionText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+        CreateActionFxParams(
+            FxType::ChangeRallyPointButton, position, Position (50, 0), id
+        ))
+    );
+
     return true;
 }
 
@@ -738,10 +750,18 @@ bool Barrack2::Insert(Store& store){
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
-    // animations[0].actions.emplace_back(
-    //     Action(ActionType::ChangeRallyPoint,
-    //             CreateActionFxParams(
-    //                 FxType::ChangeRallyPointButton,position, Position(30,0),0)));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PlainActionText, position, Position(-10, 75), "150")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PlainActionText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(Action(
+        ActionType::CreateActionFx,
+        CreateActionFxParams(FxType::ChangeRallyPointButton, position, Position(50, 0), id)));
     return true;
 }
 Barrack3::Barrack3(Position position_, int total_price_)
@@ -762,9 +782,14 @@ bool Barrack3::Insert(Store& store){
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
-    // animations[0].actions.emplace_back(
-    //     Action(ActionType::ChangeRallyPoint,
-    //             CreateActionFxParams(
-    //                 FxType::ChangeRallyPointButton,position, Position(30,0),0)));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PlainActionText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
+    animations[0].actions.emplace_back(Action(
+        ActionType::CreateActionFx,
+        CreateActionFxParams(FxType::ChangeRallyPointButton, position, Position(50, 0), id)));
     return true;
 }

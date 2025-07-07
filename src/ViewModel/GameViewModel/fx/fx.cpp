@@ -264,12 +264,11 @@ void TowerRangeFx::QueueViewData(Store& store)
         return;   // 如果塔不存在，直接返回
     }
 
-    INFO("Render Tower Range at position: (" +
-         std::to_string(tower->position.x) + ", " +
-         std::to_string(tower->position.y) + ") with range: " +
-         std::to_string(tower->ranged.attacks[0].range));
+    INFO("Render Tower Range at position: (" + std::to_string(tower->position.x) + ", " +
+         std::to_string(tower->position.y) +
+         ") with range: " + std::to_string(tower->ranged.attacks[0].range));
     store.GetViewDataQueue()->emplace(
-        ViewData(tower->ranged.attacks[0].range, tower->position, UI_LOWER_LAYER));
+        ViewData(tower->ranged.attacks[0].range, tower->position, nullptr));
 }
 
 BarrackRangeFx::BarrackRangeFx(const ID tower_id)
@@ -278,8 +277,7 @@ BarrackRangeFx::BarrackRangeFx(const ID tower_id)
     animations.emplace_back(Animation());
     animations[0].hidden = true;
     animations[0].actions.emplace_back(
-        Action(ActionType::ChangeRallyPoint, ChangeRallyPointParams{tower_id, Position()})
-    );
+        Action(ActionType::ChangeRallyPoint, ChangeRallyPointParams{tower_id, Position()}));
 }
 
 void BarrackRangeFx::QueueViewData(Store& store)
@@ -290,12 +288,20 @@ void BarrackRangeFx::QueueViewData(Store& store)
     }
 
     store.GetViewDataQueue()->emplace(
-        ViewData(dynamic_cast<Barrack*>(tower)->rally_range, tower->position, UI_LOWER_LAYER));
+        ViewData(dynamic_cast<Barrack*>(tower)->rally_range, tower->position, &animations));
 }
 
-BarrackChangeRallyPointButton::BarrackChangeRallyPointButton(){
-    animations.emplace_back(Animation(State::Idle, "barrack_change_rally_point_button",Position(0,0)));
+BarrackChangeRallyPointButton::BarrackChangeRallyPointButton(const ID tower_id)
+    : tower_id(tower_id)
+{
+    animations.emplace_back(
+        Animation(State::Idle, "sub_icons_0001", Position(0, 0)));
+}
+
+bool BarrackChangeRallyPointButton::Insert(Store& store)
+{
     animations[0].actions.emplace_back(
-        Action(ActionType::CreateActionFx, CreateActionFxParams(FxType::BarrackRange, position, Position(0,0),tower_id))
-    );
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::BarrackRange, position, Position(-50, 0), tower_id)));
+    return true;
 }

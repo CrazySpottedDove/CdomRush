@@ -852,4 +852,13 @@ return {
         source_group = "GUI",
         files = {"Sound_QuestFailed.ogg"}
     },
+    MeleeSword = {
+        -- ignore = 0.45,
+        gain = 0.2,
+        mode = "sequence",
+        source_group = "SWORDS",
+        loop = false,
+        files = {"Sound_SoldiersFighting-01.ogg", "Sound_SoldiersFighting-02.ogg", "Sound_SoldiersFighting-03.ogg",
+                 "Sound_SoldiersFighting-04.ogg", "Sound_SoldiersFighting-05.ogg"}
+    },
 }

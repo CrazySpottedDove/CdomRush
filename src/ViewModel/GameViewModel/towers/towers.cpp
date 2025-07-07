@@ -639,8 +639,8 @@ Barrack1::Barrack1(Position position_, int total_price_)
     animations.push_back(
     Animation(State::DoorClose, "terrain_barrack_0001", Position{0.0f, 13.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_barrack_0001", Position{0.0f, 13.0f}));
-    animations.push_back(Animation(State::Idle, "tower_barracks_lvl1_layer1_0001", Position{0.0f, 38.0f}));
-    animations.push_back(Animation(State::DoorClose, "towerbarracklvl1_door", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::Idle, "tower_barracks_lvl1_layer1", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::DoorClose, "tower_barracks_lvl1_layer2", Position{0.0f, 38.0f}));
     rally_range = 145;
 }
 bool Barrack1::Insert(Store& store){
@@ -671,8 +671,8 @@ Barrack2::Barrack2(Position position_, int total_price_)
     animations.push_back(
     Animation(State::DoorClose, "terrain_barrack_0002", Position{0.0f, 13.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_barrack_0002", Position{0.0f, 13.0f}));
-    animations.push_back(Animation(State::Idle, "tower_barracks_lvl2_layer1_0001", Position{0.0f, 38.0f}));
-    animations.push_back(Animation(State::DoorClose, "towerbarracklvl2_door", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::Idle, "tower_barracks_lvl2_layer1", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::DoorClose, "tower_barracks_lvl2_layer2", Position{0.0f, 38.0f}));
     rally_range = 150;
 }
 bool Barrack2::Insert(Store& store){
@@ -701,8 +701,8 @@ Barrack3::Barrack3(Position position_, int total_price_)
     animations.push_back(
     Animation(State::DoorClose, "terrain_barrack_0003", Position{0.0f, 13.0f}, true));
     animations.push_back(Animation(State::Idle, "terrain_barrack_0003", Position{0.0f, 13.0f}));
-    animations.push_back(Animation(State::Idle, "tower_barracks_lvl3_layer1_0001", Position{0.0f, 38.0f}));
-    animations.push_back(Animation(State::DoorClose, "towerbarracklvl3_door", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::Idle, "tower_barracks_lvl3_layer1", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::DoorClose, "tower_barracks_lvl3_layer2", Position{0.0f, 38.0f}));
     rally_range = 155;
 }
 bool Barrack3::Insert(Store& store){

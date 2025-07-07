@@ -460,6 +460,24 @@ return {
             from = 22
         }
     },
+    tower_barracks_lvl1_layer1 = {
+        idle = {
+            to = 1,
+            from = 1
+        }
+    },
+    tower_barracks_lvl2_layer1 = {
+        idle = {
+            to = 1,
+            from = 1
+        }
+    },
+    tower_barracks_lvl3_layer1 = {
+        idle = {
+            to = 1,
+            from = 1
+        }
+    },
     arrow = {
         flying = {
             to = 1,
@@ -648,5 +666,77 @@ return {
             to = 1,
             from = 1
         } -- 胜利背景
+    },
+    terrain_barrack_0001 = {
+        idle = {
+            to = 1,
+            from = 1
+        } -- 兵营地形
+    },
+    terrain_barrack_0002 = {
+        idle = {
+            to = 1,
+            from = 1
+        } -- 兵营地形
+    },
+    terrain_barrack_0003 = {
+        idle = {
+            to = 1,
+            from = 1
+        } -- 兵营地形
+    },
+    soldier_lvl1 = {
+        idle = {
+            to = 1,
+            from = 1
+        },
+        running = {
+            to = 6,
+            from = 2
+        },
+        attack = {
+            to = 17,
+            from = 7
+        },
+        death = {
+            to = 23,
+            from = 18
+        }
+    },
+    soldier_lvl2 = {
+        idle = {
+            to = 1,
+            from = 1
+        },
+        running = {
+            to = 6,
+            from = 2
+        },
+        attack = {
+            to = 17,
+            from = 7
+        },
+        death = {
+            to = 23,
+            from = 18
+        }
+    },
+    soldier_lvl3 = {
+        idle = {
+            to = 1,
+            from = 1
+        },
+        running = {
+            to = 6,
+            from = 2
+        },
+        attack = {
+            to = 17,
+            from = 7
+        },
+        death = {
+            to = 23,
+            from = 18
+        }
     },
 }

@@ -88286,6 +88286,33 @@ return {
             f_quad = {557, 920, 112, 60}
         }
     },
+    terrain_barrack_0001 = {
+        [1]={
+            a_name = "go_decals-1.png",
+            size = {123, 72},
+            trim = {5, 15, 6, 5},
+            a_size = {1024, 1024},
+            f_quad = {158, 972, 112, 52},
+        }
+    },
+    terrain_barrack_0002 = {
+        [1]={
+            a_name = "go_decals-1.png",
+            size = {123, 72},
+            trim = {5, 17, 6, 5},
+            a_size = {1024, 1024},
+            f_quad = {436, 974, 112, 50},
+        }
+    },
+    terrain_barrack_0003 = {
+        [1]={
+            a_name = "go_decals-1.png",
+            size = {123, 72},
+            trim = {7, 5, 10, 7},
+            a_size = {1024, 1024},
+            f_quad = {793, 817, 106, 60},
+        }
+    },
     terrain_artillery_0001 = {
         [1] = {
             a_name = "go_decals-1.png",

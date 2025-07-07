@@ -19,125 +19,124 @@
 void UIManager::Render(const ViewData& view_data)
 {
     switch (view_data.type) {
-        case ViewDataType::Animation:{
-            for (size_t layer_index = 0; layer_index < view_data.animations->size();
-                 ++layer_index) {
-                Animation& animation = (*view_data.animations)[layer_index];
-                if (!animation.hidden) {
-                    const AnimationGroup animation_group =
-                        animation_group_map->at(animation.prefix).at(animation.current_state);
+    case ViewDataType::Animation:
+    {
+        for (size_t layer_index = 0; layer_index < view_data.animations->size(); ++layer_index) {
+            Animation& animation = (*view_data.animations)[layer_index];
+            if (!animation.hidden) {
+                const AnimationGroup animation_group =
+                    animation_group_map->at(animation.prefix).at(animation.current_state);
 
-                    if (animation.last_state != animation.current_state ||
-                        (animation.current_state != State::Death &&
-                         animation.frame_id > animation_group.to)) {
-                        animation.frame_id = animation_group.from;
-                        animation.pending  = true;
-                    }
+                if (animation.last_state != animation.current_state ||
+                    (animation.current_state != State::Death &&
+                     animation.frame_id > animation_group.to)) {
+                    animation.frame_id = animation_group.from;
+                    animation.pending  = true;
+                }
 
-                    // 死亡结束后，一直播放死亡的最后一帧
-                    if (animation.current_state == State::Death && animation.pending == false &&
-                        animation.last_state == State::Death) {
-                        animation.frame_id = animation_group.to;
-                    }
+                // 死亡结束后，一直播放死亡的最后一帧
+                if (animation.current_state == State::Death && animation.pending == false &&
+                    animation.last_state == State::Death) {
+                    animation.frame_id = animation_group.to;
+                }
 
-                    animation.last_state = animation.current_state;
+                animation.last_state = animation.current_state;
 
-                    const SpriteFrameData& sprite_frame_data =
-                        sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
+                const SpriteFrameData& sprite_frame_data =
+                    sprite_frame_data_map->at(animation.prefix).at(animation.frame_id - 1);
 
-                    const sf::Texture& texture =
-                        texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
+                const sf::Texture& texture =
+                    texture_map->at(IMAGES_PATH + sprite_frame_data.textureName);
 
-                    sf::Sprite sprite(texture);
+                sf::Sprite sprite(texture);
 
-                    sprite.setTextureRect(sprite_frame_data.frameRect);
+                sprite.setTextureRect(sprite_frame_data.frameRect);
 
-                    sprite.setOrigin(
-                        Position(sprite_frame_data.displaySize.x * animation.anchor_x -
-                                     sprite_frame_data.trim_left,
-                                 sprite_frame_data.displaySize.y * (animation.anchor_y) -
-                                     sprite_frame_data.trim_top));
+                sprite.setOrigin(Position(sprite_frame_data.displaySize.x * animation.anchor_x -
+                                              sprite_frame_data.trim_left,
+                                          sprite_frame_data.displaySize.y * (animation.anchor_y) -
+                                              sprite_frame_data.trim_top));
 
-                    sprite.setScale(
-                        sf::Vector2f(animation.flip ? -animation.scale_x : animation.scale_x,
-                                     animation.scale_y));
+                sprite.setScale(sf::Vector2f(
+                    animation.flip ? -animation.scale_x : animation.scale_x, animation.scale_y));
 
-                    sprite.setPosition(
-                        MapPosition(Position{view_data.position.x + animation.offset.x,
-                                             view_data.position.y + animation.offset.y}));
+                sprite.setPosition(
+                    MapPosition(Position{view_data.position.x + animation.offset.x,
+                                         view_data.position.y + animation.offset.y}));
 
-                    sprite.setRotation(sf::degrees(animation.rotation));
+                sprite.setRotation(sf::degrees(animation.rotation));
 
-                    window->draw(sprite);
+                window->draw(sprite);
 
-                    ++animation.frame_id;
+                ++animation.frame_id;
 
-                    if (animation.frame_id > animation_group.to) {
-                        animation.pending = false;
-                    }
+                if (animation.frame_id > animation_group.to) {
+                    animation.pending = false;
                 }
             }
-            break;
         }
-        case ViewDataType::HealthBar:{
-            const float bar_width        = 32.0f;
-            const float bar_height       = 4.0f;
-            const float border_thickness = 1.0f;
+        break;
+    }
+    case ViewDataType::HealthBar:
+    {
+        const float bar_width        = 32.0f;
+        const float bar_height       = 4.0f;
+        const float border_thickness = 1.0f;
 
-            // 血条位置（在实体上方）
-            const float bar_x = view_data.position.x - bar_width / 2.0f;
-            const float bar_y = view_data.position.y;   // 在实体上方20像素
+        // 血条位置（在实体上方）
+        const float bar_x = view_data.position.x - bar_width / 2.0f;
+        const float bar_y = view_data.position.y;   // 在实体上方20像素
 
-            // 将位置转换为屏幕坐标
-            const sf::Vector2f screen_pos = MapPosition(Position{bar_x, bar_y});
+        // 将位置转换为屏幕坐标
+        const sf::Vector2f screen_pos = MapPosition(Position{bar_x, bar_y});
 
-            // 1. 绘制背景（红色）
-            sf::RectangleShape background;
-            background.setSize(sf::Vector2f(bar_width, bar_height));
-            background.setPosition(screen_pos);
-            background.setFillColor(sf::Color::Red);
-            window->draw(background);
+        // 1. 绘制背景（红色）
+        sf::RectangleShape background;
+        background.setSize(sf::Vector2f(bar_width, bar_height));
+        background.setPosition(screen_pos);
+        background.setFillColor(sf::Color::Red);
+        window->draw(background);
 
-            // 2. 绘制血量（绿色）
-            if (view_data.health_rate > 0.0f) {
-                sf::RectangleShape health_bar;
-                health_bar.setSize(sf::Vector2f(bar_width * view_data.health_rate, bar_height));
-                health_bar.setPosition(screen_pos);
-                health_bar.setFillColor(sf::Color::Green);
-                window->draw(health_bar);
-            }
-
-            // 3. 绘制边框（黑色）
-            sf::RectangleShape border;
-            border.setSize(sf::Vector2f(bar_width, bar_height));
-            border.setPosition(screen_pos);
-            border.setFillColor(sf::Color::Transparent);
-            border.setOutlineThickness(border_thickness);
-            border.setOutlineColor(sf::Color::Black);
-            window->draw(border);
-            break;
+        // 2. 绘制血量（绿色）
+        if (view_data.health_rate > 0.0f) {
+            sf::RectangleShape health_bar;
+            health_bar.setSize(sf::Vector2f(bar_width * view_data.health_rate, bar_height));
+            health_bar.setPosition(screen_pos);
+            health_bar.setFillColor(sf::Color::Green);
+            window->draw(health_bar);
         }
-        case ViewDataType::Text:{
-            sf::Text text(*font, view_data.text, 15);
-            text.setPosition(MapPosition(view_data.position));
-            text.setFillColor(sf::Color::White);
-            text.setStyle(sf::Text::Bold);
-            window->draw(text);
-            break;
-        }
+
+        // 3. 绘制边框（黑色）
+        sf::RectangleShape border;
+        border.setSize(sf::Vector2f(bar_width, bar_height));
+        border.setPosition(screen_pos);
+        border.setFillColor(sf::Color::Transparent);
+        border.setOutlineThickness(border_thickness);
+        border.setOutlineColor(sf::Color::Black);
+        window->draw(border);
+        break;
+    }
+    case ViewDataType::Text:
+    {
+        sf::Text text(*font, view_data.text, 15);
+        text.setPosition(MapPosition(view_data.position));
+        text.setFillColor(sf::Color::White);
+        text.setStyle(sf::Text::Bold);
+        window->draw(text);
+        break;
+    }
     }
 }
 
 void UIManager::PrecessUI()
 {
     window->clear();
-    for (auto it = view_data_queue->begin(); it != view_data_queue->end();++it) {
+    for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
         Render(*it);
     }
     window->display();
     HandleClick();
     view_data_queue->clear();
-
 }
 
 void UIManager::ClearViewData()
@@ -158,7 +157,8 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
         ERROR("Animation group map or sprite frame data map is not initialized.");
     }
 
-    const Animation& animation = (*view_data.animations)[(*view_data.animations).size() == 1 ? 0 : 1];   // 只处理第0层
+    const Animation& animation =
+        (*view_data.animations)[(*view_data.animations)[0].hidden ? 1 : 0];   // 只处理第0层
 
     const auto& animation_group =
         animation_group_map->at(animation.prefix).at(animation.current_state);
@@ -180,9 +180,11 @@ bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_
     INFO("Check Bounds With Prefix: " + animation.prefix);
     INFO("Click position back: (" + std::to_string(click_position_back.x) + ", " +
          std::to_string(click_position_back.y) + ")");
-    INFO("Bounds: (" + std::to_string(bounds.position.x) + ", " + std::to_string(bounds.position.y) + ") - (" +
-         std::to_string(bounds.position.x + bounds.size.x) + ", " +
-         std::to_string(bounds.position.y + bounds.size.y) + ")" << std::endl);
+    INFO("Bounds: (" + std::to_string(bounds.position.x) + ", " +
+             std::to_string(bounds.position.y) + ") - (" +
+             std::to_string(bounds.position.x + bounds.size.x) + ", " +
+             std::to_string(bounds.position.y + bounds.size.y) + ")"
+         << std::endl);
     return bounds.contains(click_position_back);
 }
 
@@ -197,10 +199,9 @@ void UIManager::HandleClick()
         }
         const auto& event = event_opt.value();
         if (event.is<sf::Event::MouseButtonPressed>()) {
-            const auto& mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
-            const Position click_position{
-                static_cast<float>(mouse_event.position.x),
-                static_cast<float>(mouse_event.position.y)};
+            const auto&    mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
+            const Position click_position{static_cast<float>(mouse_event.position.x),
+                                          static_cast<float>(mouse_event.position.y)};
             INFO("Click position: (" + std::to_string(click_position.x) + ", " +
                  std::to_string(click_position.y) + ")");
             if (mouse_event.button == sf::Mouse::Button::Left) {
@@ -210,7 +211,7 @@ void UIManager::HandleClick()
 
                 for (auto it = view_data_queue->rbegin(); it != view_data_queue->rend(); ++it) {
                     const ViewData& view_data = *it;
-                    if(view_data.type != ViewDataType::Animation){
+                    if (view_data.type != ViewDataType::Animation) {
                         continue;
                     }
                     if ((*view_data.animations)[0].actions.empty()) {
@@ -229,7 +230,8 @@ void UIManager::HandleClick()
 
                 if (!hit_found) {
                     WARNING("No objects hit at click position");
-                }else{
+                }
+                else {
                     SUCCESS("Object hit at click position");
                 }
             }

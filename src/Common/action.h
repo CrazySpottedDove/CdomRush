@@ -45,14 +45,14 @@ struct SellTowerParams
     // Position  offset; // 出售有无效果需要渲染？
 };
 
-using CreateActionFxProps = std::variant<UpgradeTowerParams, SellTowerParams>;
+using CreateActionFxProps = std::variant<std::monostate,UpgradeTowerParams, SellTowerParams, std::string>;
 
 struct CreateActionFxParams{
     FxType fx_type;
     Position position; // 在 View 层被赋值
     // ID id; // 任何拥有 CreateActionFx 事件的实体，都应该把它的 ID 赋给这个参数
     Position offset;
-    CreateActionFxProps props;
+    CreateActionFxProps props = std::monostate{}; // 可能是 UpgradeTowerParams 或 SellTowerParams
     template<typename PropType>
     CreateActionFxParams(const FxType fx_type, const Position& position, const Position& offset,
                          const PropType& props)

@@ -51,6 +51,7 @@ enum class FxType
     TopLeft,
     LifeStat,
     WaveStat,
+    PriceTagText
 };
 
 enum class SoldierType

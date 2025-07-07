@@ -185,6 +185,13 @@ void App::HandleAction(Action& action)
             store.QueueActionFx(action_fx);
             break;
         }
+        case FxType::PriceTagText:
+        {
+            ActionFx* action_fx = new PriceTagText(std::get<std::string>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
+            break;
+        }
         }
         break;
     }

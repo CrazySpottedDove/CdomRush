@@ -84,13 +84,13 @@ public:
     void      Update(Store& store) override;
 };
 
-// class UpgradeToBarrackButton : public ActionFx
-// {
-// public:
-//     UpgradeToBarrackButton();
-//     ActionFx* Clone() override { return new UpgradeToBarrackButton(*this); }
-//     void      Update(Store& store) override;
-// };
+class UpgradeToBarrackButton : public ActionFx
+{
+public:
+    UpgradeToBarrackButton(const UpgradeTowerParams& params);
+    ActionFx* Clone() override { return new UpgradeToBarrackButton(*this); }
+    void      Update(Store& store) override;
+};
 
 class SellTowerButton : public ActionFx
 {

@@ -44,7 +44,7 @@ void App::Run()
                 last_state = GameState::Begin;
                 INFO("State Changed to Begin");
             }
-            // DEBUG_CODE(store.current_level_name = "acaroth"; game_state = GameState::Loading;)
+            DEBUG_CODE(store.current_level_name = "acaroth"; game_state = GameState::Loading;)
             store.UpdateFxs();
             ui_manager.PrecessUI();
             sound_manager.PlayAll();
@@ -65,9 +65,9 @@ void App::Run()
                 store.IntoGameStart();
                 INFO("State Changed to GameStart");
             }
-            // DEBUG_CODE(game_state =
-            //                GameState::GamePlaying;   // For testing purposes, skip loading state
-            // )
+            DEBUG_CODE(game_state =
+                           GameState::GamePlaying;   // For testing purposes, skip loading state
+            )
             store.UpdateFxs();
             store.UpdateActionFxs();
             store.UpdateTowers();
@@ -176,9 +176,10 @@ void App::HandleAction(Action& action)
         }
         case FxType::UpgradeToBarrackButton:
         {
-            // ActionFx* action_fx =
-            //     new UpgradeToBarrackButton(std::get<UpgradeTowerParams>(fx_params.props));
-            // store.QueueActionFx(action_fx);
+            ActionFx* action_fx =
+                new UpgradeToBarrackButton(std::get<UpgradeTowerParams>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
             break;
         }
         case FxType::SellTowerButton:
@@ -217,6 +218,7 @@ void App::HandleAction(Action& action)
         Tower* new_tower       = store.template_manager.CreateTower(params.new_tower_type);
         new_tower->position    = old_tower->position;
         new_tower->total_price = old_tower->total_price + params.cost;
+        new_tower->rally_point = old_tower->rally_point;
         store.DequeueTower(old_tower->id);
         store.QueueTower(new_tower);
         break;
@@ -230,6 +232,7 @@ void App::HandleAction(Action& action)
             store.gold += tower->total_price * 0.5;
             Tower* new_build_terrain    = store.template_manager.CreateTower(TowerType::None);
             new_build_terrain->position = tower->position;
+            new_build_terrain->rally_point = tower->rally_point;
             store.DequeueTower(tower->id);
             store.QueueTower(new_build_terrain);
             INFO("Tower sold for " << tower->total_price * 0.5 << " gold.");

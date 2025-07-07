@@ -191,7 +191,6 @@ public:
 class Barrack : public Tower{
 public:
     double rally_range = 0;
-    Position rally_point = position + sf::Vector2f(0,-60);
     std::vector<ID> soldiers;
 
     void layer_update(bool flag) override;
@@ -222,7 +221,7 @@ public:
     }
     bool        Insert(Store& store) override;
     SoldierType return_soldier_type() override{
-        return SoldierType::SoldierMeleelv1;
+        return SoldierType::SoldierMeleelv2;
     }
 };
 class Barrack3 : public Barrack{
@@ -233,6 +232,6 @@ public:
     }
     bool Insert(Store& store) override;
     SoldierType return_soldier_type() override{
-        return SoldierType::SoldierMeleelv1;
+        return SoldierType::SoldierMeleelv3;
     }
 };

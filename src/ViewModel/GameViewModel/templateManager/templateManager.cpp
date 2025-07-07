@@ -23,9 +23,9 @@ TemplateManager::TemplateManager()
         {TowerType::Mage1, new Mage1()},
         {TowerType::Mage2, new Mage2()},
         {TowerType::Mage3, new Mage3()},
-        // {TowerType::Barrack1, new Barracks1()},
-        // {TowerType::Barrack2, new Barracks2()},
-        // {TowerType::Barrack3, new Barracks3()}
+        {TowerType::Barrack1, new Barrack1()},
+        {TowerType::Barrack2, new Barrack2()},
+        {TowerType::Barrack3, new Barrack3()}
     };
     enemy_map = {{EnemyType::ForestTroll, new ForestTroll()},
                  {EnemyType::orc_armored, new orc_armored()},

@@ -17,12 +17,12 @@ public:
     double range;
     ID source_barrack;
     ID target_enemy = INVALID_ID;
+    Melee            melee;
     virtual Soldier* Clone() = 0;
 };
 
 class SoldierMelee: public Soldier{
 public:
-    Melee melee;
     void Update(Store& store) override;
 };
 

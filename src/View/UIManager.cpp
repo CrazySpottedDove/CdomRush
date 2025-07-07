@@ -24,6 +24,10 @@ void UIManager::Render(const ViewData& view_data)
         for (size_t layer_index = 0; layer_index < view_data.animations->size(); ++layer_index) {
             Animation& animation = (*view_data.animations)[layer_index];
             if (!animation.hidden) {
+                // INFO("Render Animation: " + animation.prefix + " at layer " +
+                //      std::to_string(layer_index) + ", state: " +
+                //      std::to_string(static_cast<int>(animation.current_state)) +
+                //      ", frame_id: " + std::to_string(animation.frame_id));
                 const AnimationGroup animation_group =
                     animation_group_map->at(animation.prefix).at(animation.current_state);
 

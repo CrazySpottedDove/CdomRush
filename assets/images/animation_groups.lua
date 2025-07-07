@@ -436,8 +436,8 @@ return {
             from = 1
         },
         door_close = {
-            to = 25,
-            from = 22
+            to = 9,
+            from = 6
         }
     },
     tower_barracks_lvl2_layer2 = {
@@ -446,8 +446,8 @@ return {
             from = 1
         },
         door_close = {
-            to = 25,
-            from = 22
+            to = 9,
+            from = 6
         }
     },
     tower_barracks_lvl3_layer2 = {
@@ -456,8 +456,8 @@ return {
             from = 1
         },
         door_close = {
-            to = 25,
-            from = 22
+            to = 9,
+            from = 6
         }
     },
     tower_barracks_lvl1_layer1 = {

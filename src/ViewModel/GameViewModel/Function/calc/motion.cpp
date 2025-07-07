@@ -78,6 +78,11 @@ void calc::enemy_move_tick(const Store& store, Enemy& self)
 
 void calc::soldier_move_tick(const Store& store, Soldier& self, Position target_position){
     const sf::Vector2f displacement = target_position - self.position;
+    if(displacement.lengthSquared() < 0.0001f){
+        INFO("Soldier move tick: already at target position");
+        return ;
+    }
+    INFO("Soldier move tick: displacement = " << displacement.x << ", " << displacement.y);
     const sf::Vector2f direction = displacement.normalized();
     const double real_speed = calc::real_speed(self);
     const float movement = real_speed * FRAME_LENGTH;

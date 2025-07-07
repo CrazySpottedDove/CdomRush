@@ -121,6 +121,24 @@ void UpgradeToEngineerButton::Update(Store& store)
     }
 }
 
+UpgradeToBarrackButton::UpgradeToBarrackButton(const UpgradeTowerParams& params)
+{
+    animations.emplace_back(Animation(State::Disabled, "icon_barrack"));
+    animations[0].actions.emplace_back(
+        Action(ActionType::UpgradeTower, params));
+    animations.emplace_back(Animation(State::Idle, "price_tag", Position(0, -30)));
+}
+
+void UpgradeToBarrackButton::Update(Store& store)
+{
+    if (store.gold < 70) {
+        animations[0].current_state = State::Disabled;
+    }
+    else {
+        animations[0].current_state = State::Enabled;
+    }
+}
+
 SellTowerButton::SellTowerButton(const SellTowerParams& params){
     animations.emplace_back(Animation(State::Enabled, "icon_sell"));
     animations[0].actions.emplace_back(

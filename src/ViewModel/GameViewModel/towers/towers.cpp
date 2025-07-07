@@ -573,14 +573,14 @@ bool Mage3::Insert(Store& store)
 
 void Barrack::pending_update()
 {
-    animations[0].pending = animations[2].pending;
+    animations[0].pending = animations[3].pending;
 }
 void Barrack::layer_update(bool flag)
 {
     if (flag)
-        animations[2].current_state = State::DoorOpen;
+        animations[3].current_state = State::DoorOpen;
     else if (animations[0].current_state == State::DoorClose)
-        animations[2].current_state = State::DoorClose;
+        animations[3].current_state = State::DoorClose;
     return;
 }
 void Barrack::Update(Store& store)
@@ -600,6 +600,9 @@ void Barrack::Update(Store& store)
         Soldier* soldierx           = store.template_manager.CreateSoldier(return_soldier_type());
         soldierx->position          = position + return_offset();
         soldierx->source_barrack  =id;
+        soldierx->melee[0].damage_event.source = soldierx->id;
+        INFO("Rally Point: "<< rally_point.x << ", " << rally_point.y);
+        INFO("Soldier Position: "<< soldierx->position.x << ", " << soldierx->position.y);
         store.QueueSoldier(soldierx);
         soldiers.push_back(soldierx->id);
         solider_size_changed = true;
@@ -616,8 +619,8 @@ void Barrack::Update(Store& store)
         animations[0].current_state = State::DoorOpen;
         layer_update(1);
     }
-    if (animations[0].current_state == State::DoorOpen) {
-        if (!animations[2].pending) {
+    else if (animations[0].current_state == State::DoorOpen) {
+        if (!animations[0].pending) {
             animations[0].current_state = State::DoorClose;
         }
     }

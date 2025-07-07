@@ -1,4 +1,5 @@
 #include "soldiers.h"
+#include "Common/macros.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
 #include "ViewModel/GameViewModel/store/store.h"
 #include "ViewModel/GameViewModel/towers/towers.h"
@@ -47,7 +48,7 @@ void SoldierMelee::Update(Store& store)
             }
         }
         else {
-            if ((rally_point - position).lengthSquared() > source->rally_range) {
+            if ((rally_point - position).lengthSquared() > source->rally_range * source->rally_range) {
                 health.last_regen_time = store.time;
                 calc::soldier_move_tick(store, *this, rally_point + rally_point_offset);
                 walkjudge();
@@ -57,6 +58,7 @@ void SoldierMelee::Update(Store& store)
             if (target_enemy != INVALID_ID) {
                 ActiveEnemy* enemy_ptr = dynamic_cast<ActiveEnemy*>(store.GetEnemy(target_enemy));
                 enemy_ptr->blocker     = id;
+                INFO("SoldierMelee::Update: found enemy " << target_enemy);
                 return;
             }
             if (position != rally_point + rally_point_offset) {
@@ -107,6 +109,7 @@ SoldierMeleelv1::SoldierMeleelv1(Position position_, Position rally_point_, Posi
     position             = position_;
     rally_point          = rally_point_;
     rally_point_offset   = offset_;
+    range = 60;
     speed                = 75;
     health               = Health(50, 50);
     health.dead_lifetime = 10;
@@ -126,6 +129,7 @@ SoldierMeleelv2::SoldierMeleelv2(Position position_, Position rally_point_, Posi
     rally_point          = rally_point_;
     rally_point_offset   = offset_;
     speed                = 75;
+    range = 60;
     health               = Health(100, 100);
     armor                = Armor(0.15, 0);
     health.dead_lifetime = 10;
@@ -145,6 +149,7 @@ SoldierMeleelv3::SoldierMeleelv3(Position position_, Position rally_point_, Posi
     rally_point          = rally_point_;
     rally_point_offset   = offset_;
     speed                = 75;
+    range = 60;
     health               = Health(150, 150);
     armor                = Armor(0.3, 0);
     health.dead_lifetime = 10;

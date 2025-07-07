@@ -200,7 +200,7 @@ public:
     Position return_offset(){
         return sf::Vector2f(0.0,-30.0);
     }
-    bool remove(Store& store) override;
+    bool Remove(Store& store) override;
 };
 class Barrack1 : public Barrack{
 public:

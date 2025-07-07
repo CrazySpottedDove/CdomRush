@@ -612,6 +612,14 @@ void Barrack::Update(Store& store)
         soldiers.push_back(soldierx->id);
         solider_size_changed = true;
     }
+    if(last_rally_point!=rally_point){
+        for(int i=0;i<soldiers.size();i++){
+            Soldier* si = store.GetSoldier(soldiers[i]);
+            si->rally_point = rally_point;
+        }
+    }
+    last_rally_point = rally_point;
+    
     if (solider_size_changed) {
         for (int i = 0; i < 3; i++) {
 

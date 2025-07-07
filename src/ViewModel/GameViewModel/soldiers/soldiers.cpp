@@ -7,6 +7,18 @@
 
 void SoldierMelee::Update(Store& store)
 {
+    if(rally_point!=last_rally_point){
+        if (target_enemy != INVALID_ID){
+            ActiveEnemy* enemy_ptr = dynamic_cast<ActiveEnemy*>(store.GetEnemy(target_enemy));
+            if(enemy_ptr!=nullptr) enemy_ptr->blocker = INVALID_ID;
+            target_enemy = INVALID_ID;
+        }
+        calc::soldier_move_tick(store, *this, rally_point + rally_point_offset),
+        walkjudge();
+        return ;
+        last_rally_point = rally_point;
+    }
+    last_rally_point = rally_point;
     Barrack* source = dynamic_cast<Barrack*>(store.GetTower(source_barrack));
     if (source == nullptr) return;
     if (animations[0].current_state == State::Death) return;
@@ -89,7 +101,7 @@ void SoldierMelee::Update(Store& store)
                 animations[0].current_state = State::Idle;
             else
                 calc::soldier_move_tick(store, *this, enemy_ptr->slot + slot + enemy_ptr->position),
-                    walkjudge();
+                walkjudge();
             return;
         }
     }

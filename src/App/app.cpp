@@ -44,7 +44,7 @@ void App::Run()
                 last_state = GameState::Begin;
                 INFO("State Changed to Begin");
             }
-            DEBUG_CODE(store.current_level_name = "acaroth"; game_state = GameState::Loading;)
+            // DEBUG_CODE(store.current_level_name = "acaroth"; game_state = GameState::Loading;)
             store.UpdateFxs();
             ui_manager.PrecessUI();
             sound_manager.PlayAll();
@@ -65,9 +65,9 @@ void App::Run()
                 store.IntoGameStart();
                 INFO("State Changed to GameStart");
             }
-            DEBUG_CODE(game_state =
-                           GameState::GamePlaying;   // For testing purposes, skip loading state
-            )
+            // DEBUG_CODE(game_state =
+            //                GameState::GamePlaying;   // For testing purposes, skip loading state
+            // )
             store.UpdateFxs();
             store.UpdateActionFxs();
             store.UpdateTowers();

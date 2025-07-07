@@ -258,6 +258,10 @@ void UIManager::HandleClick()
             continue;
         }
         const auto& event = event_opt.value();
+        if(event.is<sf::Event::Closed>()){
+            window->close();
+            return;
+        }
         if (event.is<sf::Event::MouseButtonPressed>()) {
             const auto&    mouse_event = *event.getIf<sf::Event::MouseButtonPressed>();
             const Position click_position{static_cast<float>(mouse_event.position.x),

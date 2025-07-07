@@ -103,6 +103,7 @@ void Store::UpdateSoldiers()
             continue;
         }
         soldier->Update(*this);
+        INFO("Soldier State:    " << (int)soldier->animations[0].current_state);
         soldier->QueueViewData(*this);
         ++it;
     }

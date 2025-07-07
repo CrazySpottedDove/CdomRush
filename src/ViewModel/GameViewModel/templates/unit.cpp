@@ -26,8 +26,10 @@ State Unit::walkjudge()
         return State::WalkingUp;   // 如果方向是向上，设置状态为向上行走
     else if (heading == Heading::Down)
         return State::WalkingDown;   // 如果方向是向下，设置状态为向下行走
-    else
+    else if(heading == Heading::Left)
         return State::WalkingLeftRight;   // 如果方向是向左，设置状态为左右行走
+    else
+        return State::Running;
 }
 
 void Unit::QueueViewData(Store& store)

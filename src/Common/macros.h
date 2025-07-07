@@ -38,6 +38,10 @@
 #define UI_MIDDLE_LAYER 5
 #define UI_UPPER_LAYER 6
 #define TEXT_LAYER 7
+#define GAMEOVER_BACKGROUND_LAYER 8
+#define GAMEOVER_TEXT_LAYER 9
+#define X_CENTER 500
+#define Y_CENTER 384
 
 #ifdef DEBUG
 #    include <iostream>

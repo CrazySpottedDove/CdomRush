@@ -4425,5 +4425,64 @@ return {
             a_size = {2048, 2048},
             f_quad = {1622, 639, 82, 73}
         }
+    },
+    loading_grass = {
+        [1] = {
+            a_name = "loading_grass-1.png",
+            size = {1920, 1080},
+            trim = {0, 0, 0, 0},
+            a_size = {1920, 1080},
+            f_quad = {0, 0, 1920, 1080}
+        }
+    },
+    defeat_bg_notxt = {
+        [1] = {
+            a_name = "gui_common-1.png",
+            size = {
+                640,
+                540
+            },
+            trim = {
+                15,
+                23,
+                19,
+                15
+            },
+            a_size = {
+                2048,
+                2048
+            },
+            f_quad = {
+                6,
+                1138,
+                606,
+                502
+            },
+        }
+    },
+    victoryBadges_notxt = {
+        [1] = {
+            a_name = "gui_common-1.png",
+            size = {
+                660,
+                538
+            },
+            trim = {
+                6,
+                3,
+                14,
+                15
+            },
+            a_size = {
+                2048,
+                2048
+            },
+            f_quad = {
+                6,
+                612,
+                640,
+                520
+            },
+        }
     }
 }

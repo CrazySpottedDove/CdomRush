@@ -51,7 +51,10 @@ enum class FxType
     TopLeft,
     LifeStat,
     WaveStat,
-    PriceTagText
+    PlainActionText,
+    LoadingGrass,
+    GameOverFailure,
+    GameOverVictory
 };
 
 enum class SoldierType

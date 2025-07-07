@@ -106,6 +106,21 @@ public:
     void                QueueViewData(Store& store) override;
 };
 
+class PlainTextFx: public TextFx
+{
+public:
+    std::string text;
+    PlainTextFx(const std::string& text);
+    Fx*         Clone() override { return new PlainTextFx(*this); }
+    std::string Stringfy(Store& store) override { return text; }
+};
+
+class GameOverTextFx: public PlainTextFx{
+public:
+    void QueueViewData(Store& store) override;
+    GameOverTextFx(const std::string& text): PlainTextFx(text){}
+};
+
 class GoldStat : public TextFx
 {
 public:
@@ -145,13 +160,32 @@ public:
     void                QueueViewData(Store& store) override;
 };
 
-class PriceTagText: public ActionTextFx
+class PlainActionTextFx : public ActionTextFx
 {
 public:
-    PriceTagText(const std::string& text);
-    ActionFx* Clone() override { return new PriceTagText(*this); }
+    PlainActionTextFx(const std::string& text);
+    ActionFx*   Clone() override { return new PlainActionTextFx(*this); }
     std::string text;
-    std::string Stringfy(Store& store) override {
-        return text;
-    };
+    std::string Stringfy(Store& store) override { return text; };
+};
+
+class LoadingGrass : public Fx
+{
+public:
+    LoadingGrass();
+    Fx* Clone() override { return new LoadingGrass(*this); }
+};
+
+class GameOverFailure: public Fx{
+public:
+    GameOverFailure();
+    Fx* Clone() override { return new GameOverFailure(*this); }
+    void QueueViewData(Store& store) override;
+};
+
+class GameOverVictory: public Fx{
+public:
+    GameOverVictory();
+    Fx* Clone() override { return new GameOverVictory(*this); }
+    void QueueViewData(Store& store) override;
 };

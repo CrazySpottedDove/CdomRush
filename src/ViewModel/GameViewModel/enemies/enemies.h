@@ -127,3 +127,13 @@ public:
         return new orc_wolf_rider(*this);   // 返回一个新的orc_wolf_rider对象
     }
 };
+
+class worg : public ActiveEnemyMelee
+{
+    worg(Position position_ = sf::Vector2f(0,0));
+    void death_action(Store& store) override;
+    Enemy* Clone() const override
+    {
+        return new worg(*this);   // 返回一个新的orc_wolf_rider对象
+    }
+};

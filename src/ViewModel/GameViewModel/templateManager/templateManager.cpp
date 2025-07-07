@@ -30,7 +30,8 @@ TemplateManager::TemplateManager()
     enemy_map = {{EnemyType::ForestTroll, new ForestTroll()},
                  {EnemyType::orc_armored, new orc_armored()},
                  {EnemyType::orc_wolf_rider, new orc_wolf_rider()},
-                 {EnemyType::worg, new worg()}
+                 {EnemyType::worg, new worg()},
+                 {EnemyType::goblin_zapper, new goblin_zapper()}
                 };
     fx_map    = {
         {FxType::LevelFlag, new LevelFlag()},

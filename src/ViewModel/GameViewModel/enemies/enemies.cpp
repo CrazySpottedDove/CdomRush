@@ -178,7 +178,7 @@ orc_armored::orc_armored(Position position_)
     this->gold            = 30;                  // 设置击杀奖励
     this->life_cost       = 5;                    // 设置生命损失
     this->animations.push_back(Animation(State::Idle,"orc_armored"));
-    this->melee.attacks.push_back(MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 6), -1, 0.0, 1.0, 1.0, "AreaAttack"));
+    this->melee.attacks.push_back(MeleeAttack(DamageData(30.0, DamageType::Physical, 0.0, 6), -1, 30.0, 1.0, 1.0, "AreaAttack"));
     this->melee[0].damage_event.source = id;
     this->animations[0].anchor_y = 0.86;
     this->slot     = sf::Vector2f(18.0f, 0.0f);   // 初始化近战偏移
@@ -211,13 +211,31 @@ worg::worg(Position position_){
     this->gold            = 12;                  // 设置击杀奖励
     this->life_cost       = 2;                    // 设置生命损失
     this->animations.push_back(Animation(State::Idle,"enemy_wolf"));
-    this->melee.attacks.push_back(MeleeAttack(DamageData(15.0, DamageType::Physical, 0.0, 9), -1, 0.0, 1.5, 0.5, "WolfAttack"));
+    this->melee.attacks.push_back(MeleeAttack(DamageData(15.0, DamageType::Physical, 0.0, 9), -1, 0.0, 1.5, 1.0, "WolfAttack"));
     this->melee[0].damage_event.source = id;
     this->animations[0].anchor_y = 0.74;
     this->slot     = sf::Vector2f(25.0f, 0.0f);   // 初始化近战偏移
     this->position = position_;                   // 设置初始位置
     this->Hit_offset = sf::Vector2f(0.0f,13.0f);   // 设置受击偏移位置
     this->health_bar_offset = sf::Vector2f(0.0f,35.0f);
+}
+
+goblin_zapper::goblin_zapper(Position position_){
+    this->health          = Health(140, 140);   // 设置生命值
+    this->armor           = Armor(0, 0.5);          // 设置护甲
+    this->speed           = 36;                   // 设置速度
+    this->gold            = 10;                  // 设置击杀奖励
+    this->life_cost       = 2;                    // 设置生命损失
+    this->animations.push_back(Animation(State::Idle,"enemy_wolf"));
+    this->melee.attacks.push_back(MeleeAttack(DamageData(15.0, DamageType::Physical, 0.0, 8), -1, 0.0, 1.0, 1.0, "WolfAttack"));
+    this->melee[0].damage_event.source = id;
+    this->animations[0].anchor_y = 0.78;
+    this->ranged.attacks.push_back(RangedAttack(
+        1.4, 165.0, BulletType::Bomb, 67.5, 45.0, "bomb_goblin_zapper", 1.0, "BombShootSound"));   // 添加攻击
+    this->slot     = sf::Vector2f(18.0f, 0.0f);   // 初始化近战偏移
+    this->position = position_;                   // 设置初始位置
+    this->Hit_offset = sf::Vector2f(0.0f,13.0f);   // 设置受击偏移位置
+    this->health_bar_offset = sf::Vector2f(0.0f,34.0f);
 }
 
 void ForestTroll::death_action(Store& store)
@@ -235,4 +253,17 @@ void orc_wolf_rider::death_action(Store& store)
 void worg::death_action(Store& store)
 {
     store.QueueSoundData(SoundData("DeathPuff"));
+}
+void goblin_zapper::death_action(Store& store){
+    std::vector<ID> soldier = calc::find_soldiers_in_range(store, position, 67.5);
+    DamageEvent damage_event = DamageEvent(DamageData(45.0, DamageType::Explosion, 0, 0), id, INVALID_ID);
+    for (auto& id : soldier) {
+        DamageEvent event = damage_event;   // 创建新的伤害事件
+        event.target      = id;             // 设置目标
+        store.QueueDamageEvent(event);      // 结算伤害
+    }
+    Fx* fx                      = store.template_manager.CreateFx(FxType::Explosion);
+    fx->position                = position;
+    store.QueueFx(fx);
+    store.QueueSoundData(SoundData("BombExplosionSound"));
 }

@@ -138,3 +138,14 @@ public:
         return new worg(*this);   // 返回一个新的orc_wolf_rider对象
     }
 };
+
+class goblin_zapper : public ActiveEnemyRange
+{
+public:
+    goblin_zapper(Position position_ = sf::Vector2f(0,0));
+    void death_action(Store& store) override;
+    Enemy* Clone() const override
+    {
+        return new goblin_zapper(*this);
+    }
+};

@@ -22,7 +22,8 @@ enum class EnemyType
     ForestTroll,   // 森林巨魔
     orc_armored,
     orc_wolf_rider,
-    worg
+    worg,
+    goblin_zapper
 };
 
 enum class BulletType

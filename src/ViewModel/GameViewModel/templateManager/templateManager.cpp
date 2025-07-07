@@ -41,6 +41,11 @@ TemplateManager::TemplateManager()
         {FxType::LifeStat, new LifeStat()},
         {FxType::WaveStat, new WaveStat()},
         {FxType::TopLeft, new TopLeft()},
+        {FxType::LoadingGrass, new LoadingGrass()},{
+            FxType::GameOverFailure,new GameOverFailure()
+        },{
+            FxType::GameOverVictory, new GameOverVictory()
+        }
     };
     soldier_map   = {{SoldierType::SoldierMeleelv1, new SoldierMeleelv1()},
                      {SoldierType::SoldierMeleelv2, new SoldierMeleelv2()},

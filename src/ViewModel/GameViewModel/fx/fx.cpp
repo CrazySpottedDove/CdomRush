@@ -6,6 +6,7 @@
 #include "Common/type.h"
 #include "Common/viewData.h"
 #include "ViewModel/GameViewModel/store/store.h"
+#include <variant>
 
 void Fx::QueueViewData(Store& store)
 {
@@ -171,6 +172,17 @@ std::string WaveStat::Stringfy(Store& store)
            "/" + std::to_string(total_wave_count);
 }
 
+PlainTextFx::PlainTextFx(const std::string& text)
+{
+    this->text = text;
+}
+
+void GameOverTextFx::QueueViewData(Store& store){
+    store.GetViewDataQueue()->emplace(
+        ViewData(Stringfy(store), position, GAMEOVER_TEXT_LAYER)
+    );
+}
+
 TopLeft::TopLeft()
 {
     animations.emplace_back(Animation(State::Idle, "top_left"));
@@ -189,7 +201,42 @@ void ActionTextFx::QueueViewData(Store& store){
     store.GetViewDataQueue()->emplace(ViewData(Stringfy(store), position, TEXT_LAYER));
 }
 
-PriceTagText::PriceTagText(const std::string& text)
+PlainActionTextFx::PlainActionTextFx(const std::string& text)
 {
     this->text = text;
+}
+
+LoadingGrass::LoadingGrass(){
+    animations.emplace_back(Animation(State::Idle, "loading_grass"));
+    animations[0].anchor_x = 0.0;
+    animations[0].anchor_y = 0.0;
+    position.x             = -157.5;
+    position.y             = 768;
+}
+
+GameOverFailure::GameOverFailure()
+{
+    animations.emplace_back(Animation(State::Idle, "defeat_bg_notxt"));
+    position.x             = X_CENTER;
+    position.y             = Y_CENTER;
+}
+
+void GameOverFailure::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(ViewData(&animations, position, GAMEOVER_BACKGROUND_LAYER));
+}
+
+GameOverVictory::GameOverVictory()
+{
+    animations.emplace_back(Animation(State::Idle, "victoryBadges_notxt"));
+    animations[0].actions.emplace_back(Action(ActionType::BackToBegin, std::monostate{}));
+    position.x             = X_CENTER;
+    position.y             = Y_CENTER;
+}
+
+void GameOverVictory::QueueViewData(Store& store)
+{
+    store.GetViewDataQueue()->emplace(ViewData(&animations, position, GAMEOVER_BACKGROUND_LAYER));
+    animations[0].actions.emplace_back(
+        Action(ActionType::BackToBegin, std::monostate{}));
 }

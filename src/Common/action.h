@@ -20,7 +20,9 @@ enum class ActionType
     CheckTowerStatus,
     SelectLevel,
     CreateActionFx,
+    BackToBegin,
     Delete,
+    EndGameStart,
     None
 };
 
@@ -89,8 +91,6 @@ struct ChangeRallyPointParams
     ID        soldier_id; // 要改变集结点的士兵 ID
     Position  new_rally_point;
 };
-
-
 
 using Params = std::variant<std::monostate, UpgradeTowerParams, SelectLevelParams, CreateActionFxParams,CheckSoldierStatusParams,
                             CheckEnemyStatusParams, CheckTowerStatusParams, ChangeRallyPointParams,SellTowerParams>;

@@ -630,5 +630,23 @@ return {
             to = 2,
             from = 2
         }
-    }
+    },
+    loading_grass = {
+        idle = {
+            to = 1,
+            from = 1
+        } -- loading界面草皮
+    },
+    defeat_bg_notxt = {
+        idle = {
+            to = 1,
+            from = 1
+        } -- 失败背景
+    },
+    victoryBadges_notxt = {
+        idle = {
+            to = 1,
+            from = 1
+        } -- 胜利背景
+    },
 }

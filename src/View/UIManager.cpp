@@ -235,6 +235,10 @@ void UIManager::HandleClick()
                     SUCCESS("Object hit at click position");
                 }
             }
+            else if (mouse_event.button == sf::Mouse::Button::Right) {
+                // 右键点击，可能是取消选择或其他操作
+                action_queue.push(Action{ActionType::EndGameStart, std::monostate{}});
+            }
         }
     }
 }

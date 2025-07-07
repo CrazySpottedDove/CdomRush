@@ -538,22 +538,72 @@ void Barrack::Update(Store& store)
     }
     layer_update(0);
 }
-
+bool Barrack::Remove(Store& store){
+    for(int i=0;i<soldiers.size();i++){
+        store.DequeueSoldier(soldiers[i]);
+    }
+    soldiers.clear();
+    return true;
+}
 Barrack1::Barrack1(Position position_, int total_price_)
 {
     type                        = TowerType::Barrack1;
     position                    = position_;
     total_price                 = total_price_;
     heading                     = tower_heading::Down;
-    animations[0].current_state = State::DoorClose;
+    animations.push_back(
+    Animation(State::DoorClose, "terrain_barrack_0001", Position{0.0f, 13.0f}, true));
+    animations.push_back(Animation(State::Idle, "terrain_barrack_0001", Position{0.0f, 13.0f}));
+    animations.push_back(Animation(State::Idle, "tower_barracks_lvl1_layer1_0001", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::DoorClose, "towerbarracklvl1_door", Position{0.0f, 38.0f}));
 }
+bool Barrack1::Insert(Store& store){
+    animations[0].actions.push_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::CommonUpgradeButton,
+                                    position,
+                                    Position(0, 100),
+                                    UpgradeTowerParams{id, TowerType::Barrack2, 110,"BarrackTaunt"})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    // animations[0].actions.emplace_back(
+    //     Action(ActionType::ChangeRallyPoint,
+    //             CreateActionFxParams(
+    //                 FxType::ChangeRallyPointButton,position, Position(30,0),0)));
+    return true;
+}
+
+
 Barrack2::Barrack2(Position position_, int total_price_)
 {
     type                        = TowerType::Barrack2;
     position                    = position_;
     total_price                 = total_price_;
     heading                     = tower_heading::Down;
-    animations[0].current_state = State::DoorClose;
+    animations.push_back(
+    Animation(State::DoorClose, "terrain_barrack_0002", Position{0.0f, 13.0f}, true));
+    animations.push_back(Animation(State::Idle, "terrain_barrack_0002", Position{0.0f, 13.0f}));
+    animations.push_back(Animation(State::Idle, "tower_barracks_lvl2_layer1_0001", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::DoorClose, "towerbarracklvl2_door", Position{0.0f, 38.0f}));
+}
+bool Barrack2::Insert(Store& store){
+    animations[0].actions.push_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::CommonUpgradeButton,
+                                    position,
+                                    Position(0, 100),
+                                    UpgradeTowerParams{id, TowerType::Barrack3, 150,"BarrackTaunt"})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    // animations[0].actions.emplace_back(
+    //     Action(ActionType::ChangeRallyPoint,
+    //             CreateActionFxParams(
+    //                 FxType::ChangeRallyPointButton,position, Position(30,0),0)));
+    return true;
 }
 Barrack3::Barrack3(Position position_, int total_price_)
 {
@@ -561,5 +611,20 @@ Barrack3::Barrack3(Position position_, int total_price_)
     position                    = position_;
     total_price                 = total_price_;
     heading                     = tower_heading::Down;
-    animations[0].current_state = State::DoorClose;
+    animations.push_back(
+    Animation(State::DoorClose, "terrain_barrack_0003", Position{0.0f, 13.0f}, true));
+    animations.push_back(Animation(State::Idle, "terrain_barrack_0003", Position{0.0f, 13.0f}));
+    animations.push_back(Animation(State::Idle, "tower_barracks_lvl3_layer1_0001", Position{0.0f, 38.0f}));
+    animations.push_back(Animation(State::DoorClose, "towerbarracklvl3_door", Position{0.0f, 38.0f}));
+}
+bool Barrack3::Insert(Store& store){
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    // animations[0].actions.emplace_back(
+    //     Action(ActionType::ChangeRallyPoint,
+    //             CreateActionFxParams(
+    //                 FxType::ChangeRallyPointButton,position, Position(30,0),0)));
+    return true;
 }

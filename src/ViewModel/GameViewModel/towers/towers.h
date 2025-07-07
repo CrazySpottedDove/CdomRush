@@ -200,6 +200,7 @@ public:
     Position return_offset(){
         return sf::Vector2f(0.0,-30.0);
     }
+    bool remove(Store& store) override;
 };
 class Barrack1 : public Barrack{
 public:
@@ -207,7 +208,7 @@ public:
     Tower* Clone() override {
         return new Barrack1(*this);
     }
-    // bool        Insert(Store& store) override;
+    bool        Insert(Store& store) override;
     SoldierType return_soldier_type() override{
         return SoldierType::SoldierMeleelv1;
     }
@@ -218,7 +219,7 @@ public:
     Tower* Clone() override {
         return new Barrack2(*this);
     }
-    // bool        Insert(Store& store) override;
+    bool        Insert(Store& store) override;
     SoldierType return_soldier_type() override{
         return SoldierType::SoldierMeleelv1;
     }
@@ -229,6 +230,7 @@ public:
     Tower* Clone() override {
         return new Barrack3(*this);
     }
+    bool Insert(Store& store) override;
     SoldierType return_soldier_type() override{
         return SoldierType::SoldierMeleelv1;
     }

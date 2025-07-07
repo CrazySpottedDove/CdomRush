@@ -7,6 +7,7 @@
 #include "ViewModel/GameViewModel/fx/fx.h"
 #include "ViewModel/GameViewModel/store/store.h"
 #include <ostream>
+#include <string>
 
 
 void Tower::Update(Store& store)
@@ -82,6 +83,18 @@ bool None::Insert(Store& store)
                                     position,
                                     Position{50, -50},
                                     UpgradeTowerParams{id, TowerType::Barrack1, 70,"BarrackTaunt"})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(-60, 25), "70")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(40, 25), "100")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(-60, -75), "125")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(40, -75), "70")));
     return true;
 }
 
@@ -149,12 +162,20 @@ bool Archer1::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 90),
+                                    Position(0, 100),
                                     UpgradeTowerParams{id, TowerType::Archer2, 110, "ArcherTaunt"})));
     animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx, CreateActionFxParams(
+            FxType::PriceTagText, position, Position(-10, 75), "110"
+        ))
+    );
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(-10, -65), std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 Archer2::Archer2(Position position_, int total_price_)
@@ -186,6 +207,15 @@ bool Archer2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(-10, 75), "160")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 
@@ -213,6 +243,12 @@ bool Archer3::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 
@@ -288,6 +324,15 @@ bool Engineer1::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(-10, 75), "220")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 
@@ -331,6 +376,15 @@ bool Engineer2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(-10, 75), "320")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 
@@ -374,6 +428,12 @@ bool Engineer3::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 
@@ -428,6 +488,15 @@ bool Mage1::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(-10, 75), "160")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 
@@ -459,6 +528,15 @@ bool Mage2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText, position, Position(-10, 75), "240")));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 
@@ -484,6 +562,12 @@ bool Mage3::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(
                    FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(FxType::PriceTagText,
+                                    position,
+                                    Position(-10, -65),
+                                    std::to_string((int)(total_price * 0.5)))));
     return true;
 }
 

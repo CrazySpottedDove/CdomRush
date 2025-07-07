@@ -137,19 +137,24 @@ Archer1::Archer1(Position position_, int total_price_)
         Animation(State::IdleDown, "tower_archer_lvl1_shooter", Position{-9.0f, 51.0f}));
     animations.push_back(
         Animation(State::IdleDown, "tower_archer_lvl1_shooter", Position{9.0f, 51.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(0.8, 140.0, BulletType::Arrow, 0.0, 5.5, "arrow", 1.0, "ArrowSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(
+        0.8, 140.0, BulletType::Arrow, 0.0, 5.5, "arrow", 1.0, "ArrowSound"));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
 
-bool Archer1::Insert(Store& store){
-    animations[0].actions.push_back(
+bool Archer1::Insert(Store& store)
+{
+    animations[0].actions.emplace_back(
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 80),
+                                    Position(0, 90),
                                     UpgradeTowerParams{id, TowerType::Archer2, 110})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
     return true;
 }
 Archer2::Archer2(Position position_, int total_price_)
@@ -164,8 +169,8 @@ Archer2::Archer2(Position position_, int total_price_)
         Animation(State::IdleDown, "tower_archer_lvl2_shooter", Position{-9.0f, 52.0f}));
     animations.push_back(
         Animation(State::IdleDown, "tower_archer_lvl2_shooter", Position{9.0f, 52.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(0.6, 160.0, BulletType::Arrow, 0.0, 10.0, "arrow", 1.0,"ArrowSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(
+        0.6, 160.0, BulletType::Arrow, 0.0, 10.0, "arrow", 1.0, "ArrowSound"));   // 添加攻击
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
 
@@ -175,8 +180,12 @@ bool Archer2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 80),
+                                    Position(0, 100),
                                     UpgradeTowerParams{id, TowerType::Archer3, 160})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
     return true;
 }
 
@@ -192,10 +201,19 @@ Archer3::Archer3(Position position_, int total_price_)
         Animation(State::IdleDown, "tower_archer_lvl3_shooter", Position{-9.0f, 52.0f}));
     animations.push_back(
         Animation(State::IdleDown, "tower_archer_lvl3_shooter", Position{9.0f, 52.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(0.5, 180.0, BulletType::Arrow, 0.0, 15.0, "arrow", 1.0,"ArrowSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(
+        0.5, 180.0, BulletType::Arrow, 0.0, 15.0, "arrow", 1.0, "ArrowSound"));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
+}
+
+bool Archer3::Insert(Store& store)
+{
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    return true;
 }
 
 void Engineer::pending_update()
@@ -246,8 +264,14 @@ Engineer1::Engineer1(Position position_, int total_price_)
         Animation(State::Idle, "tower_artillery_lvl1_layer6", Position{0.0f, 41.0f}));
     animations.push_back(
         Animation(State::Idle, "tower_artillery_lvl1_layer7", Position{0.0f, 41.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(3.0, 160.0, BulletType::Bomb, 62.4, 13.0, "bombs_0001", 1.0,"BombShootSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(3.0,
+                                          160.0,
+                                          BulletType::Bomb,
+                                          62.4,
+                                          13.0,
+                                          "bombs_0001",
+                                          1.0,
+                                          "BombShootSound"));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
@@ -258,8 +282,12 @@ bool Engineer1::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 80),
+                                    Position(0, 100),
                                     UpgradeTowerParams{id, TowerType::Engineer2, 220})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
     return true;
 }
 
@@ -285,8 +313,8 @@ Engineer2::Engineer2(Position position_, int total_price_)
         Animation(State::Idle, "tower_artillery_lvl2_layer6", Position{0.0f, 42.0f}));
     animations.push_back(
         Animation(State::Idle, "tower_artillery_lvl2_layer7", Position{0.0f, 42.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(3, 160.0, BulletType::Bomb, 62.4, 33.0, "bombs_0002", 1.0,"BombShootSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(
+        3, 160.0, BulletType::Bomb, 62.4, 33.0, "bombs_0002", 1.0, "BombShootSound"));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 };
@@ -297,8 +325,12 @@ bool Engineer2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 80),
+                                    Position(0, 100),
                                     UpgradeTowerParams{id, TowerType::Engineer3, 320})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
     return true;
 }
 
@@ -324,11 +356,26 @@ Engineer3::Engineer3(Position position_, int total_price_)
         Animation(State::Idle, "tower_artillery_lvl3_layer6", Position{0.0f, 43.0f}));
     animations.push_back(
         Animation(State::Idle, "tower_artillery_lvl3_layer7", Position{0.0f, 43.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(2.5, 180.0, BulletType::Bomb, 67.2, 50.0, "bombs_0003", 1.0,"BombShootSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(2.5,
+                                          180.0,
+                                          BulletType::Bomb,
+                                          67.2,
+                                          50.0,
+                                          "bombs_0003",
+                                          1.0,
+                                          "BombShootSound"));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 };
+
+bool Engineer3::Insert(Store& store)
+{
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    return true;
+}
 
 void Mage::pending_update()
 {
@@ -363,8 +410,8 @@ Mage1::Mage1(Position position_, int total_price_)
     animations.push_back(Animation(State::Idle, "terrain_artillery_0001", Position{0.0f, 15.0f}));
     animations.push_back(Animation(State::Idle, "mage_lvl1", Position{0.0f, 30.0f}));
     animations.push_back(Animation(State::Idle, "mage_shooter", Position{0.0f, 57.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(1.5, 140.0, BulletType::Bolt, 0.0, 15, "magebolt", 1.0,"BoltSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(
+        1.5, 140.0, BulletType::Bolt, 0.0, 15, "magebolt", 1.0, "BoltSound"));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
@@ -375,8 +422,12 @@ bool Mage1::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 80),
+                                    Position(0, 100),
                                     UpgradeTowerParams{id, TowerType::Mage2, 160})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
     return true;
 }
 
@@ -390,8 +441,8 @@ Mage2::Mage2(Position position_, int total_price_)
     animations.push_back(Animation(State::Idle, "terrain_artillery_0002", Position{0.0f, 15.0f}));
     animations.push_back(Animation(State::Idle, "mage_lvl2", Position{0.0f, 30.0f}));
     animations.push_back(Animation(State::Idle, "mage_shooter", Position{0.0f, 57.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(1.5, 160.0, BulletType::Bolt, 0.0, 36, "magebolt", 1.0,"BoltSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(
+        1.5, 160.0, BulletType::Bolt, 0.0, 36, "magebolt", 1.0, "BoltSound"));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
 }
@@ -402,8 +453,12 @@ bool Mage2::Insert(Store& store)
         Action(ActionType::CreateActionFx,
                CreateActionFxParams(FxType::CommonUpgradeButton,
                                     position,
-                                    Position(0, 80),
+                                    Position(0, 100),
                                     UpgradeTowerParams{id, TowerType::Mage3, 240})));
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
     return true;
 }
 
@@ -417,10 +472,19 @@ Mage3::Mage3(Position position_, int total_price_)
     animations.push_back(Animation(State::Idle, "terrain_artillery_0003", Position{0.0f, 15.0f}));
     animations.push_back(Animation(State::Idle, "mage_lvl3", Position{0.0f, 30.0f}));
     animations.push_back(Animation(State::Idle, "mage_shooter", Position{0.0f, 62.0f}));
-    ranged.attacks.push_back(
-        RangedAttack(1.5, 180.0, BulletType::Bolt, 0.0, 63, "magebolt", 1.0,"BoltSound"));   // 添加攻击
+    ranged.attacks.push_back(RangedAttack(
+        1.5, 180.0, BulletType::Bolt, 0.0, 63, "magebolt", 1.0, "BoltSound"));   // 添加攻击
 
     heading = tower_heading::Down;   // 默认塔的朝向为 Down
+}
+
+bool Mage3::Insert(Store& store)
+{
+    animations[0].actions.emplace_back(
+        Action(ActionType::CreateActionFx,
+               CreateActionFxParams(
+                   FxType::SellTowerButton, position, Position(0, -40), SellTowerParams{id})));
+    return true;
 }
 
 void Barrack::pending_update()

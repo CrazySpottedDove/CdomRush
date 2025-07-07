@@ -1,4 +1,5 @@
 #include "ViewModel/GameViewModel/templates/unit.h"
+#include "Common/macros.h"
 #include "Common/state.h"
 #include "Common/viewData.h"
 #include "ViewModel/GameViewModel/store/store.h"
@@ -32,6 +33,8 @@ State Unit::walkjudge()
 void Unit::QueueViewData(Store& store)
 {
     auto& view_data_queue = *store.GetViewDataQueue();
-    view_data_queue.emplace(ViewData(&animations, position, 0));
-    view_data_queue.emplace(ViewData(health.hp / health.hp_max, position + health_bar_offset));
+    view_data_queue.emplace(ViewData(&animations, position, COMMON_LAYER));
+    if(health.hp > 0){
+        view_data_queue.emplace(ViewData(health.hp / health.hp_max, position + health_bar_offset));
+    }
 }

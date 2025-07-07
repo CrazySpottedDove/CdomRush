@@ -98,6 +98,7 @@ public:
     Tower* Clone() override {
         return new Archer3(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         if(shooter) return sf::Vector2f(-10, 50); // 特定偏移位置
         else return sf::Vector2f(10, 50); // 特定偏移位置
@@ -138,6 +139,7 @@ public:
     Tower* Clone() override {
         return new Engineer3(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         return sf::Vector2f(0,57); // 特定偏移位置
     }
@@ -179,6 +181,7 @@ public:
     Tower* Clone() override {
         return new Mage3(*this);
     }
+    bool     Insert(Store& store) override;
     Position return_offset() const override {
         if(heading == tower_heading::Up) return sf::Vector2f(8, 70); // 特定偏移位置
         else return sf::Vector2f(-5, 69); // 特定偏移位置

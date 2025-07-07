@@ -24,10 +24,6 @@ void UIManager::Render(const ViewData& view_data)
                  ++layer_index) {
                 Animation& animation = (*view_data.animations)[layer_index];
                 if (!animation.hidden) {
-                    // INFO("Rendering animation: " + animation.prefix + " at layer " +
-                    //      std::to_string(layer_index) + ", current state: " +
-                    //      std::to_string(static_cast<int>(animation.current_state)) +
-                    //      ", frame ID: " + std::to_string(animation.frame_id));
                     const AnimationGroup animation_group =
                         animation_group_map->at(animation.prefix).at(animation.current_state);
 
@@ -212,7 +208,7 @@ void UIManager::HandleClick()
                 // 遍历所有ViewData，寻找被点击对象
                 bool hit_found = false;
 
-                for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
+                for (auto it = view_data_queue->rbegin(); it != view_data_queue->rend(); ++it) {
                     const ViewData& view_data = *it;
                     if(view_data.type != ViewDataType::Animation){
                         continue;

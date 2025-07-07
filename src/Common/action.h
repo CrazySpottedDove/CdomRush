@@ -36,8 +36,15 @@ struct SelectLevelParams
     std::string level_name;
 };
 
+struct SellTowerParams
+{
+    ID tower_id;   // 要出售的塔的 ID
+    // int       price; //出售的价格
+    // TowerType tower_type;
+    // Position  offset; // 出售有无效果需要渲染？
+};
 
-using CreateActionFxProps = std::variant<UpgradeTowerParams>;
+using CreateActionFxProps = std::variant<UpgradeTowerParams, SellTowerParams>;
 
 struct CreateActionFxParams{
     FxType fx_type;
@@ -82,13 +89,7 @@ struct ChangeRallyPointParams
     Position  new_rally_point;
 };
 
-struct SellTowerParams
-{
-    ID        tower_id; // 要出售的塔的 ID
-    int       price; //出售的价格
-    TowerType tower_type;
-    //Position  offset; // 出售有无效果需要渲染？
-};
+
 
 using Params = std::variant<std::monostate, UpgradeTowerParams, SelectLevelParams, CreateActionFxParams,CheckSoldierStatusParams,
                             CheckEnemyStatusParams, CheckTowerStatusParams, ChangeRallyPointParams,SellTowerParams>;

@@ -388,6 +388,12 @@ return {
             from = 2
         }
     },
+    icon_sell = {
+        enabled = {
+            to = 1,
+            from = 1
+        }
+    },
     archer_tower1 = {
         idle = {
             to = 1,

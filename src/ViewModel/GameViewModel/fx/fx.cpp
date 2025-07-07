@@ -116,6 +116,12 @@ void UpgradeToEngineerButton::Update(Store& store)
     }
 }
 
+SellTowerButton::SellTowerButton(const SellTowerParams& params){
+    animations.emplace_back(Animation(State::Enabled, "icon_sell"));
+    animations[0].actions.emplace_back(
+        Action(ActionType::SellTower, params));
+}
+
 GoldStat::GoldStat()
 {
     position.x = -20;

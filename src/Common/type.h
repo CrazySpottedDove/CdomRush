@@ -45,6 +45,7 @@ enum class FxType
     UpgradeToMageButton,
     UpgradeToBarrackButton,
     CommonUpgradeButton,
+    SellTowerButton,
     BloodSplat,
     GoldStat,
     TopLeft,

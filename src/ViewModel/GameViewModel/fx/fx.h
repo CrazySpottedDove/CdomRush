@@ -92,6 +92,12 @@ public:
 //     void      Update(Store& store) override;
 // };
 
+class SellTowerButton: public ActionFx{
+    public:
+    SellTowerButton(const SellTowerParams& params);
+    ActionFx* Clone() override { return new SellTowerButton(*this); }
+};
+
 class GoldStat : public Fx
 {
 public:

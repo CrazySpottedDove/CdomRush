@@ -177,6 +177,14 @@ void App::HandleAction(Action& action)
             // store.QueueActionFx(action_fx);
             break;
         }
+        case FxType::SellTowerButton:
+        {
+            ActionFx* action_fx =
+                new SellTowerButton(std::get<SellTowerParams>(fx_params.props));
+            action_fx->position = fx_params.position + fx_params.offset;
+            store.QueueActionFx(action_fx);
+            break;
+        }
         }
         break;
     }
@@ -205,7 +213,14 @@ void App::HandleAction(Action& action)
     {
         SellTowerParams& params = std::get<SellTowerParams>(action.param);
         Tower*           tower  = store.GetTower(params.tower_id);
-
+        if(tower){
+            store.gold += tower->total_price * 0.5;
+            Tower* new_build_terrain    = store.template_manager.CreateTower(TowerType::None);
+            new_build_terrain->position = tower->position;
+            store.DequeueTower(tower->id);
+            store.QueueTower(new_build_terrain);
+            INFO("Tower sold for " << tower->total_price * 0.5 << " gold.");
+        }
         break;
     }
     }

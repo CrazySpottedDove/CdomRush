@@ -130,6 +130,7 @@ public:
 
 class worg : public ActiveEnemyMelee
 {
+public:
     worg(Position position_ = sf::Vector2f(0,0));
     void death_action(Store& store) override;
     Enemy* Clone() const override

@@ -28,7 +28,10 @@ TemplateManager::TemplateManager()
         // {TowerType::Barrack3, new Barracks3()}
     };
     enemy_map = {{EnemyType::ForestTroll, new ForestTroll()},
-                 {EnemyType::orc_armored, new orc_armored()}};
+                 {EnemyType::orc_armored, new orc_armored()},
+                 {EnemyType::orc_wolf_rider, new orc_wolf_rider()},
+                 {EnemyType::worg, new worg()}
+                };
     fx_map    = {
         {FxType::LevelFlag, new LevelFlag()},
         {FxType::Map, new Map()},

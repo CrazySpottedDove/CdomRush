@@ -438,6 +438,10 @@ return {
         door_close = {
             to = 9,
             from = 6
+        },
+        idle = {
+            to = 1,
+            from = 1
         }
     },
     tower_barracks_lvl2_layer2 = {
@@ -448,6 +452,10 @@ return {
         door_close = {
             to = 9,
             from = 6
+        },
+        idle = {
+            to = 1,
+            from = 1
         }
     },
     tower_barracks_lvl3_layer2 = {
@@ -458,6 +466,10 @@ return {
         door_close = {
             to = 9,
             from = 6
+        },
+        idle = {
+            to = 1,
+            from = 1
         }
     },
     tower_barracks_lvl1_layer1 = {

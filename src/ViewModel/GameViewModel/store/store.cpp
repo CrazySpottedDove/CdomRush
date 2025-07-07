@@ -12,7 +12,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <vector>
 
-Store::~Store(){
+Store::~Store()
+{
     Clear();
 }
 
@@ -25,11 +26,22 @@ void Store::UpdateDamageEvents()
 {
     const auto new_damage_event_end = std::remove_if(
         damage_events.begin(), damage_events.end(), [this](DamageEvent& damage_event) -> bool {
-            if (damage_event.target == INVALID_ID ||
-                calc::is_dead(*GetEnemy(damage_event.target))) {
+            const ID target_id = damage_event.target;
+            if (target_id == INVALID_ID) {
                 return true;
             }
-
+            Enemy*   target_as_enemy   = GetEnemy(target_id);
+            Soldier* target_as_soldier = GetSoldier(target_id);
+            if (target_as_enemy == nullptr && target_as_soldier == nullptr) {
+                // 如果目标消失，删除伤害事件
+                return true;
+            }
+            if (target_as_enemy != nullptr && calc::is_dead(*target_as_enemy)) {
+                return true;
+            }
+            if (target_as_soldier != nullptr && calc::is_dead(*target_as_soldier)) {
+                return true;
+            }
             if (damage_event.data.apply_delay > 0) {
                 --damage_event.data.apply_delay;
                 return false;
@@ -490,23 +502,26 @@ void Store::IntoGameStart()
     current_wave_index    = 0;
 }
 
-void Store::IntoGamePlaying(){
+void Store::IntoGamePlaying()
+{
     current_wave_time = 0;
     QueueSoundData(SoundData(current_level_fight_music));
 }
 
-void Store::IntoGameOver(){
-    if(life <= 0){
+void Store::IntoGameOver()
+{
+    if (life <= 0) {
         Fx* gameover_background_fx = template_manager.CreateFx(FxType::GameOverFailure);
         QueueFx(gameover_background_fx);
-        Fx* gameover_text_fx = new GameOverTextFx("You Lose! Click To Continue...");
+        Fx* gameover_text_fx       = new GameOverTextFx("You Lose! Click To Continue...");
         gameover_text_fx->position = sf::Vector2f(X_CENTER - 80, Y_CENTER);
         QueueFx(gameover_text_fx);
         QueueSoundData(SoundData("GUIQuestFailed"));
-    }else{
+    }
+    else {
         Fx* gameover_background_fx = template_manager.CreateFx(FxType::GameOverVictory);
         QueueFx(gameover_background_fx);
-        Fx* gameover_text_fx = new GameOverTextFx("You Win! Click To Continue...");
+        Fx* gameover_text_fx       = new GameOverTextFx("You Win! Click To Continue...");
         gameover_text_fx->position = sf::Vector2f(X_CENTER - 80, Y_CENTER);
         QueueFx(gameover_text_fx);
         QueueSoundData(SoundData("GUIQuestCompleted"));

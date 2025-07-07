@@ -1,6 +1,7 @@
 #include "ViewModel/GameViewModel/towers/towers.h"
 #include "Common/action.h"
 #include "Common/macros.h"
+#include "Common/state.h"
 #include "Common/type.h"
 #include "ViewModel/GameViewModel/components/ranged.h"
 #include "ViewModel/GameViewModel/enemies/enemies.h"
@@ -581,10 +582,16 @@ void Barrack::layer_update(bool flag)
         animations[3].current_state = State::DoorOpen;
     else if (animations[0].current_state == State::DoorClose)
         animations[3].current_state = State::DoorClose;
+    else if (animations[0].current_state == State::Idle)
+        animations[3].current_state = State::Idle;
     return;
 }
 void Barrack::Update(Store& store)
 {
+    // INFO("Animations[0].current_state: {}" << (int)animations[0].current_state);
+    // INFO("Animations[3].current_state: {}" << (int)animations[3].current_state);
+    // INFO("Animations[0].pending: {}" << animations[0].pending);
+    // INFO("Animations[3].pending: {}" << animations[3].pending);
     pending_update();
     for (auto it = soldiers.begin(); it != soldiers.end();) {
         if (store.GetSoldier(*it) == nullptr) {
@@ -601,8 +608,6 @@ void Barrack::Update(Store& store)
         soldierx->position          = position + return_offset();
         soldierx->source_barrack  =id;
         soldierx->melee[0].damage_event.source = soldierx->id;
-        INFO("Rally Point: "<< rally_point.x << ", " << rally_point.y);
-        INFO("Soldier Position: "<< soldierx->position.x << ", " << soldierx->position.y);
         store.QueueSoldier(soldierx);
         soldiers.push_back(soldierx->id);
         solider_size_changed = true;
@@ -622,6 +627,11 @@ void Barrack::Update(Store& store)
     else if (animations[0].current_state == State::DoorOpen) {
         if (!animations[0].pending) {
             animations[0].current_state = State::DoorClose;
+        }
+    }
+    else if(animations[0].current_state == State::DoorClose){
+        if(!animations[0].pending){
+            animations[0].current_state = State::Idle;
         }
     }
     layer_update(0);

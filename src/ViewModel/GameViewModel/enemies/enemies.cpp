@@ -32,7 +32,8 @@ void ActiveEnemyMelee::Update(Store& store)
         return;
     }
     if (this->animations[0].current_state == State::Idle) {
-        heading = Heading::Right;   // 设置方向为向右
+        // heading = Heading::Right;   // 设置方向为向右
+        this->animations[0].flip = false;
         Soldier* Blocker = store.GetSoldier(this->blocker);   // 获取阻挡单位
         if (Blocker == nullptr) {
             this->animations[0].current_state = walkjudge();

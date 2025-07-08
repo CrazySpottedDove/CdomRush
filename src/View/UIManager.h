@@ -20,14 +20,14 @@ public:
     ~UIManager() = default;
 
     /**
-     * @brief 确保所有的 ViewData 都进入 view_data_queue 中后使用，处理所有的渲染和点击事件。
+     * @brief 确保所有的 ViewData 都进入 render_data_queue 中后使用，处理所有的渲染和点击事件。
      *
      */
     void PrecessUI();
     void ClearViewData();
-    void SetViewData(std::multiset<RenderData, RenderDataComparator>& view_data_queue)
+    void SetViewData(std::multiset<RenderData, RenderDataComparator>& render_data_queue)
     {
-        this->view_data_queue = &view_data_queue;
+        this->render_data_queue = &render_data_queue;
     }
     void SetWindow(sf::RenderWindow& window)
     {
@@ -55,7 +55,7 @@ public:
     }
 
 private:
-    void Render(const RenderData& view_data);
+    void Render(const RenderData& render_data);
 
     /**
      * @brief 处理SFML鼠标点击
@@ -69,7 +69,7 @@ private:
      * @brief 检查点击位置是否在ViewData的边界内
      * @param click_position 点击位置
      */
-    bool IsClickHit(const RenderData& view_data, const sf::Vector2f& click_position) const;
+    bool IsClickHit(const RenderData& render_data, const sf::Vector2f& click_position) const;
 
     // struct ViewDataComparator
     // {
@@ -82,7 +82,7 @@ private:
     AnimationGroupMap*                          animation_group_map = nullptr;
     SpriteFrameDataMap*                         sprite_frame_data_map = nullptr;
     TextureMap*                                 texture_map = nullptr;
-    std::multiset<RenderData, RenderDataComparator>* view_data_queue;
+    std::multiset<RenderData, RenderDataComparator>* render_data_queue;
     std::queue<Action>                          action_queue;
     sf::Font* font;
 };

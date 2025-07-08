@@ -418,17 +418,17 @@ void Store::Clear()
     }
     action_fxs.clear();
     damage_events.clear();
-    view_data_queue.clear();
+    render_data_queue.clear();
     PendingEnemyQueue empty_queue;
     pending_enemy_queue.swap(empty_queue);
 }
 void Store::ClearViewDataQueue()
 {
-    view_data_queue.clear();
+    render_data_queue.clear();
 }
 RenderDataQueue* Store::GetViewDataQueue()
 {
-    return &view_data_queue;
+    return &render_data_queue;
 }
 
 

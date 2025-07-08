@@ -116,7 +116,7 @@ private:
     ID                                next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象
     std::vector<DamageEvent> damage_events;
-    RenderDataQueue            view_data_queue;
+    RenderDataQueue            render_data_queue;
     PendingEnemyQueue        pending_enemy_queue;
     SoundDataQueue           sound_data_queue;
 };

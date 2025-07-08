@@ -15,15 +15,15 @@
 /**
  * @brief 保证传入的 frame_id 合法！
  *
- * @param view_data
+ * @param render_data
  */
-void UIManager::Render(const RenderData& view_data)
+void UIManager::Render(const RenderData& render_data)
 {
-    switch (view_data.type) {
+    switch (render_data.type) {
     case RenderDataType::Animation:
     {
-        for (size_t layer_index = 0; layer_index < view_data.animations->size(); ++layer_index) {
-            Animation& animation = (*view_data.animations)[layer_index];
+        for (size_t layer_index = 0; layer_index < render_data.animations->size(); ++layer_index) {
+            Animation& animation = (*render_data.animations)[layer_index];
             if (!animation.hidden) {
                 // INFO("Render Animation: " + animation.prefix + " at layer " +
                 //      std::to_string(layer_index) + ", state: " +
@@ -66,8 +66,8 @@ void UIManager::Render(const RenderData& view_data)
                     animation.flip ? -animation.scale_x : animation.scale_x, animation.scale_y));
 
                 sprite.setPosition(
-                    MapPosition(Position{view_data.position.x + animation.offset.x,
-                                         view_data.position.y + animation.offset.y}));
+                    MapPosition(Position{render_data.position.x + animation.offset.x,
+                                         render_data.position.y + animation.offset.y}));
 
                 sprite.setRotation(sf::degrees(animation.rotation));
 
@@ -89,8 +89,8 @@ void UIManager::Render(const RenderData& view_data)
         const float border_thickness = 1.0f;
 
         // 血条位置（在实体上方）
-        const float bar_x = view_data.position.x - bar_width / 2.0f;
-        const float bar_y = view_data.position.y;   // 在实体上方20像素
+        const float bar_x = render_data.position.x - bar_width / 2.0f;
+        const float bar_y = render_data.position.y;   // 在实体上方20像素
 
         // 将位置转换为屏幕坐标
         const sf::Vector2f screen_pos = MapPosition(Position{bar_x, bar_y});
@@ -103,9 +103,9 @@ void UIManager::Render(const RenderData& view_data)
         window->draw(background);
 
         // 2. 绘制血量（绿色）
-        if (view_data.health_rate > 0.0f) {
+        if (render_data.health_rate > 0.0f) {
             sf::RectangleShape health_bar;
-            health_bar.setSize(sf::Vector2f(bar_width * view_data.health_rate, bar_height));
+            health_bar.setSize(sf::Vector2f(bar_width * render_data.health_rate, bar_height));
             health_bar.setPosition(screen_pos);
             health_bar.setFillColor(sf::Color::Green);
             window->draw(health_bar);
@@ -123,8 +123,8 @@ void UIManager::Render(const RenderData& view_data)
     }
     case RenderDataType::Text:
     {
-        sf::Text text(*font, view_data.text, 15);
-        text.setPosition(MapPosition(view_data.position));
+        sf::Text text(*font, render_data.text, 15);
+        text.setPosition(MapPosition(render_data.position));
         text.setFillColor(sf::Color::White);
         text.setStyle(sf::Text::Bold);
         window->draw(text);
@@ -132,14 +132,14 @@ void UIManager::Render(const RenderData& view_data)
     }
     case RenderDataType::TowerRange:{
         // 将世界坐标转换为屏幕坐标
-        sf::Vector2f screen_pos = MapPosition(view_data.position);
+        sf::Vector2f screen_pos = MapPosition(render_data.position);
 
         // 创建圆形（可以设置为椭圆）
         sf::CircleShape range_circle;
-        range_circle.setRadius(view_data.range);
+        range_circle.setRadius(render_data.range);
 
         // 设置圆心位置
-        range_circle.setPosition(Position(screen_pos.x - view_data.range, screen_pos.y - view_data.range));
+        range_circle.setPosition(Position(screen_pos.x - render_data.range, screen_pos.y - render_data.range));
 
         // 设置颜色和样式
         range_circle.setFillColor(sf::Color(0, 0, 255, 80));   // 蓝色，透明度80/255
@@ -160,17 +160,17 @@ void UIManager::Render(const RenderData& view_data)
 void UIManager::PrecessUI()
 {
     window->clear();
-    for (auto it = view_data_queue->begin(); it != view_data_queue->end(); ++it) {
+    for (auto it = render_data_queue->begin(); it != render_data_queue->end(); ++it) {
         Render(*it);
     }
     window->display();
     HandleClick();
-    view_data_queue->clear();
+    render_data_queue->clear();
 }
 
 void UIManager::ClearViewData()
 {
-    view_data_queue->clear();
+    render_data_queue->clear();
     window                = nullptr;
     animation_group_map   = nullptr;
     sprite_frame_data_map = nullptr;
@@ -180,21 +180,21 @@ void UIManager::ClearViewData()
 /**
  * @brief 检查点击位置是否在ViewData检测边界内
  */
-bool UIManager::IsClickHit(const RenderData& view_data, const sf::Vector2f& click_position) const
+bool UIManager::IsClickHit(const RenderData& render_data, const sf::Vector2f& click_position) const
 {
     if (!animation_group_map || !sprite_frame_data_map) {
         ERROR("Animation group map or sprite frame data map is not initialized.");
     }
-    if(view_data.type == RenderDataType::TowerRange){
+    if(render_data.type == RenderDataType::TowerRange){
         const Position click_position_back = MapPositionBack(click_position);
 
         // 计算椭圆的中心点
-        float center_x = view_data.position.x;
-        float center_y = view_data.position.y;
+        float center_x = render_data.position.x;
+        float center_y = render_data.position.y;
 
         // 椭圆的半径（长轴和短轴）
-        float radius_x = view_data.range;          // 水平半径
-        float radius_y = view_data.range * 0.7f;   // 垂直半径（对应 scale 0.7f）
+        float radius_x = render_data.range;          // 水平半径
+        float radius_y = render_data.range * 0.7f;   // 垂直半径（对应 scale 0.7f）
 
         // 计算点到椭圆中心的距离
         float dx = click_position_back.x - center_x;
@@ -205,7 +205,7 @@ bool UIManager::IsClickHit(const RenderData& view_data, const sf::Vector2f& clic
         float ellipse_equation =
             (dx * dx) / (radius_x * radius_x) + (dy * dy) / (radius_y * radius_y);
 
-        INFO("Check Bounds With Tower Range: " + std::to_string(view_data.range));
+        INFO("Check Bounds With Tower Range: " + std::to_string(render_data.range));
         INFO("Click position back: (" + std::to_string(click_position_back.x) + ", " +
              std::to_string(click_position_back.y) + ")");
         INFO("Ellipse center: (" + std::to_string(center_x) + ", " + std::to_string(center_y) +
@@ -217,7 +217,7 @@ bool UIManager::IsClickHit(const RenderData& view_data, const sf::Vector2f& clic
         return ellipse_equation <= 1.0f;
     }
     const Animation& animation =
-        (*view_data.animations)[(*view_data.animations)[0].hidden ? 1 : 0];   // 只处理第0层
+        (*render_data.animations)[(*render_data.animations)[0].hidden ? 1 : 0];   // 只处理第0层
 
     const auto& animation_group =
         animation_group_map->at(animation.prefix).at(animation.current_state);
@@ -226,9 +226,9 @@ bool UIManager::IsClickHit(const RenderData& view_data, const sf::Vector2f& clic
 
     // 计算边界矩形...
     const Position before_map_position =
-        Position{view_data.position.x + animation.offset.x -
+        Position{render_data.position.x + animation.offset.x -
                      sprite_frame_data.displaySize.x * animation.anchor_x * animation.scale_x,
-                 view_data.position.y + animation.offset.y -
+                 render_data.position.y + animation.offset.y -
                      sprite_frame_data.displaySize.y * animation.anchor_y * animation.scale_y};
 
     sf::FloatRect bounds(before_map_position,
@@ -272,25 +272,25 @@ void UIManager::HandleClick()
                 // 遍历所有ViewData，寻找被点击对象
                 bool hit_found = false;
 
-                for (auto it = view_data_queue->rbegin(); it != view_data_queue->rend(); ++it) {
-                    const RenderData& view_data = *it;
-                    if (view_data.type == RenderDataType::Text) {
+                for (auto it = render_data_queue->rbegin(); it != render_data_queue->rend(); ++it) {
+                    const RenderData& render_data = *it;
+                    if (render_data.type == RenderDataType::Text) {
                         continue;
                     }
-                    if(view_data.animations == nullptr || view_data.animations->empty()) {
+                    if(render_data.animations == nullptr || render_data.animations->empty()) {
                         continue;
                     }
-                    if ((*view_data.animations)[0].actions.empty()) {
+                    if ((*render_data.animations)[0].actions.empty()) {
                         continue;
                     }
 
-                    if (IsClickHit(view_data, click_position)) {
-                        // (*view_data.animations)[0].clicked = true;
-                        for (size_t i = 0; i < (*view_data.animations)[0].actions.size(); ++i) {
-                            if(view_data.type == RenderDataType::TowerRange){
-                                std::get<ChangeRallyPointParams>((*view_data.animations)[0].actions[i].param).new_rally_point = MapPositionBack(click_position);
+                    if (IsClickHit(render_data, click_position)) {
+                        // (*render_data.animations)[0].clicked = true;
+                        for (size_t i = 0; i < (*render_data.animations)[0].actions.size(); ++i) {
+                            if(render_data.type == RenderDataType::TowerRange){
+                                std::get<ChangeRallyPointParams>((*render_data.animations)[0].actions[i].param).new_rally_point = MapPositionBack(click_position);
                             }
-                            action_queue.push((*view_data.animations)[0].actions[i]);
+                            action_queue.push((*render_data.animations)[0].actions[i]);
                         }
                         hit_found = true;
                         break;

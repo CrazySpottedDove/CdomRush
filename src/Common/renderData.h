@@ -6,7 +6,7 @@
 #include <set>
 #include <vector>
 
-enum class ViewDataType
+enum class RenderDataType
 {
     Animation,   // 动画
     HealthBar,   // 血条
@@ -15,7 +15,7 @@ enum class ViewDataType
 };
 
 // Animations[0] 确定了指示状态，储存所有可以触发的点击事件
-struct ViewData
+struct RenderData
 {
     std::vector<Animation>* animations;
     Position                position;
@@ -23,39 +23,39 @@ struct ViewData
     double                  health_rate = 1.0;
     double range = 0.0;
     std::string             text;   // 用于文本显示
-    ViewDataType            type;
-    ViewData(std::vector<Animation>* animations, const Position& position,
+    RenderDataType            type;
+    RenderData(std::vector<Animation>* animations, const Position& position,
              const size_t layer_index = COMMON_LAYER)
         : animations(animations)
         , position(position)
         , layer_index(layer_index)
-        , type(ViewDataType::Animation)
+        , type(RenderDataType::Animation)
     {}
-    ViewData(const double health_rate, const Position& position)
+    RenderData(const double health_rate, const Position& position)
         : animations(nullptr)
         , position(position)
         , layer_index(HEALTH_BAR_LAYER)
         , health_rate(health_rate)
-        , type(ViewDataType::HealthBar)
+        , type(RenderDataType::HealthBar)
     {}
-    ViewData(const std::string& text, const Position& position, const size_t layer_index = 0)
+    RenderData(const std::string& text, const Position& position, const size_t layer_index = 0)
         : animations(nullptr)
         , position(position)
         , layer_index(layer_index)
         , text(text)
-        , type(ViewDataType::Text)
+        , type(RenderDataType::Text)
     {}
-    ViewData(const double range, const Position& position, std::vector<Animation>* animations): animations(animations),
-    position(position),layer_index(UI_LOWER_LAYER),type(ViewDataType::TowerRange), range(range){}
+    RenderData(const double range, const Position& position, std::vector<Animation>* animations): animations(animations),
+    position(position),layer_index(UI_LOWER_LAYER),type(RenderDataType::TowerRange), range(range){}
 };
 
-struct ViewDataComparator
+struct RenderDataComparator
 {
-    bool operator()(const ViewData& lhs, const ViewData& rhs) const
+    bool operator()(const RenderData& lhs, const RenderData& rhs) const
     {
         return lhs.layer_index < rhs.layer_index ||
                (lhs.position.y > rhs.position.y && lhs.layer_index == rhs.layer_index);
     }
 };
 
-typedef std::multiset<ViewData, ViewDataComparator> ViewDataQueue;
+typedef std::multiset<RenderData, RenderDataComparator> RenderDataQueue;

@@ -2,7 +2,7 @@
 
 #include "Common/macros.h"
 #include "Common/sound.h"
-#include "Common/viewData.h"
+#include "Common/renderData.h"
 #include "ViewModel/GameViewModel/bullets/bullets.h"
 #include "ViewModel/GameViewModel/components/damage.h"
 #include "ViewModel/GameViewModel/templateManager/templateManager.h"
@@ -47,7 +47,7 @@ public:
     const std::unordered_map<ID, Tower*>&   GetTowers() const { return towers; }
     const std::unordered_map<ID, Bullet*>&  GetBullets() const { return bullets; }
     const std::unordered_map<ID, Soldier*>& GetSoldiers() const { return soldiers; }
-    ViewDataQueue*                          GetViewDataQueue();
+    RenderDataQueue*                          GetViewDataQueue();
     SoundDataQueue*                         GetSoundDataQueue() { return &sound_data_queue; }
 
     void QueueEnemy(Enemy* enemy);
@@ -116,7 +116,7 @@ private:
     ID                                next_id = 0;
     // 请注意，damage_event 不是 new 出来的对象
     std::vector<DamageEvent> damage_events;
-    ViewDataQueue            view_data_queue;
+    RenderDataQueue            view_data_queue;
     PendingEnemyQueue        pending_enemy_queue;
     SoundDataQueue           sound_data_queue;
 };

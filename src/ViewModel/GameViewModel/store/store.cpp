@@ -1,6 +1,6 @@
 #include "ViewModel/GameViewModel/store/store.h"
 #include "Common/macros.h"
-#include "Common/viewData.h"
+#include "Common/renderData.h"
 #include "ViewModel/GameViewModel/Function/calc/damage.h"
 #include "ViewModel/GameViewModel/Function/calc/hp.h"
 #include "ViewModel/GameViewModel/Function/calc/motion.h"
@@ -426,7 +426,7 @@ void Store::ClearViewDataQueue()
 {
     view_data_queue.clear();
 }
-ViewDataQueue* Store::GetViewDataQueue()
+RenderDataQueue* Store::GetViewDataQueue()
 {
     return &view_data_queue;
 }

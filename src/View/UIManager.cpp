@@ -2,9 +2,8 @@
 #include "Common/action.h"
 #include "Common/animation.h"
 #include "Common/macros.h"
-#include "Common/viewData.h"
+#include "Common/renderData.h"
 #include "View/mapPosition.h"
-#include "ViewModel/GameViewModel/towers/towers.h"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -18,10 +17,10 @@
  *
  * @param view_data
  */
-void UIManager::Render(const ViewData& view_data)
+void UIManager::Render(const RenderData& view_data)
 {
     switch (view_data.type) {
-    case ViewDataType::Animation:
+    case RenderDataType::Animation:
     {
         for (size_t layer_index = 0; layer_index < view_data.animations->size(); ++layer_index) {
             Animation& animation = (*view_data.animations)[layer_index];
@@ -83,7 +82,7 @@ void UIManager::Render(const ViewData& view_data)
         }
         break;
     }
-    case ViewDataType::HealthBar:
+    case RenderDataType::HealthBar:
     {
         const float bar_width        = 32.0f;
         const float bar_height       = 4.0f;
@@ -122,7 +121,7 @@ void UIManager::Render(const ViewData& view_data)
         window->draw(border);
         break;
     }
-    case ViewDataType::Text:
+    case RenderDataType::Text:
     {
         sf::Text text(*font, view_data.text, 15);
         text.setPosition(MapPosition(view_data.position));
@@ -131,7 +130,7 @@ void UIManager::Render(const ViewData& view_data)
         window->draw(text);
         break;
     }
-    case ViewDataType::TowerRange:{
+    case RenderDataType::TowerRange:{
         // 将世界坐标转换为屏幕坐标
         sf::Vector2f screen_pos = MapPosition(view_data.position);
 
@@ -181,12 +180,12 @@ void UIManager::ClearViewData()
 /**
  * @brief 检查点击位置是否在ViewData检测边界内
  */
-bool UIManager::IsClickHit(const ViewData& view_data, const sf::Vector2f& click_position) const
+bool UIManager::IsClickHit(const RenderData& view_data, const sf::Vector2f& click_position) const
 {
     if (!animation_group_map || !sprite_frame_data_map) {
         ERROR("Animation group map or sprite frame data map is not initialized.");
     }
-    if(view_data.type == ViewDataType::TowerRange){
+    if(view_data.type == RenderDataType::TowerRange){
         const Position click_position_back = MapPositionBack(click_position);
 
         // 计算椭圆的中心点
@@ -274,8 +273,8 @@ void UIManager::HandleClick()
                 bool hit_found = false;
 
                 for (auto it = view_data_queue->rbegin(); it != view_data_queue->rend(); ++it) {
-                    const ViewData& view_data = *it;
-                    if (view_data.type == ViewDataType::Text) {
+                    const RenderData& view_data = *it;
+                    if (view_data.type == RenderDataType::Text) {
                         continue;
                     }
                     if(view_data.animations == nullptr || view_data.animations->empty()) {
@@ -288,7 +287,7 @@ void UIManager::HandleClick()
                     if (IsClickHit(view_data, click_position)) {
                         // (*view_data.animations)[0].clicked = true;
                         for (size_t i = 0; i < (*view_data.animations)[0].actions.size(); ++i) {
-                            if(view_data.type == ViewDataType::TowerRange){
+                            if(view_data.type == RenderDataType::TowerRange){
                                 std::get<ChangeRallyPointParams>((*view_data.animations)[0].actions[i].param).new_rally_point = MapPositionBack(click_position);
                             }
                             action_queue.push((*view_data.animations)[0].actions[i]);

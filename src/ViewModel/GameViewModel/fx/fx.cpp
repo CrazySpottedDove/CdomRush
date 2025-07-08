@@ -4,14 +4,14 @@
 #include "Common/macros.h"
 #include "Common/state.h"
 #include "Common/type.h"
-#include "Common/viewData.h"
+#include "Common/renderData.h"
 #include "ViewModel/GameViewModel/store/store.h"
 #include "ViewModel/GameViewModel/towers/towers.h"
 #include <variant>
 
 void Fx::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(&animations, position, FX_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(&animations, position, FX_LAYER));
 }
 
 LevelFlag::LevelFlag()
@@ -21,7 +21,7 @@ LevelFlag::LevelFlag()
 
 void ActionFx::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(&animations, position, UI_UPPER_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(&animations, position, UI_UPPER_LAYER));
 }
 
 Map::Map()
@@ -35,7 +35,7 @@ Map::Map()
 
 void Map::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(&animations, position, MAP_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(&animations, position, MAP_LAYER));
 }
 
 CommonUpgradeButton::CommonUpgradeButton(const UpgradeTowerParams& params)
@@ -144,7 +144,7 @@ SellTowerButton::SellTowerButton(const SellTowerParams& params)
 
 void TextFx::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(Stringfy(store), position, TEXT_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(Stringfy(store), position, TEXT_LAYER));
 }
 
 GoldStat::GoldStat()
@@ -191,7 +191,7 @@ PlainTextFx::PlainTextFx(const std::string& text)
 
 void GameOverTextFx::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(Stringfy(store), position, GAMEOVER_TEXT_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(Stringfy(store), position, GAMEOVER_TEXT_LAYER));
 }
 
 TopLeft::TopLeft()
@@ -205,12 +205,12 @@ TopLeft::TopLeft()
 
 void TopLeft::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(&animations, position, UI_LOWER_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(&animations, position, UI_LOWER_LAYER));
 }
 
 void ActionTextFx::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(Stringfy(store), position, TEXT_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(Stringfy(store), position, TEXT_LAYER));
 }
 
 PlainActionTextFx::PlainActionTextFx(const std::string& text)
@@ -236,7 +236,7 @@ GameOverFailure::GameOverFailure()
 
 void GameOverFailure::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(&animations, position, GAMEOVER_BACKGROUND_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(&animations, position, GAMEOVER_BACKGROUND_LAYER));
 }
 
 GameOverVictory::GameOverVictory()
@@ -249,7 +249,7 @@ GameOverVictory::GameOverVictory()
 
 void GameOverVictory::QueueViewData(Store& store)
 {
-    store.GetViewDataQueue()->emplace(ViewData(&animations, position, GAMEOVER_BACKGROUND_LAYER));
+    store.GetViewDataQueue()->emplace(RenderData(&animations, position, GAMEOVER_BACKGROUND_LAYER));
     animations[0].actions.emplace_back(Action(ActionType::BackToBegin, std::monostate{}));
 }
 
@@ -268,7 +268,7 @@ void TowerRangeFx::QueueViewData(Store& store)
          std::to_string(tower->position.y) +
          ") with range: " + std::to_string(tower->ranged.attacks[0].range));
     store.GetViewDataQueue()->emplace(
-        ViewData(tower->ranged.attacks[0].range, tower->position, nullptr));
+        RenderData(tower->ranged.attacks[0].range, tower->position, nullptr));
 }
 
 BarrackRangeFx::BarrackRangeFx(const ID tower_id)
@@ -288,7 +288,7 @@ void BarrackRangeFx::QueueViewData(Store& store)
     }
 
     store.GetViewDataQueue()->emplace(
-        ViewData(dynamic_cast<Barrack*>(tower)->rally_range, tower->position, &animations));
+        RenderData(dynamic_cast<Barrack*>(tower)->rally_range, tower->position, &animations));
 }
 
 BarrackChangeRallyPointButton::BarrackChangeRallyPointButton(const ID tower_id)

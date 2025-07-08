@@ -1,4 +1,4 @@
-# 项目结构
+<!-- # 项目结构
 
 项目被我分为 Model, View, Function, Manager 四个层。
 
@@ -90,4 +90,4 @@ struct Layer{
 
 所以只要将主体的 `postion` 加上它的 `offset` 就可以完成渲染。
 
-因此，最普遍的接口是一个接受 `const Position&` , `Animation&` 的渲染函数。
+因此，最普遍的接口是一个接受 `const Position&` , `Animation&` 的渲染函数。 -->
